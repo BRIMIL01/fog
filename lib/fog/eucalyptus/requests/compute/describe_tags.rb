@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/describe_tags'
@@ -20,13 +20,13 @@ module Fog
         #       * 'key'<~String> - Tag's key
         #       * 'value'<~String> - Tag's value
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-DescribeTags.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeTags.html]
         def describe_tags(filters = {})
-          params = Fog::Eucalyptus.indexed_filters(filters)
+          params = Fog::AWS.indexed_filters(filters)
           request({
             'Action'    => 'DescribeTags',
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::Eucalyptus::DescribeTags.new
+            :parser     => Fog::Parsers::Compute::AWS::DescribeTags.new
           }.merge!(params))
         end
       end
@@ -73,7 +73,7 @@ module Fog
 
           response.status = 200
           response.body = {
-            'requestId'       => Fog::Eucalyptus::Mock.request_id,
+            'requestId'       => Fog::AWS::Mock.request_id,
             'tagSet'          => tagged_resources
           }
           response

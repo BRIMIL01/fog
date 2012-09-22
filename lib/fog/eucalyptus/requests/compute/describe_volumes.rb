@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/describe_volumes'
@@ -30,17 +30,17 @@ module Fog
         #         * 'status'<~String> - Attachment state
         #         * 'volumeId'<~String> - Reference to volume
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-DescribeVolumes.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeVolumes.html]
         def describe_volumes(filters = {})
           unless filters.is_a?(Hash)
             Fog::Logger.deprecation("describe_volumes with #{filters.class} param is deprecated, use describe_volumes('volume-id' => []) instead [light_black](#{caller.first})[/]")
             filters = {'volume-id' => [*filters]}
           end
-          params = Fog::Eucalyptus.indexed_filters(filters)
+          params = Fog::AWS.indexed_filters(filters)
           request({
             'Action'    => 'DescribeVolumes',
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::Eucalyptus::DescribeVolumes.new
+            :parser     => Fog::Parsers::Compute::AWS::DescribeVolumes.new
           }.merge!(params))
         end
 
@@ -108,7 +108,7 @@ module Fog
 
           response.status = 200
           response.body = {
-            'requestId' => Fog::Eucalyptus::Mock.request_id,
+            'requestId' => Fog::AWS::Mock.request_id,
             'volumeSet' => volume_set
           }
           response

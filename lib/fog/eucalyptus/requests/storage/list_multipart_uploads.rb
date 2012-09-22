@@ -1,6 +1,6 @@
 module Fog
   module Storage
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/storage/list_multipart_uploads'
@@ -49,7 +49,7 @@ module Fog
             :host     => "#{bucket_name}.#{@host}",
             :idempotent => true,
             :method   => 'GET',
-            :parser   => Fog::Parsers::Storage::Eucalyptus::ListMultipartUploads.new,
+            :parser   => Fog::Parsers::Storage::AWS::ListMultipartUploads.new,
             :query    => options.merge!({'uploads' => nil})
           })
         end

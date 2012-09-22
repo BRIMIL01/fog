@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/describe_instances'
@@ -16,7 +16,7 @@ module Fog
         #     * 'requestId'<~String> - Id of request
         #     * 'reservationSet'<~Array>:
         #       * 'groupSet'<~Array> - Group names for reservation
-        #       * 'ownerId'<~String> - Eucalyptus Access Key ID of reservation owner
+        #       * 'ownerId'<~String> - AWS Access Key ID of reservation owner
         #       * 'reservationId'<~String> - Id of the reservation
         #       * 'instancesSet'<~Array>:
         #         * instance<~Hash>:
@@ -53,7 +53,7 @@ module Fog
         #           * 'ramdiskId'<~String> - Id of ramdisk used to launch instance
         #           * 'reason'<~String> - reason for most recent state transition, or blank
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-DescribeInstances.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeInstances.html]
         def describe_instances(filters = {})
           unless filters.is_a?(Hash)
             Fog::Logger.deprecation("describe_instances with #{filters.class} param is deprecated, use describe_instances('instance-id' => []) instead [light_black](#{caller.first})[/]")
@@ -67,12 +67,12 @@ module Fog
               params.merge!("InstanceId.#{index}" => id)
             end
           end
-          params.merge!(Fog::Eucalyptus.indexed_filters(filters))
+          params.merge!(Fog::AWS.indexed_filters(filters))
 
           request({
             'Action'    => 'DescribeInstances',
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::Eucalyptus::DescribeInstances.new
+            :parser     => Fog::Parsers::Compute::AWS::DescribeInstances.new
           }.merge!(params))
         end
 
@@ -164,7 +164,7 @@ module Fog
 
           # Error if filtering for a brand new instance directly
           if (filters['instance-id'] || filters['instanceId']) && !brand_new_instances.empty?
-            raise Fog::Compute::Eucalyptus::NotFound.new("The instance ID '#{brand_new_instances.first['instanceId']}' does not exist")
+            raise Fog::Compute::AWS::NotFound.new("The instance ID '#{brand_new_instances.first['instanceId']}' does not exist")
           end
 
           # Otherwise don't include it in the list
@@ -177,11 +177,11 @@ module Fog
             case instance['instanceState']['name']
             when 'pending'
               if Time.now - instance['launchTime'] >= Fog::Mock.delay * 2
-                instance['ipAddress']         = Fog::Eucalyptus::Mock.ip_address
+                instance['ipAddress']         = Fog::AWS::Mock.ip_address
                 instance['originalIpAddress'] = instance['ipAddress']
-                instance['dnsName']           = Fog::Eucalyptus::Mock.dns_name_for(instance['ipAddress'])
-                instance['privateIpAddress']  = Fog::Eucalyptus::Mock.private_ip_address
-                instance['privateDnsName']    = Fog::Eucalyptus::Mock.private_dns_name_for(instance['privateIpAddress'])
+                instance['dnsName']           = Fog::AWS::Mock.dns_name_for(instance['ipAddress'])
+                instance['privateIpAddress']  = Fog::AWS::Mock.private_ip_address
+                instance['privateDnsName']    = Fog::AWS::Mock.private_dns_name_for(instance['privateIpAddress'])
                 instance['instanceState']     = { 'code' => 16, 'name' => 'running' }
               end
             when 'rebooting'
@@ -217,7 +217,7 @@ module Fog
           end
 
           response.body = {
-            'requestId'       => Fog::Eucalyptus::Mock.request_id,
+            'requestId'       => Fog::AWS::Mock.request_id,
             'reservationSet' => reservation_set.values
           }
           response

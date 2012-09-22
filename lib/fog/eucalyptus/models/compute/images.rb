@@ -3,24 +3,24 @@ require 'fog/aws/models/compute/image'
 
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
 
       class Images < Fog::Collection
 
         attribute :filters
 
-        model Fog::Compute::Eucalyptus::Image
+        model Fog::Compute::AWS::Image
         
         # Creates a new Amazon machine image
         #
-        # Eucalyptus.images.new
+        # AWS.images.new
         #
         # ==== Returns
         #
         # Returns the details of the new image
         #
-        #>> Eucalyptus.images.new
-        #  <Fog::Eucalyptus::Compute::Image
+        #>> AWS.images.new
+        #  <Fog::AWS::Compute::Image
         #    id=nil,
         #    architecture=nil,
         #    block_device_mapping=nil,

@@ -3,11 +3,11 @@ require 'fog/aws/models/storage/directory'
 
 module Fog
   module Storage
-    class Eucalyptus
+    class AWS
 
       class Directories < Fog::Collection
 
-        model Fog::Storage::Eucalyptus::Directory
+        model Fog::Storage::AWS::Directory
 
         def all
           data = connection.get_service.body['Buckets']

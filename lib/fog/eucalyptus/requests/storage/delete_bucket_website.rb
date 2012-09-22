@@ -1,6 +1,6 @@
 module Fog
   module Storage
-    class Eucalyptus
+    class AWS
       class Real
 
         # Delete website configuration for a bucket

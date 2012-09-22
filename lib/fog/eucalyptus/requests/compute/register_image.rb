@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
         require 'fog/aws/parsers/compute/register_image'
 
@@ -32,14 +32,14 @@ module Fog
 
         #
 
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-RegisterImage.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-RegisterImage.html]
 
         def register_image(name, description, location, block_devices=[], options={})
           common_options = {
             'Action'      => 'RegisterImage',
             'Name'        => name,
             'Description' => description,
-            :parser       => Fog::Parsers::Compute::Eucalyptus::RegisterImage.new
+            :parser       => Fog::Parsers::Compute::AWS::RegisterImage.new
           }
 
           # This determines if we are doing a snapshot or a S3 backed AMI.
@@ -67,7 +67,7 @@ module Fog
         def register_image(name, description, location, block_devices=[], options={})
           unless name.empty?
             image = {
-              'imageId' => Fog::Eucalyptus::Mock.image_id,
+              'imageId' => Fog::AWS::Mock.image_id,
               'imageLocation' => '',
               'imageState' => 'pending',
               'imageOwnerId' => self.data[:owner_id],
@@ -75,8 +75,8 @@ module Fog
               'productCodes' => [],
               'architecture' => options['Architecture'] || 'i386',
               'imageType' => 'machine',
-              'kernelId' => options['KernelId'] || Fog::Eucalyptus::Mock.kernel_id,
-              'ramdiskId' => options['RamdiskId'] || Fog::Eucalyptus::Mock.ramdisk_id,
+              'kernelId' => options['KernelId'] || Fog::AWS::Mock.kernel_id,
+              'ramdiskId' => options['RamdiskId'] || Fog::AWS::Mock.ramdisk_id,
               'platform' => 'Linux',
               'stateReason' => {},
               'imageOwnerAlias' => self.data[:owner_id],
@@ -115,7 +115,7 @@ module Fog
             response = Excon::Response.new
             response.status = 200
             response.body = {
-              'requestId' => Fog::Eucalyptus::Mock.request_id,
+              'requestId' => Fog::AWS::Mock.request_id,
               'imageId' => image['imageId']
             }
             response
@@ -124,7 +124,7 @@ module Fog
             if name.empty?
               message << 'The request must contain the parameter name'
             end
-            raise Fog::Compute::Eucalyptus::Error.new(message)
+            raise Fog::Compute::AWS::Error.new(message)
           end
         end
       end

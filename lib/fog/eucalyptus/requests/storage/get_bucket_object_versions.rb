@@ -1,6 +1,6 @@
 module Fog
   module Storage
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/storage/get_bucket_object_versions'
@@ -64,7 +64,7 @@ module Fog
             :host     => "#{bucket_name}.#{@host}",
             :idempotent => true,
             :method   => 'GET',
-            :parser   => Fog::Parsers::Storage::Eucalyptus::GetBucketObjectVersions.new,
+            :parser   => Fog::Parsers::Storage::AWS::GetBucketObjectVersions.new,
             :query    => {'versions' => nil}.merge!(options)          })
         end
 

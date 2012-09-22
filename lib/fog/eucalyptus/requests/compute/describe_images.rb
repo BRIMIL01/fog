@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/describe_images'
@@ -38,7 +38,7 @@ module Fog
         #       * 'rootDeviceType'<~String> - Root device type, ebs or instance-store
         #       * 'virtualizationType'<~String> - Type of virtualization
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-DescribeImages.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeImages.html]
         def describe_images(filters = {})
           options = {}
           for key in ['ExecutableBy', 'ImageId', 'Owner']
@@ -46,11 +46,11 @@ module Fog
               options[key] = filters.delete(key)
             end
           end
-          params = Fog::Eucalyptus.indexed_filters(filters).merge!(options)
+          params = Fog::AWS.indexed_filters(filters).merge!(options)
           request({
             'Action'    => 'DescribeImages',
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::Eucalyptus::DescribeImages.new
+            :parser     => Fog::Parsers::Compute::AWS::DescribeImages.new
           }.merge!(params))
         end
 
@@ -118,7 +118,7 @@ module Fog
 
           response.status = 200
           response.body = {
-            'requestId' => Fog::Eucalyptus::Mock.request_id,
+            'requestId' => Fog::AWS::Mock.request_id,
             'imagesSet' => image_set
           }
           response

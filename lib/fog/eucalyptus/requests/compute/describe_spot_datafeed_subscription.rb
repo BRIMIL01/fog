@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/spot_datafeed_subscription'
@@ -16,16 +16,16 @@ module Fog
         #       * 'fault'<~Hash>:
         #         * 'code'<~String> - fault code
         #         * 'reason'<~String> - fault reason
-        #       * 'ownerId'<~String> - Eucalyptus id of account owner
+        #       * 'ownerId'<~String> - AWS id of account owner
         #       * 'prefix'<~String> - prefix for datafeed items
         #       * 'state'<~String> - state of datafeed subscription
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-DescribeSpotDatafeedSubscription.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeSpotDatafeedSubscription.html]
         def describe_spot_datafeed_subscription
           request({
             'Action'    => 'DescribeSpotDatafeedSubscription',
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::Eucalyptus::SpotDatafeedSubscription.new
+            :parser     => Fog::Parsers::Compute::AWS::SpotDatafeedSubscription.new
           })
         end
 

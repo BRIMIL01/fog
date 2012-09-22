@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/create_internet_gateway'
@@ -22,11 +22,11 @@ module Fog
         # *     'key'<~String> - Tag's key
         # *     'value'<~String> - Tag's value
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-ItemType-InternetGatewayAttachmentType.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-ItemType-InternetGatewayAttachmentType.html]
         def create_internet_gateway()
           request({
             'Action'     => 'CreateInternetGateway',
-            :parser      => Fog::Parsers::Compute::Eucalyptus::CreateInternetGateway.new
+            :parser      => Fog::Parsers::Compute::AWS::CreateInternetGateway.new
           })
         end
       end
@@ -34,14 +34,14 @@ module Fog
       class Mock
         def create_internet_gateway()
         self.data[:internet_gateways].push({
-          'internetGatewayId' => Fog::Eucalyptus::Mock.request_id,
+          'internetGatewayId' => Fog::AWS::Mock.request_id,
           'attachmentSet'     => {},
           'tagSet'            => {}
         })
          Excon::Response.new(
             :status => 200,
             :body   => {
-              'requestId' => Fog::Eucalyptus::Mock.request_id,
+              'requestId' => Fog::AWS::Mock.request_id,
               'internetGatewaySet' => self.data[:internet_gateways]
             }
           )

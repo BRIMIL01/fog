@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/delete_dhcp_options'
@@ -17,12 +17,12 @@ module Fog
         # * 'requestId'<~String> - Id of request
         # * 'return'<~Boolean> - Returns true if the request succeeds.
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-DeleteDhcpOptions.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DeleteDhcpOptions.html]
         def delete_dhcp_options(dhcp_options_id)
           request(
             'Action' => 'DeleteDhcpOptions',
             'DhcpOptionsId' => dhcp_options_id,
-            :parser => Fog::Parsers::Compute::Eucalyptus::DeleteDhcpOptions.new
+            :parser => Fog::Parsers::Compute::AWS::DeleteDhcpOptions.new
           )
         end
       end
@@ -35,13 +35,13 @@ module Fog
               self.data[:dhcp_options].reject! { |v| v['dhcpOptionsId'] == dhcp_options_id }
             
               response.body = {
-                'requestId' => Fog::Eucalyptus::Mock.request_id,
+                'requestId' => Fog::AWS::Mock.request_id,
                 'return' => true
               }
             else
               message = 'MissingParameter => '
               message << 'The request must contain the parameter dhcp_options_id'
-              raise Fog::Compute::Eucalyptus::Error.new(message)
+              raise Fog::Compute::AWS::Error.new(message)
             end
           end
         end

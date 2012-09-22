@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/spot_instance_requests'
@@ -55,7 +55,7 @@ module Fog
         #       * 'state'<~String> - spot instance request state
         #       * 'type'<~String> - spot instance request type
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-RequestSpotInstances.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-RequestSpotInstances.html]
         def request_spot_instances(image_id, instance_type, spot_price, options = {})
           if block_device_mapping = options.delete('LaunchSpecification.BlockDeviceMapping')
             block_device_mapping.each_with_index do |mapping, index|
@@ -65,10 +65,10 @@ module Fog
             end
           end
           if security_groups = options.delete('LaunchSpecification.SecurityGroup')
-            options.merge!(Fog::Eucalyptus.indexed_param('LaunchSpecification.SecurityGroup', [*security_groups]))
+            options.merge!(Fog::AWS.indexed_param('LaunchSpecification.SecurityGroup', [*security_groups]))
           end
           if security_group_ids = options.delete('LaunchSpecification.SecurityGroupId')
-            options.merge!(Fog::Eucalyptus.indexed_param('LaunchSpecification.SecurityGroupId', [*security_group_ids]))
+            options.merge!(Fog::AWS.indexed_param('LaunchSpecification.SecurityGroupId', [*security_group_ids]))
           end
           if options['LaunchSpecification.UserData']
             options['LaunchSpecification.UserData'] = Base64.encode64(options['LaunchSpecification.UserData'])
@@ -79,7 +79,7 @@ module Fog
             'LaunchSpecification.ImageId'       => image_id,
             'LaunchSpecification.InstanceType'  => instance_type,
             'SpotPrice'                         => spot_price,
-            :parser                             => Fog::Parsers::Compute::Eucalyptus::SpotInstanceRequests.new
+            :parser                             => Fog::Parsers::Compute::AWS::SpotInstanceRequests.new
           }.merge!(options))
         end
 

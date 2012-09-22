@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/associate_address'
@@ -20,7 +20,7 @@ module Fog
         #     * 'return'<~Boolean> - success?
         #     * 'associationId'<~String> - association Id for eip to node (vpc only)
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-AssociateAddress.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-AssociateAddress.html]
         def associate_address(instance_id=nil, public_ip=nil, network_interface_id=nil, allocation_id=nil)
           # Cannot specify an allocation ip and a public IP at the same time.  If you have an allocation Id presumably you are in a VPC
           # so we will null out the public IP
@@ -32,7 +32,7 @@ module Fog
             'NetworkInterfaceId' => network_interface_id,
             'PublicIp'           => public_ip,
             :idempotent          => true,
-            :parser              => Fog::Parsers::Compute::Eucalyptus::AssociateAddress.new
+            :parser              => Fog::Parsers::Compute::AWS::AssociateAddress.new
           )
         end
 
@@ -60,31 +60,31 @@ module Fog
               self.data[:addresses][instance['ipAddress']]['instanceId'] = nil
             end
             instance['ipAddress'] = public_ip
-            instance['dnsName'] = Fog::Eucalyptus::Mock.dns_name_for(public_ip)
+            instance['dnsName'] = Fog::AWS::Mock.dns_name_for(public_ip)
             response.status = 200
             if !instance_id.nil? && !public_ip.nil?
               response.body = {
-                'requestId' => Fog::Eucalyptus::Mock.request_id,
+                'requestId' => Fog::AWS::Mock.request_id,
                 'return'    => true
               }
             elsif !allocation_id.nil?
               response.body = {
-                'requestId'     => Fog::Eucalyptus::Mock.request_id,
+                'requestId'     => Fog::AWS::Mock.request_id,
                 'return'        => true,
-                'associationId' => Fog::Eucalyptus::Mock.request_id
+                'associationId' => Fog::AWS::Mock.request_id
               }
             end
             response
           #elsif ! network_interface_id.nil? && allocation_id.nil?
-          #  raise Fog::Compute::Eucalyptus::NotFound.new("You must specify an AllocationId when specifying a NetworkInterfaceID")
+          #  raise Fog::Compute::AWS::NotFound.new("You must specify an AllocationId when specifying a NetworkInterfaceID")
           #elsif instance.nil? && network_interface_id.nil?
-          #  raise Fog::Compute::Eucalyptus::Error.new("You must specify either an InstanceId or a NetworkInterfaceID")
+          #  raise Fog::Compute::AWS::Error.new("You must specify either an InstanceId or a NetworkInterfaceID")
           #elsif !instance && !network_interface_id
-          #  raise Fog::Compute::Eucalyptus::Error.new(" 2 You must specify either an InstanceId or a NetworkInterfaceID")
+          #  raise Fog::Compute::AWS::Error.new(" 2 You must specify either an InstanceId or a NetworkInterfaceID")
           elsif !instance
-            raise Fog::Compute::Eucalyptus::NotFound.new("You must specify either an InstanceId or a NetworkInterfaceID")
+            raise Fog::Compute::AWS::NotFound.new("You must specify either an InstanceId or a NetworkInterfaceID")
           elsif !address
-            raise Fog::Compute::Eucalyptus::Error.new("AuthFailure => The address '#{public_ip}' does not belong to you.")
+            raise Fog::Compute::AWS::Error.new("AuthFailure => The address '#{public_ip}' does not belong to you.")
           end
         end
 

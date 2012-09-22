@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/detach_network_interface'
@@ -16,13 +16,13 @@ module Fog
         # * 'requestId'<~String> - Id of request
         # * 'return'<~Boolean>   - Returns true if the request succeeds.
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/2012-03-01/APIReference/ApiReference-query-DetachNetworkInterface.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/2012-03-01/APIReference/ApiReference-query-DetachNetworkInterface.html]
         def detach_network_interface(attachment_id, force = false)
           request(
             'Action'       => 'DetachNetworkInterface',
             'AttachmentId' => attachment_id,
             'Force'        => force,
-            :parser        => Fog::Parsers::Compute::Eucalyptus::DetachNetworkInterface.new
+            :parser        => Fog::Parsers::Compute::AWS::DetachNetworkInterface.new
           )
         end
       end
@@ -35,12 +35,12 @@ module Fog
             self.data[:network_interfaces][nic_id]["attachment"] = {}
             response.status = 200
             response.body = {
-              'requestId' => Fog::Eucalyptus::Mock.request_id,
+              'requestId' => Fog::AWS::Mock.request_id,
               'return'    => true
             }
             response
           else
-            raise Fog::Compute::Eucalyptus::NotFound.new("The network interface '#{network_interface_id}' does not exist")
+            raise Fog::Compute::AWS::NotFound.new("The network interface '#{network_interface_id}' does not exist")
           end
         end
       end

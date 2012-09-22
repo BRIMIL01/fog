@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/cancel_spot_instance_requests'
@@ -18,13 +18,13 @@ module Fog
         #       * 'spotInstanceRequestId'<~String> - id of cancelled spot instance
         #       * 'state'<~String> - state of cancelled spot instance
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-CancelSpotInstanceRequests.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-CancelSpotInstanceRequests.html]
         def cancel_spot_instance_requests(spot_instance_request_id)
-          params = Fog::Eucalyptus.indexed_param('SpotInstanceRequestId', spot_instance_request_id)
+          params = Fog::AWS.indexed_param('SpotInstanceRequestId', spot_instance_request_id)
           request({
             'Action'    => 'CancelSpotInstanceRequests',
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::Eucalyptus::CancelSpotInstanceRequests.new
+            :parser     => Fog::Parsers::Compute::AWS::CancelSpotInstanceRequests.new
           }.merge!(params))
         end
 

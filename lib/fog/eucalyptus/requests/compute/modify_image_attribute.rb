@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/basic'
@@ -17,22 +17,22 @@ module Fog
         #   * 'Remove.Group'<~Array> - One or more groups to revoke launch permission from
         #   * 'Remove.UserId'<~Array> - One or more account ids to revoke launch permission from
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-ModifyImageAttribute.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-ModifyImageAttribute.html]
         #
         def modify_image_attribute(image_id, attributes)
           raise ArgumentError.new("image_id is required") unless image_id
 
           params = {}
-          params.merge!(Fog::Eucalyptus.indexed_param('LaunchPermission.Add.%d.Group', attributes['Add.Group'] || []))
-          params.merge!(Fog::Eucalyptus.indexed_param('LaunchPermission.Add.%d.UserId', attributes['Add.UserId'] || []))
-          params.merge!(Fog::Eucalyptus.indexed_param('LaunchPermission.Remove.%d.Group', attributes['Remove.Group'] || []))
-          params.merge!(Fog::Eucalyptus.indexed_param('LaunchPermission.Remove.%d.UserId', attributes['Remove.UserId'] || []))
-          params.merge!(Fog::Eucalyptus.indexed_param('ProductCode', attributes['ProductCode'] || []))
+          params.merge!(Fog::AWS.indexed_param('LaunchPermission.Add.%d.Group', attributes['Add.Group'] || []))
+          params.merge!(Fog::AWS.indexed_param('LaunchPermission.Add.%d.UserId', attributes['Add.UserId'] || []))
+          params.merge!(Fog::AWS.indexed_param('LaunchPermission.Remove.%d.Group', attributes['Remove.Group'] || []))
+          params.merge!(Fog::AWS.indexed_param('LaunchPermission.Remove.%d.UserId', attributes['Remove.UserId'] || []))
+          params.merge!(Fog::AWS.indexed_param('ProductCode', attributes['ProductCode'] || []))
           request({
             'Action'        => 'ModifyImageAttribute',
             'ImageId'       => image_id,
             :idempotent     => true,
-            :parser         => Fog::Parsers::Compute::Eucalyptus::Basic.new
+            :parser         => Fog::Parsers::Compute::AWS::Basic.new
           }.merge!(params))
         end
 
@@ -44,7 +44,7 @@ module Fog
           raise ArgumentError.new("image_id is required") unless image_id
 
           unless self.data[:images][image_id]
-            raise Fog::Compute::Eucalyptus::NotFound.new("The AMI ID '#{image_id}' does not exist")
+            raise Fog::Compute::AWS::NotFound.new("The AMI ID '#{image_id}' does not exist")
           end
 
           (attributes['Add.UserId'] || []).each do |user_id|
@@ -63,7 +63,7 @@ module Fog
           response.status = 200
           response.body = {
             'return'        => true,
-            'requestId'     => Fog::Eucalyptus::Mock.request_id
+            'requestId'     => Fog::AWS::Mock.request_id
           }
           response
         end

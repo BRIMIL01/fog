@@ -2,7 +2,7 @@ require 'fog/core/model'
 
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
 
       class VPC < Fog::Model
 
@@ -38,7 +38,7 @@ module Fog
 
         # Create a vpc
         #
-        # >> g = Eucalyptus.vpcs.new(:cidr_block => "10.1.2.0/24")
+        # >> g = AWS.vpcs.new(:cidr_block => "10.1.2.0/24")
         # >> g.save
         #
         # == Returns:

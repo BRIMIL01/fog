@@ -1,23 +1,23 @@
-require 'fog/eucalyptus'
+require 'fog/aws'
 require 'fog/storage'
 
 module Fog
   module Storage
-    class Eucalyptus < Fog::Service
-      extend Fog::Eucalyptus::CredentialFetcher::ServiceMethods
+    class AWS < Fog::Service
+      extend Fog::AWS::CredentialFetcher::ServiceMethods
 
-      requires :euca_access_key_id, :euca_secret_access_key
-      recognizes :endpoint, :region, :host, :path, :port, :scheme, :persistent, :use_iam_profile, :euca_session_token, :aws_credentials_expire_at
+      requires :aws_access_key_id, :aws_secret_access_key
+      recognizes :endpoint, :region, :host, :path, :port, :scheme, :persistent, :use_iam_profile, :aws_session_token, :aws_credentials_expire_at
 
-      secrets    :euca_secret_access_key, :hmac
+      secrets    :aws_secret_access_key, :hmac
 
-      model_path 'fog/eucalyptus/models/storage'
+      model_path 'fog/aws/models/storage'
       collection  :directories
       model       :directory
       collection  :files
       model       :file
 
-      request_path 'fog/eucalyptus/requests/storage'
+      request_path 'fog/aws/requests/storage'
       request :abort_multipart_upload
       request :complete_multipart_upload
       request :copy_object
@@ -66,6 +66,14 @@ module Fog
 
         attr_accessor :region
 
+        def cdn
+          @cdn ||= Fog::AWS::CDN.new(
+            :aws_access_key_id => @aws_access_key_id,
+            :aws_secret_access_key => @aws_secret_access_key,
+            :use_iam_profile => @use_iam_profile
+          )
+        end
+
         def http_url(params, expires)
           scheme_host_path_query(params.merge(:scheme => 'http', :port => 80), expires)
         end
@@ -75,7 +83,7 @@ module Fog
         end
 
         def url(params, expires)
-          Fog::Logger.deprecation("Fog::Storage::Eucalyptus => #url is deprecated, use #https_url instead [light_black](#{caller.first})[/]")
+          Fog::Logger.deprecation("Fog::Storage::AWS => #url is deprecated, use #https_url instead [light_black](#{caller.first})[/]")
           https_url(params, expires)
         end
 
@@ -91,18 +99,18 @@ module Fog
           end
           params[:headers] ||= {}
           params[:headers]['Date'] = expires.to_i
-          params[:path] = Fog::Eucalyptus.escape(params[:path]).gsub('%2F', '/')
+          params[:path] = Fog::AWS.escape(params[:path]).gsub('%2F', '/')
           query = []
-          params[:headers]['x-amz-security-token'] = @euca_session_token if @euca_session_token
+          params[:headers]['x-amz-security-token'] = @aws_session_token if @aws_session_token
           if params[:query]
             for key, value in params[:query]
-              query << "#{key}=#{Fog::Eucalyptus.escape(value)}"
+              query << "#{key}=#{Fog::AWS.escape(value)}"
             end
           end
-          query << "EucalyptusAccessKeyId=#{@euca_access_key_id}"
-          query << "Signature=#{Fog::Eucalyptus.escape(signature(params))}"
+          query << "AWSAccessKeyId=#{@aws_access_key_id}"
+          query << "Signature=#{Fog::AWS.escape(signature(params))}"
           query << "Expires=#{params[:headers]['Date']}"
-          query << "x-amz-security-token=#{Fog::Eucalyptus.escape(@euca_session_token)}" if @euca_session_token
+          query << "x-amz-security-token=#{Fog::AWS.escape(@aws_session_token)}" if @aws_session_token
           port_part = params[:port] && ":#{params[:port]}"
           "#{params[:scheme]}://#{params[:host]}#{port_part}/#{params[:path]}?#{query.join('&')}"
         end
@@ -195,18 +203,23 @@ module Fog
           require 'mime/types'
           @use_iam_profile = options[:use_iam_profile]
           setup_credentials(options)
-          options[:region] ||= 'eucalyptus'
-          @host = options[:host]
+          options[:region] ||= 'us-east-1'
+          @host = options[:host] || case options[:region]
+          when 'us-east-1'
+            's3.amazonaws.com'
+          else
+            "s3-#{options[:region]}.amazonaws.com"
+          end
           @scheme = options[:scheme] || 'https'
           @region = options[:region]
         end
 
         def data
-          self.class.data[@region][@euca_access_key_id]
+          self.class.data[@region][@aws_access_key_id]
         end
 
         def reset_data
-          self.class.data[@region].delete(@euca_access_key_id)
+          self.class.data[@region].delete(@aws_access_key_id)
         end
 
         def signature(params)
@@ -214,28 +227,28 @@ module Fog
         end
 
         def setup_credentials(options)
-          @euca_access_key_id = options[:euca_access_key_id]
-          @euca_secret_access_key = options[:euca_secret_access_key]
-          @euca_session_token     = options[:euca_session_token]
-          @aws_credentials_expire_at = options[:euca_credentials_expire_at]
+          @aws_access_key_id = options[:aws_access_key_id]
+          @aws_secret_access_key = options[:aws_secret_access_key]
+          @aws_session_token     = options[:aws_session_token]
+          @aws_credentials_expire_at = options[:aws_credentials_expire_at]
         end
 
       end
 
       class Real
         include Utils
-        include Fog::Eucalyptus::CredentialFetcher::ConnectionMethods
+        include Fog::AWS::CredentialFetcher::ConnectionMethods
         # Initialize connection to S3
         #
         # ==== Notes
-        # options parameter must include values for :euca_access_key_id and
-        # :euca_secret_access_key in order to create a connection
+        # options parameter must include values for :aws_access_key_id and
+        # :aws_secret_access_key in order to create a connection
         #
         # ==== Examples
         #   s3 = Fog::Storage.new(
-        #     :provider => "Eucalyptus",
-        #     :euca_access_key_id => your_euca_access_key_id,
-        #     :euca_secret_access_key => your_euca_secret_access_key
+        #     :provider => "AWS",
+        #     :aws_access_key_id => your_aws_access_key_id,
+        #     :aws_secret_access_key => your_aws_secret_access_key
         #   )
         #
         # ==== Parameters
@@ -262,9 +275,14 @@ module Fog
             @port = endpoint.port
             @scheme = endpoint.scheme
           else
-            options[:region] ||= 'eucalyptus'
+            options[:region] ||= 'us-east-1'
             @region = options[:region]
-            @host = options[:host]
+            @host = options[:host] || case options[:region]
+            when 'us-east-1'
+              's3.amazonaws.com'
+            else
+              "s3-#{options[:region]}.amazonaws.com"
+            end
             @path       = options[:path]        || '/'
             @persistent = options.fetch(:persistent, false)
             @port       = options[:port]        || 443
@@ -312,7 +330,7 @@ DATA
 
           canonical_resource  = @path.dup
           unless subdomain.nil? || subdomain == @host
-            canonical_resource << "#{Fog::Eucalyptus.escape(subdomain).downcase}/"
+            canonical_resource << "#{Fog::AWS.escape(subdomain).downcase}/"
           end
           canonical_resource << params[:path].to_s
           canonical_resource << '?'
@@ -353,20 +371,20 @@ DATA
         private
 
         def setup_credentials(options)
-          @euca_access_key_id     = options[:euca_access_key_id]
-          @euca_secret_access_key = options[:euca_secret_access_key]
-          @euca_session_token     = options[:euca_session_token]
+          @aws_access_key_id     = options[:aws_access_key_id]
+          @aws_secret_access_key = options[:aws_secret_access_key]
+          @aws_session_token     = options[:aws_session_token]
           @aws_credentials_expire_at = options[:aws_credentials_expire_at]
 
-          @hmac = Fog::HMAC.new('sha1', @euca_secret_access_key)
+          @hmac = Fog::HMAC.new('sha1', @aws_secret_access_key)
         end
 
         def request(params, &block)
           refresh_credentials_if_expired
 
           params[:headers]['Date'] = Fog::Time.now.to_date_header
-          params[:headers]['x-amz-security-token'] = @euca_session_token if @euca_session_token
-          params[:headers]['Authorization'] = "Eucalyptus #{@euca_access_key_id}:#{signature(params)}"
+          params[:headers]['x-amz-security-token'] = @aws_session_token if @aws_session_token
+          params[:headers]['Authorization'] = "AWS #{@aws_access_key_id}:#{signature(params)}"
           # FIXME: ToHashParser should make this not needed
           original_params = params.dup
 

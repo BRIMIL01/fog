@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/create_key_pair'
@@ -18,12 +18,12 @@ module Fog
         #     * 'keyName'<~String> - Name of key
         #     * 'requestId'<~String> - Id of request
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-CreateKeyPair.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-CreateKeyPair.html]
         def create_key_pair(key_name)
           request(
             'Action'  => 'CreateKeyPair',
             'KeyName' => key_name,
-            :parser   => Fog::Parsers::Compute::Eucalyptus::CreateKeyPair.new
+            :parser   => Fog::Parsers::Compute::AWS::CreateKeyPair.new
           )
         end
 
@@ -36,17 +36,17 @@ module Fog
           unless self.data[:key_pairs][key_name]
             response.status = 200
             data = {
-              'keyFingerprint'  => Fog::Eucalyptus::Mock.key_fingerprint,
-              'keyMaterial'     => Fog::Eucalyptus::Mock.key_material,
+              'keyFingerprint'  => Fog::AWS::Mock.key_fingerprint,
+              'keyMaterial'     => Fog::AWS::Mock.key_material,
               'keyName'         => key_name
             }
             self.data[:key_pairs][key_name] = data
             response.body = {
-              'requestId' => Fog::Eucalyptus::Mock.request_id
+              'requestId' => Fog::AWS::Mock.request_id
             }.merge!(data)
             response
           else
-            raise Fog::Compute::Eucalyptus::Error.new("InvalidKeyPair.Duplicate => The keypair '#{key_name}' already exists.")
+            raise Fog::Compute::AWS::Error.new("InvalidKeyPair.Duplicate => The keypair '#{key_name}' already exists.")
           end
         end
 

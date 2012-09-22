@@ -1,7 +1,7 @@
 module Fog
   module Parsers
     module Compute
-      module Eucalyptus
+      module AWS
 
         class CreateSecurityGroup < Fog::Parsers::Base
 

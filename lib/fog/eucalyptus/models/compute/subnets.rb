@@ -3,24 +3,24 @@ require 'fog/aws/models/compute/subnet'
 
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
 
       class Subnets < Fog::Collection
 
         attribute :filters
 
-        model Fog::Compute::Eucalyptus::Subnet
+        model Fog::Compute::AWS::Subnet
 
         # Creates a new subnet
         #
-        # Eucalyptus.subnets.new
+        # AWS.subnets.new
         #
         # ==== Returns
         #
         # Returns the details of the new Subnet
         #
-        #>> Eucalyptus.subnets.new
-        # <Fog::Eucalyptus::Compute::Subnet
+        #>> AWS.subnets.new
+        # <Fog::AWS::Compute::Subnet
         # subnet_id=subnet-someId,
         # state=[pending|available],
         # vpc_id=vpc-someId
@@ -37,14 +37,14 @@ module Fog
 
         # Returns an array of all Subnets that have been created
         #
-        # Eucalyptus.subnets.all
+        # AWS.subnets.all
         #
         # ==== Returns
         #
         # Returns an array of all VPCs
         #
-        #>> Eucalyptus.subnets.all
-        # <Fog::Eucalyptus::Compute::Subnet
+        #>> AWS.subnets.all
+        # <Fog::AWS::Compute::Subnet
         # filters={}
         # [
         # subnet_id=subnet-someId,
@@ -71,12 +71,12 @@ module Fog
         # subnet-id is required to get the associated VPC information.
         #
         # You can run the following command to get the details:
-        # Eucalyptus.subnets.get("subnet-12345678")
+        # AWS.subnets.get("subnet-12345678")
         #
         # ==== Returns
         #
-        #>> Eucalyptus.subnets.get("subnet-12345678")
-        # <Fog::Eucalyptus::Compute::Subnet
+        #>> AWS.subnets.get("subnet-12345678")
+        # <Fog::AWS::Compute::Subnet
         # subnet_id=subnet-someId,
         # state=[pending|available],
         # vpc_id=vpc-someId

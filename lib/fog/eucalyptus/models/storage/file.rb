@@ -3,7 +3,7 @@ require 'fog/aws/models/storage/versions'
 
 module Fog
   module Storage
-    class Eucalyptus
+    class AWS
 
       class File < Fog::Model
 
@@ -101,9 +101,9 @@ module Fog
           requires :directory, :key
           if connection.get_object_acl(directory.key, key).body['AccessControlList'].detect {|grant| grant['Grantee']['URI'] == 'http://acs.amazonaws.com/groups/global/AllUsers' && grant['Permission'] == 'READ'}
             if directory.key.to_s =~ /^(?:[a-z]|\d(?!\d{0,2}(?:\.\d{1,3}){3}$))(?:[a-z0-9]|\-(?![\.])){1,61}[a-z0-9]$/
-              "https://#{directory.key}.s3.amazonaws.com/#{Fog::Eucalyptus.escape(key)}".gsub('%2F','/')
+              "https://#{directory.key}.s3.amazonaws.com/#{Fog::AWS.escape(key)}".gsub('%2F','/')
             else
-              "https://s3.amazonaws.com/#{directory.key}/#{Fog::Eucalyptus.escape(key)}".gsub('%2F','/')
+              "https://s3.amazonaws.com/#{directory.key}/#{Fog::AWS.escape(key)}".gsub('%2F','/')
             end
           else
             nil
@@ -146,7 +146,7 @@ module Fog
 
         def versions
           @versions ||= begin
-            Fog::Storage::Eucalyptus::Versions.new(
+            Fog::Storage::AWS::Versions.new(
               :file         => self,
               :connection   => connection
             )

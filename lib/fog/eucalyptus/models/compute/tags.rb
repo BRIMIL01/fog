@@ -3,13 +3,13 @@ require 'fog/aws/models/compute/tag'
 
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
 
       class Tags < Fog::Collection
 
         attribute :filters
 
-        model Fog::Compute::Eucalyptus::Tag
+        model Fog::Compute::AWS::Tag
 
         def initialize(attributes)
           self.filters ||= {}

@@ -2,7 +2,7 @@ require 'fog/core/model'
 
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
 
       class DhcpOption < Fog::Model
 
@@ -45,7 +45,7 @@ module Fog
 
         # Create a dhcp configuration set
         #
-        #  >> g = Eucalyptus.dhcp_options.new()
+        #  >> g = AWS.dhcp_options.new()
         #  >> g.save
         #
         # == Returns:

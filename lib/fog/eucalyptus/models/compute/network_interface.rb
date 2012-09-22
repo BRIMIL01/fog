@@ -2,7 +2,7 @@ require 'fog/core/model'
 
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
 
       class NetworkInterface < Fog::Model
 
@@ -46,7 +46,7 @@ module Fog
 
         # Create a network_interface
         #
-        #  >> g = Eucalyptus.network_interfaces.new(:subnet_id => "subnet-someId", options)
+        #  >> g = AWS.network_interfaces.new(:subnet_id => "subnet-someId", options)
         #  >> g.save
         #
         # options is an optional hash which may contain 'PrivateIpAddress', 'Description', 'groupSet'

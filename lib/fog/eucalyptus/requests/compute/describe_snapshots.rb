@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/describe_snapshots'
@@ -24,7 +24,7 @@ module Fog
         #       * 'status'<~String>: Snapshot state, in ['pending', 'completed']
         #       * 'volumeId'<~String>: Id of volume that snapshot contains
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-DescribeSnapshots.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeSnapshots.html]
         def describe_snapshots(filters = {}, options = {})
           unless filters.is_a?(Hash)
             Fog::Logger.deprecation("describe_snapshots with #{filters.class} param is deprecated, use describe_snapshots('snapshot-id' => []) instead [light_black](#{caller.first})[/]")
@@ -40,11 +40,11 @@ module Fog
             end
           end
           options['RestorableBy'] ||= 'self'
-          params = Fog::Eucalyptus.indexed_filters(filters).merge!(options)
+          params = Fog::AWS.indexed_filters(filters).merge!(options)
           request({
             'Action'    => 'DescribeSnapshots',
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::Eucalyptus::DescribeSnapshots.new
+            :parser     => Fog::Parsers::Compute::AWS::DescribeSnapshots.new
           }.merge!(params))
         end
 
@@ -110,7 +110,7 @@ module Fog
 
           response.status = 200
           response.body = {
-            'requestId' => Fog::Eucalyptus::Mock.request_id,
+            'requestId' => Fog::AWS::Mock.request_id,
             'snapshotSet' => snapshot_set
           }
           response

@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/delete_network_interface'
@@ -15,12 +15,12 @@ module Fog
         # * 'requestId'<~String> - Id of request
         # * 'return'<~Boolean> - Returns true if the request succeeds.
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/2012-03-01/APIReference/ApiReference-query-DeleteNetworkInterface.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/2012-03-01/APIReference/ApiReference-query-DeleteNetworkInterface.html]
         def delete_network_interface(network_interface_id)
           request(
             'Action'             => 'DeleteNetworkInterface',
             'NetworkInterfaceId' => network_interface_id,
-            :parser => Fog::Parsers::Compute::Eucalyptus::DeleteNetworkInterface.new
+            :parser => Fog::Parsers::Compute::AWS::DeleteNetworkInterface.new
           )
         end
       end
@@ -31,19 +31,19 @@ module Fog
           if self.data[:network_interfaces][network_interface_id]
 
             if self.data[:network_interfaces][network_interface_id]['attachment']['attachmentId']
-              raise Fog::Compute::Eucalyptus::Error.new("Interface is in use")
+              raise Fog::Compute::AWS::Error.new("Interface is in use")
             end
 
             self.data[:network_interfaces].delete(network_interface_id)
 
             response.status = 200
             response.body = {
-              'requestId' => Fog::Eucalyptus::Mock.request_id,
+              'requestId' => Fog::AWS::Mock.request_id,
               'return'    => true
             }
             response
           else
-            raise Fog::Compute::Eucalyptus::NotFound.new("The network interface '#{network_interface_id}' does not exist")
+            raise Fog::Compute::AWS::NotFound.new("The network interface '#{network_interface_id}' does not exist")
           end
         end
       end

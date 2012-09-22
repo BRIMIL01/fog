@@ -3,7 +3,7 @@ require 'fog/aws/models/storage/file'
 
 module Fog
   module Storage
-    class Eucalyptus
+    class AWS
 
       class Files < Fog::Collection
         extend Fog::Deprecation
@@ -17,7 +17,7 @@ module Fog
         attribute :max_keys,        :aliases => ['MaxKeys', 'max-keys']
         attribute :prefix,          :aliases => 'Prefix'
 
-        model Fog::Storage::Eucalyptus::File
+        model Fog::Storage::AWS::File
 
         def all(options = {})
           requires :directory
@@ -72,7 +72,7 @@ module Fog
           when /<Code>NoSuchKey<\/Code>/
             nil
           when /<Code>NoSuchBucket<\/Code>/
-            raise(Fog::Storage::Eucalyptus::NotFound.new("Directory #{directory.identity} does not exist."))
+            raise(Fog::Storage::AWS::NotFound.new("Directory #{directory.identity} does not exist."))
           else
             raise(error)
           end

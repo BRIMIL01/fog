@@ -3,24 +3,24 @@ require 'fog/aws/models/compute/security_group'
 
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
 
       class SecurityGroups < Fog::Collection
 
         attribute :filters
 
-        model Fog::Compute::Eucalyptus::SecurityGroup
+        model Fog::Compute::AWS::SecurityGroup
 
         # Creates a new security group
         #
-        # Eucalyptus.security_groups.new
+        # AWS.security_groups.new
         #
         # ==== Returns
         #
         # Returns the details of the new image
         #
-        #>> Eucalyptus.security_groups.new
-        #  <Fog::Eucalyptus::Compute::SecurityGroup
+        #>> AWS.security_groups.new
+        #  <Fog::AWS::Compute::SecurityGroup
         #    name=nil,
         #    description=nil,
         #    ip_permissions=nil,
@@ -36,17 +36,17 @@ module Fog
 
         # Returns an array of all security groups that have been created
         #
-        # Eucalyptus.security_groups.all
+        # AWS.security_groups.all
         #
         # ==== Returns
         #
         # Returns an array of all security groups
         #
-        #>> Eucalyptus.security_groups.all
-        #  <Fog::Eucalyptus::Compute::SecurityGroups
+        #>> AWS.security_groups.all
+        #  <Fog::AWS::Compute::SecurityGroups
         #    filters={}
         #    [
-        #      <Fog::Eucalyptus::Compute::SecurityGroup
+        #      <Fog::AWS::Compute::SecurityGroup
         #        name="default",
         #        description="default group",
         #        ip_permissions=[{"groups"=>[{"groupName"=>"default", "userId"=>"312571045469"}], "fromPort"=>-1, "toPort"=>-1, "ipRanges"=>[], "ipProtocol"=>"icmp"}, {"groups"=>[{"groupName"=>"default", "userId"=>"312571045469"}], "fromPort"=>0, "toPort"=>65535, "ipRanges"=>[], "ipProtocol"=>"tcp"}, {"groups"=>[{"groupName"=>"default", "userId"=>"312571045469"}], "fromPort"=>0, "toPort"=>65535, "ipRanges"=>[], "ipProtocol"=>"udp"}],
@@ -71,12 +71,12 @@ module Fog
         # group name is required to get the associated flavor information.
         #
         # You can run the following command to get the details:
-        # Eucalyptus.security_groups.get("default")
+        # AWS.security_groups.get("default")
         #
         # ==== Returns
         #
-        #>> Eucalyptus.security_groups.get("default")
-        #  <Fog::Eucalyptus::Compute::SecurityGroup
+        #>> AWS.security_groups.get("default")
+        #  <Fog::AWS::Compute::SecurityGroup
         #    name="default",
         #    description="default group",
         #    ip_permissions=[{"groups"=>[{"groupName"=>"default", "userId"=>"312571045469"}], "fromPort"=>-1, "toPort"=>-1, "ipRanges"=>[], "ipProtocol"=>"icmp"}, {"groups"=>[{"groupName"=>"default", "userId"=>"312571045469"}], "fromPort"=>0, "toPort"=>65535, "ipRanges"=>[], "ipProtocol"=>"tcp"}, {"groups"=>[{"groupName"=>"default", "userId"=>"312571045469"}], "fromPort"=>0, "toPort"=>65535, "ipRanges"=>[], "ipProtocol"=>"udp"}],
@@ -95,12 +95,12 @@ module Fog
         # group id is required to get the associated flavor information.
         #
         # You can run the following command to get the details:
-        # Eucalyptus.security_groups.get_by_id("default")
+        # AWS.security_groups.get_by_id("default")
         #
         # ==== Returns
         #
-        #>> Eucalyptus.security_groups.get_by_id("sg-123456")
-        #  <Fog::Eucalyptus::Compute::SecurityGroup
+        #>> AWS.security_groups.get_by_id("sg-123456")
+        #  <Fog::AWS::Compute::SecurityGroup
         #    name="default",
         #    description="default group",
         #    ip_permissions=[{"groups"=>[{"groupName"=>"default", "userId"=>"312571045469"}], "fromPort"=>-1, "toPort"=>-1, "ipRanges"=>[], "ipProtocol"=>"icmp"}, {"groups"=>[{"groupName"=>"default", "userId"=>"312571045469"}], "fromPort"=>0, "toPort"=>65535, "ipRanges"=>[], "ipProtocol"=>"tcp"}, {"groups"=>[{"groupName"=>"default", "userId"=>"312571045469"}], "fromPort"=>0, "toPort"=>65535, "ipRanges"=>[], "ipProtocol"=>"udp"}],

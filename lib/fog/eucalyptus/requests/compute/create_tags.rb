@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/basic'
@@ -17,7 +17,7 @@ module Fog
         #     * 'requestId'<~String> - Id of request
         #     * 'return'<~Boolean> - success?
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-CreateTags.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-CreateTags.html]
         def create_tags(resources, tags)
           resources = [*resources]
           for key, value in tags
@@ -26,13 +26,13 @@ module Fog
             end
           end
           params = {}
-          params.merge!(Fog::Eucalyptus.indexed_param('ResourceId', resources))
-          params.merge!(Fog::Eucalyptus.indexed_param('Tag.%d.Key', tags.keys))
-          params.merge!(Fog::Eucalyptus.indexed_param('Tag.%d.Value', tags.values))
+          params.merge!(Fog::AWS.indexed_param('ResourceId', resources))
+          params.merge!(Fog::AWS.indexed_param('Tag.%d.Key', tags.keys))
+          params.merge!(Fog::AWS.indexed_param('Tag.%d.Value', tags.values))
           request({
             'Action'    => 'CreateTags',
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::Eucalyptus::Basic.new
+            :parser     => Fog::Parsers::Compute::AWS::Basic.new
           }.merge!(params))
         end
 
@@ -74,7 +74,7 @@ module Fog
           response = Excon::Response.new
           response.status = 200
           response.body = {
-            'requestId' => Fog::Eucalyptus::Mock.request_id,
+            'requestId' => Fog::AWS::Mock.request_id,
             'return'    => true
           }
           response

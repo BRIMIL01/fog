@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
         
         require 'fog/aws/parsers/compute/basic'
@@ -15,19 +15,19 @@ module Fog
         #   * 'Remove.Group'<~Array> - One or more groups to revoke volume create permission from
         #   * 'Remove.UserId'<~Array> - One or more account ids to revoke volume create permission from
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-ModifySnapshotAttribute.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-ModifySnapshotAttribute.html]
         #
         def modify_snapshot_attribute(snapshot_id, attributes)
           params = {}
-          params.merge!(Fog::Eucalyptus.indexed_param('CreateVolumePermission.Add.%d.Group', attributes['Add.Group'] || []))
-          params.merge!(Fog::Eucalyptus.indexed_param('CreateVolumePermission.Add.%d.UserId', attributes['Add.UserId'] || []))
-          params.merge!(Fog::Eucalyptus.indexed_param('CreateVolumePermission.Remove.%d.Group', attributes['Remove.Group'] || []))
-          params.merge!(Fog::Eucalyptus.indexed_param('CreateVolumePermission.Remove.%d.UserId', attributes['Remove.UserId'] || []))
+          params.merge!(Fog::AWS.indexed_param('CreateVolumePermission.Add.%d.Group', attributes['Add.Group'] || []))
+          params.merge!(Fog::AWS.indexed_param('CreateVolumePermission.Add.%d.UserId', attributes['Add.UserId'] || []))
+          params.merge!(Fog::AWS.indexed_param('CreateVolumePermission.Remove.%d.Group', attributes['Remove.Group'] || []))
+          params.merge!(Fog::AWS.indexed_param('CreateVolumePermission.Remove.%d.UserId', attributes['Remove.UserId'] || []))
           request({
             'Action'        => 'ModifySnapshotAttribute',
             'SnapshotId'    => snapshot_id,
             :idempotent     => true,
-            :parser         => Fog::Parsers::Compute::Eucalyptus::Basic.new
+            :parser         => Fog::Parsers::Compute::AWS::Basic.new
           }.merge!(params))
         end
 

@@ -3,12 +3,12 @@ require 'fog/aws/models/compute/spot_request'
 
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class SpotRequests < Fog::Collection
       
         attribute :filters
         
-        model Fog::Compute::Eucalyptus::SpotRequest
+        model Fog::Compute::AWS::SpotRequest
 
         def initialize(attributes)
           self.filters ||= {}

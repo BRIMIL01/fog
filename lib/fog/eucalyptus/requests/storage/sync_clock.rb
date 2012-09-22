@@ -1,6 +1,6 @@
 module Fog
   module Storage
-    class Eucalyptus
+    class AWS
       class Real
 
         # Sync clock against S3 to avoid skew errors
@@ -24,5 +24,5 @@ module Fog
 
       end # Mock
     end # Storage
-  end # Eucalyptus
+  end # AWS
 end # Fog

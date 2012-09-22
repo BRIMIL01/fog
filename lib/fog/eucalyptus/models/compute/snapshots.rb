@@ -3,14 +3,14 @@ require 'fog/aws/models/compute/snapshot'
 
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
 
       class Snapshots < Fog::Collection
 
         attribute :filters
         attribute :volume
 
-        model Fog::Compute::Eucalyptus::Snapshot
+        model Fog::Compute::AWS::Snapshot
 
         def initialize(attributes)
           self.filters ||= { 'RestorableBy' => 'self' }

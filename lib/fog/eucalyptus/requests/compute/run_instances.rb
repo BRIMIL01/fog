@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/run_instances'
@@ -88,7 +88,7 @@ module Fog
         #     * 'requestId'<~String> - Id of request
         #     * 'reservationId'<~String> - Id of reservation
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-RunInstances.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-RunInstances.html]
         def run_instances(image_id, min_count, max_count, options = {})
           if block_device_mapping = options.delete('BlockDeviceMapping')
             block_device_mapping.each_with_index do |mapping, index|
@@ -98,10 +98,10 @@ module Fog
             end
           end
           if security_groups = options.delete('SecurityGroup')
-            options.merge!(Fog::Eucalyptus.indexed_param('SecurityGroup', [*security_groups]))
+            options.merge!(Fog::AWS.indexed_param('SecurityGroup', [*security_groups]))
           end
           if security_group_ids = options.delete('SecurityGroupId')
-            options.merge!(Fog::Eucalyptus.indexed_param('SecurityGroupId', [*security_group_ids]))
+            options.merge!(Fog::AWS.indexed_param('SecurityGroupId', [*security_group_ids]))
           end
           if options['UserData']
             options['UserData'] = Base64.encode64(options['UserData'])
@@ -115,7 +115,7 @@ module Fog
             'MinCount'  => min_count,
             'MaxCount'  => max_count,
             :idempotent => idempotent,
-            :parser     => Fog::Parsers::Compute::Eucalyptus::RunInstances.new
+            :parser     => Fog::Parsers::Compute::AWS::RunInstances.new
           }.merge!(options))
         end
 
@@ -129,14 +129,14 @@ module Fog
 
           group_set = [ (options['SecurityGroup'] || 'default') ].flatten
           instances_set = []
-          reservation_id = Fog::Eucalyptus::Mock.reservation_id
+          reservation_id = Fog::AWS::Mock.reservation_id
 
           if options['KeyName'] && describe_key_pairs('key-name' => options['KeyName']).body['keySet'].empty?
-            raise Fog::Compute::Eucalyptus::NotFound.new("The key pair '#{options['KeyName']}' does not exist")
+            raise Fog::Compute::AWS::NotFound.new("The key pair '#{options['KeyName']}' does not exist")
           end
 
           min_count.times do |i|
-            instance_id = Fog::Eucalyptus::Mock.instance_id
+            instance_id = Fog::AWS::Mock.instance_id
             instance = {
               'amiLaunchIndex'      => i,
               'architecture'        => 'i386',
@@ -147,11 +147,11 @@ module Fog
               'instanceId'          => instance_id,
               'instanceState'       => { 'code' => 0, 'name' => 'pending' },
               'instanceType'        => options['InstanceType'] || 'm1.small',
-              'kernelId'            => options['KernelId'] || Fog::Eucalyptus::Mock.kernel_id,
+              'kernelId'            => options['KernelId'] || Fog::AWS::Mock.kernel_id,
               'keyName'             => options['KeyName'],
               'launchTime'          => Time.now,
               'monitoring'          => { 'state' => options['Monitoring.Enabled'] || false },
-              'placement'           => { 'availabilityZone' => options['Placement.AvailabilityZone'] || Fog::Eucalyptus::Mock.availability_zone(@region), 'groupName' => nil, 'tenancy' => 'default' },
+              'placement'           => { 'availabilityZone' => options['Placement.AvailabilityZone'] || Fog::AWS::Mock.availability_zone(@region), 'groupName' => nil, 'tenancy' => 'default' },
               'privateDnsName'      => nil,
               'productCodes'        => [],
               'reason'              => nil,
@@ -174,7 +174,7 @@ module Fog
             'groupSet'      => group_set,
             'instancesSet'  => instances_set,
             'ownerId'       => self.data[:owner_id],
-            'requestId'     => Fog::Eucalyptus::Mock.request_id,
+            'requestId'     => Fog::AWS::Mock.request_id,
             'reservationId' => reservation_id
           }
           response

@@ -3,24 +3,24 @@ require 'fog/aws/models/compute/vpc'
 
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
 
       class Vpcs < Fog::Collection
 
         attribute :filters
 
-        model Fog::Compute::Eucalyptus::VPC
+        model Fog::Compute::AWS::VPC
 
         # Creates a new VPC
         #
-        # Eucalyptus.vpcs.new
+        # AWS.vpcs.new
         #
         # ==== Returns
         #
         # Returns the details of the new VPC
         #
-        #>> Eucalyptus.vpcs.new
-        # <Fog::Eucalyptus::VPC::VPC
+        #>> AWS.vpcs.new
+        # <Fog::AWS::VPC::VPC
         # id=nil,
         # state=nil,
         # cidr_block=nil,
@@ -37,17 +37,17 @@ module Fog
 
         # Returns an array of all VPCs that have been created
         #
-        # Eucalyptus.vpcs.all
+        # AWS.vpcs.all
         #
         # ==== Returns
         #
         # Returns an array of all VPCs
         #
-        #>> Eucalyptus.vpcs.all
-        # <Fog::Eucalyptus::VPC::VPCs
+        #>> AWS.vpcs.all
+        # <Fog::AWS::VPC::VPCs
         # filters={}
         # [
-        # <Fog::Eucalyptus::VPC::VPC
+        # <Fog::AWS::VPC::VPC
         # id="vpc-12345678",
         # TODO
         # >
@@ -69,12 +69,12 @@ module Fog
         # vpc_id is required to get the associated VPC information.
         #
         # You can run the following command to get the details:
-        # Eucalyptus.vpcs.get("vpc-12345678")
+        # AWS.vpcs.get("vpc-12345678")
         #
         # ==== Returns
         #
-        #>> Eucalyptus.vpcs.get("vpc-12345678")
-        # <Fog::Eucalyptus::Compute::VPC
+        #>> AWS.vpcs.get("vpc-12345678")
+        # <Fog::AWS::Compute::VPC
         # id="vpc-12345678",
         # TODO
         # >

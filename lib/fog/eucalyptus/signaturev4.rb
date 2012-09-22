@@ -1,13 +1,13 @@
 # See http://docs.amazonwebservices.com/general/latest/gr/signature-version-4.html
 #
 module Fog
-  module Eucalyptus
+  module AWS
     class SignatureV4
       def initialize(aws_access_key_id, secret_key, region,service)
         @region = region
         @service = service
         @aws_access_key_id  = aws_access_key_id
-        @hmac = Fog::HMAC.new('sha256', 'Eucalyptus4' + secret_key)
+        @hmac = Fog::HMAC.new('sha256', 'AWS4' + secret_key)
       end
 
       def sign(params, date)
@@ -22,7 +22,7 @@ DATA
         canonical_request.chop!
         credential_scope = "#{date.utc.strftime('%Y%m%d')}/#{@region}/#{@service}/aws4_request"
         string_to_sign = <<-DATA
-Eucalyptus4-HMAC-SHA256
+AWS4-HMAC-SHA256
 #{date.to_iso8601_basic}
 #{credential_scope}
 #{Digest::SHA256.hexdigest(canonical_request)}
@@ -32,7 +32,7 @@ DATA
 
         signature = derived_hmac(date).sign(string_to_sign)
 
-        "Eucalyptus4-HMAC-SHA256 Credential=#{@aws_access_key_id}/#{credential_scope}, SignedHeaders=#{signed_headers(params[:headers])}, Signature=#{signature.unpack('H*').first}"
+        "AWS4-HMAC-SHA256 Credential=#{@aws_access_key_id}/#{credential_scope}, SignedHeaders=#{signed_headers(params[:headers])}, Signature=#{signature.unpack('H*').first}"
       end
 
       protected
@@ -40,7 +40,7 @@ DATA
       def canonical_query_string(query)
         canonical_query_string = []
         for key in (query || {}).keys.sort_by {|k| k.to_s}
-          component = "#{Fog::Eucalyptus.escape(key.to_s)}=#{Fog::Eucalyptus.escape(query[key].to_s)}"
+          component = "#{Fog::AWS.escape(key.to_s)}=#{Fog::AWS.escape(query[key].to_s)}"
           canonical_query_string << component
         end
         canonical_query_string.join("&")

@@ -1,10 +1,10 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/delete_internet_gateway'
-        #Deletes an Internet gateway from your Eucalyptus account. The gateway must not be attached to a VPC
+        #Deletes an Internet gateway from your AWS account. The gateway must not be attached to a VPC
         #
         # ==== Parameters
         # * internet_gateway_id<~String> - The ID of the InternetGateway you want to delete.
@@ -15,12 +15,12 @@ module Fog
         # * 'requestId'<~String> - Id of request
         # * 'return'<~Boolean> - Returns true if the request succeeds.
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-DeleteInternetGateway.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DeleteInternetGateway.html]
         def delete_internet_gateway(internet_gateway_id)
           request(
             'Action' => 'DeleteInternetGateway',
             'InternetGatewayId' => internet_gateway_id,
-            :parser => Fog::Parsers::Compute::Eucalyptus::DeleteInternetGateway.new
+            :parser => Fog::Parsers::Compute::AWS::DeleteInternetGateway.new
           )
         end
       end
@@ -33,13 +33,13 @@ module Fog
               self.data[:internet_gateways].reject! { |v| v['internetGatewayId'] == internet_gateway_id }
             
               response.body = {
-                'requestId' => Fog::Eucalyptus::Mock.request_id,
+                'requestId' => Fog::AWS::Mock.request_id,
                 'return' => true
               }
             else
               message = 'MissingParameter => '
               message << 'The request must contain the parameter internet_gateway_id'
-              raise Fog::Compute::Eucalyptus::Error.new(message)
+              raise Fog::Compute::AWS::Error.new(message)
             end
           end
         end

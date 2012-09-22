@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/associate_dhcp_options'
@@ -17,14 +17,14 @@ module Fog
         #     * 'requestId'<~String> - Id of request
         #     * 'return'<~Boolean> - Returns true if the request succeeds.
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-AssociateDhcpOptions.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-AssociateDhcpOptions.html]
         def associate_dhcp_options(dhcp_options_id, vpc_id)
           request(
             'Action'               => 'AssociateDhcpOptions',
             'DhcpOptionsId'        => dhcp_options_id,
             'VpcId'                => vpc_id,
             :idempotent   => true,
-            :parser       => Fog::Parsers::Compute::Eucalyptus::AttachInternetGateway.new
+            :parser       => Fog::Parsers::Compute::AWS::AttachInternetGateway.new
           )
         end
 
@@ -37,7 +37,7 @@ module Fog
           if dhcp_options_id && vpc_id
             response.status = 200
             response.body = {
-              'requestId' => Fog::Eucalyptus::Mock.request_id,
+              'requestId' => Fog::AWS::Mock.request_id,
               'return' => true
             }
             response
@@ -47,7 +47,7 @@ module Fog
             elsif !vpc_id
               message << 'The request must contain the parameter vpc_id'
             end
-            raise Fog::Compute::Eucalyptus::Error.new(message)
+            raise Fog::Compute::AWS::Error.new(message)
           end
         end
 

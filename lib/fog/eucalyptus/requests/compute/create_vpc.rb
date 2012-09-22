@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/create_vpc'
@@ -27,12 +27,12 @@ module Fog
         # * 'key'<~String> - Tag's key
         # * 'value'<~String> - Tag's value
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/2011-07-15/APIReference/index.html?ApiReference-query-CreateVpc.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/2011-07-15/APIReference/index.html?ApiReference-query-CreateVpc.html]
         def create_vpc(cidrBlock, options = {})
           request({
             'Action' => 'CreateVpc',
             'CidrBlock' => cidrBlock,
-            :parser => Fog::Parsers::Compute::Eucalyptus::CreateVpc.new
+            :parser => Fog::Parsers::Compute::AWS::CreateVpc.new
           }.merge!(options))
 
         end
@@ -44,15 +44,15 @@ module Fog
             if cidrBlock 
               response.status = 200
               self.data[:vpcs].push({
-                'vpcId'         => Fog::Eucalyptus::Mock.request_id,
+                'vpcId'         => Fog::AWS::Mock.request_id,
                 'state'         => 'pending',
                 'cidrBlock'     => cidrBlock,
-                'dhcpOptionsId' => Fog::Eucalyptus::Mock.request_id,
+                'dhcpOptionsId' => Fog::AWS::Mock.request_id,
                 'tagSet'        => {}
             
               })
               response.body = {
-                'requestId' => Fog::Eucalyptus::Mock.request_id,
+                'requestId' => Fog::AWS::Mock.request_id,
                 'vpcSet'    => self.data[:vpcs]
               }
             else

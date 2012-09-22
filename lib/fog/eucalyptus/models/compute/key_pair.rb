@@ -2,7 +2,7 @@ require 'fog/core/model'
 
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
 
       class KeyPair < Fog::Model
 

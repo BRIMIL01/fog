@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/create_dhcp_options'
@@ -15,14 +15,14 @@ module Fog
         #   * body<~Hash>:
         #     * 'requestId'<~String> - Id of request
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-CreateDhcpOptions.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-CreateDhcpOptions.html]
         def create_dhcp_options(dhcp_configurations = {})
           params = {}
           params.merge!(indexed_multidimensional_params(dhcp_configurations))
           request({
             'Action'    => 'CreateDhcpOptions',
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::Eucalyptus::CreateDhcpOptions.new
+            :parser     => Fog::Parsers::Compute::AWS::CreateDhcpOptions.new
           }.merge!(params))
         end
         private
@@ -46,12 +46,12 @@ module Fog
           Excon::Response.new.tap do |response|
             response.status = 200
             self.data[:dhcp_options].push({
-              'dhcpOptionsId' => Fog::Eucalyptus::Mock.dhcp_options_id,
+              'dhcpOptionsId' => Fog::AWS::Mock.dhcp_options_id,
               'dhcpConfigurationSet'  => {},
               'tagSet'             => {}
             })
             response.body = {
-              'requestId'    => Fog::Eucalyptus::Mock.request_id,
+              'requestId'    => Fog::AWS::Mock.request_id,
               'dhcpOptionsSet'      => self.data[:dhcp_options]
             }
           end

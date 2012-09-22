@@ -3,8 +3,8 @@ require 'fog/compute'
 
 module Fog
   module Compute
-    class Eucalyptus < Fog::Service
-      extend Fog::Eucalyptus::CredentialFetcher::ServiceMethods
+    class AWS < Fog::Service
+      extend Fog::AWS::CredentialFetcher::ServiceMethods
 
       requires :aws_access_key_id, :aws_secret_access_key
       recognizes :endpoint, :region, :host, :path, :port, :scheme, :persistent, :aws_session_token, :use_iam_profile, :aws_credentials_expire_at, :instrumentor, :instrumentor_name, :version
@@ -138,13 +138,13 @@ module Fog
       end
 
       class Mock
-        include Fog::Eucalyptus::CredentialFetcher::ConnectionMethods
+        include Fog::AWS::CredentialFetcher::ConnectionMethods
 
         def self.data
           @data ||= Hash.new do |hash, region|
             hash[region] = Hash.new do |region_hash, key|
-              owner_id = Fog::Eucalyptus::Mock.owner_id
-              security_group_id = Fog::Eucalyptus::Mock.security_group_id
+              owner_id = Fog::AWS::Mock.owner_id
+              security_group_id = Fog::AWS::Mock.security_group_id
               region_hash[key] = {
                 :deleted_at => {},
                 :addresses  => {},
@@ -284,7 +284,7 @@ module Fog
       end
 
       class Real
-        include Fog::Eucalyptus::CredentialFetcher::ConnectionMethods
+        include Fog::AWS::CredentialFetcher::ConnectionMethods
         # Initialize connection to EC2
         #
         # ==== Notes
@@ -354,7 +354,7 @@ module Fog
           idempotent  = params.delete(:idempotent)
           parser      = params.delete(:parser)
 
-          body = Fog::Eucalyptus.signed_params(
+          body = Fog::AWS.signed_params(
             params,
             {
               :aws_access_key_id  => @aws_access_key_id,
@@ -390,9 +390,9 @@ module Fog
           if match = error.message.match(/<Code>(.*)<\/Code><Message>(.*)<\/Message>/)
             raise case match[1].split('.').last
                   when 'NotFound', 'Unknown'
-                    Fog::Compute::Eucalyptus::NotFound.slurp(error, match[2])
+                    Fog::Compute::AWS::NotFound.slurp(error, match[2])
                   else
-                    Fog::Compute::Eucalyptus::Error.slurp(error, "#{match[1]} => #{match[2]}")
+                    Fog::Compute::AWS::Error.slurp(error, "#{match[1]} => #{match[2]}")
                   end
           else
             raise error

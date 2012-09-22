@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/describe_network_interfaces'
@@ -48,13 +48,13 @@ module Fog
         # *     'key'<~String>              - Tag's key
         # *     'value'<~String>            - Tag's value
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/2012-03-01/APIReference/index.html?ApiReference-query-DescribeNetworkInterfaces.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/2012-03-01/APIReference/index.html?ApiReference-query-DescribeNetworkInterfaces.html]
         def describe_network_interfaces(filters = {})
-          params = Fog::Eucalyptus.indexed_filters(filters)
+          params = Fog::AWS.indexed_filters(filters)
           request({
             'Action' => 'DescribeNetworkInterfaces',
             :idempotent => true,
-            :parser => Fog::Parsers::Compute::Eucalyptus::DescribeNetworkInterfaces.new
+            :parser => Fog::Parsers::Compute::AWS::DescribeNetworkInterfaces.new
           }.merge!(params))
         end
       end
@@ -73,7 +73,7 @@ module Fog
 
           response.status = 200
           response.body = {
-            'requestId'           => Fog::Eucalyptus::Mock.request_id,
+            'requestId'           => Fog::AWS::Mock.request_id,
             'networkInterfaceSet' => network_interface_info
           }
           response

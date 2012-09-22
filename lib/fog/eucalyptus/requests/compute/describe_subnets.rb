@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/describe_subnets'
@@ -27,17 +27,17 @@ module Fog
         # * 'value'<~String> - Tag's value
         # * 'instanceTenancy'<~String> - The allowed tenancy of instances launched into the Subnet.
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/2011-07-15/APIReference/index.html?ApiReference-query-DescribeSubnets.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/2011-07-15/APIReference/index.html?ApiReference-query-DescribeSubnets.html]
         def describe_subnets(filters = {})
           unless filters.is_a?(Hash)
             Fog::Logger.warning("describe_subnets with #{filters.class} param is deprecated, use describe_subnets('subnet-id' => []) instead [light_black](#{caller.first})[/]")
             filters = {'subnet-id' => [*filters]}
           end
-          params = Fog::Eucalyptus.indexed_filters(filters)
+          params = Fog::AWS.indexed_filters(filters)
           request({
             'Action'    => 'DescribeSubnets',
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::Eucalyptus::DescribeSubnets.new
+            :parser     => Fog::Parsers::Compute::AWS::DescribeSubnets.new
           }.merge!(params))
         end
       end
@@ -53,7 +53,7 @@ module Fog
           Excon::Response.new(
             :status => 200,
             :body   => {
-              'requestId' => Fog::Eucalyptus::Mock.request_id,
+              'requestId' => Fog::AWS::Mock.request_id,
               'subnetSet' => subnets
             }
           )

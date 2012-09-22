@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/create_subnet'
@@ -11,7 +11,7 @@ module Fog
         # * vpcId<~String> - The ID of the VPC where you want to create the subnet.
         # * cidrBlock<~String> - The CIDR block you want the Subnet to cover (e.g., 10.0.0.0/16).
         # * options<~Hash>:
-        #   * AvailabilityZone<~String> - The Availability Zone you want the subnet in. Default: Eucalyptus selects a zone for you (recommended)
+        #   * AvailabilityZone<~String> - The Availability Zone you want the subnet in. Default: AWS selects a zone for you (recommended)
         #
         # === Returns
         # * response<~Excon::Response>:
@@ -28,13 +28,13 @@ module Fog
         # * 'key'<~String> - Tag's key
         # * 'value'<~String> - Tag's value
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/2011-07-15/APIReference/ApiReference-query-CreateSubnet.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/2011-07-15/APIReference/ApiReference-query-CreateSubnet.html]
         def create_subnet(vpcId, cidrBlock, options = {})
           request({
             'Action'     => 'CreateSubnet',
             'VpcId'      => vpcId,
             'CidrBlock'  => cidrBlock,
-            :parser      => Fog::Parsers::Compute::Eucalyptus::CreateSubnet.new
+            :parser      => Fog::Parsers::Compute::AWS::CreateSubnet.new
           }.merge!(options))
 
         end
@@ -47,9 +47,9 @@ module Fog
             if cidrBlock  && vpcId
               response.status = 200
               self.data[:subnets].push({
-                'subnetId'                 => Fog::Eucalyptus::Mock.request_id,
+                'subnetId'                 => Fog::AWS::Mock.request_id,
                 'state'                    => 'pending',
-                'vpcId'                    => Fog::Eucalyptus::Mock.request_id,
+                'vpcId'                    => Fog::AWS::Mock.request_id,
                 'cidrBlock'                => cidrBlock,
                 'availableIpAddressCount'  => "255",
                 'availabilityZone'         => av_zone,
@@ -57,7 +57,7 @@ module Fog
               })
 
               response.body = {
-                'requestId'    => Fog::Eucalyptus::Mock.request_id,
+                'requestId'    => Fog::AWS::Mock.request_id,
                 'subnetSet'    => self.data[:subnets]
               }
             else

@@ -3,24 +3,24 @@ require 'fog/aws/models/compute/network_interface'
 
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
 
       class NetworkInterfaces < Fog::Collection
 
         attribute :filters
 
-        model Fog::Compute::Eucalyptus::NetworkInterface
+        model Fog::Compute::AWS::NetworkInterface
 
         # Creates a new network interface
         #
-        # Eucalyptus.network_interfaces.new
+        # AWS.network_interfaces.new
         #
         # ==== Returns
         #
         # Returns the details of the new network interface
         #
-        #>> Eucalyptus.network_interfaces.new
-        #  <Fog::Eucalyptus::Compute::NetworkInterface
+        #>> AWS.network_interfaces.new
+        #  <Fog::AWS::Compute::NetworkInterface
         #    network_interface_id=nil
         #    state=nil
         #    request_id=nil
@@ -51,17 +51,17 @@ module Fog
 
         # Returns an array of all network interfaces that have been created
         #
-        # Eucalyptus.network_interfaces.all
+        # AWS.network_interfaces.all
         #
         # ==== Returns
         #
         # Returns an array of all network interfaces
         #
-        #>> Eucalyptus.network_interfaves.all
-        #  <Fog::Eucalyptus::Compute::NetworkInterfaces
+        #>> AWS.network_interfaves.all
+        #  <Fog::AWS::Compute::NetworkInterfaces
         #    filters={}
         #    [
-        #      <Fog::Compute::Eucalyptus::NetworkInterface
+        #      <Fog::Compute::AWS::NetworkInterface
         #        network_interface_id="eni-da5dc7ca",
         #        state=nil,
         #        request_id=nil,
@@ -96,12 +96,12 @@ module Fog
         # network interface id is required to get any information
         #
         # You can run the following command to get the details:
-        # Eucalyptus.network_interfaces.get("eni-11223344")
+        # AWS.network_interfaces.get("eni-11223344")
         #
         # ==== Returns
         #
-        #>> Eucalyptus.NetworkInterface.get("eni-11223344")
-        #  <Fog::Eucalyptus::Compute::NetworkInterface
+        #>> AWS.NetworkInterface.get("eni-11223344")
+        #  <Fog::AWS::Compute::NetworkInterface
         #    network_interface_id="eni-da5dc7ca",
         #    state=nil,
         #    request_id=nil,

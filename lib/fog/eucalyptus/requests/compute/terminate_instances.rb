@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/terminate_instances'
@@ -23,13 +23,13 @@ module Fog
         #         * 'code'<~Integer> - current status code
         #         * 'name'<~String> - name of current state
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-TerminateInstances.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-TerminateInstances.html]
         def terminate_instances(instance_id)
-          params = Fog::Eucalyptus.indexed_param('InstanceId', instance_id)
+          params = Fog::AWS.indexed_param('InstanceId', instance_id)
           request({
             'Action'    => 'TerminateInstances',
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::Eucalyptus::TerminateInstances.new
+            :parser     => Fog::Parsers::Compute::AWS::TerminateInstances.new
           }.merge!(params))
         end
 
@@ -42,7 +42,7 @@ module Fog
           instance_id = [*instance_id]
           if (self.data[:instances].keys & instance_id).length == instance_id.length
             response.body = {
-              'requestId'     => Fog::Eucalyptus::Mock.request_id,
+              'requestId'     => Fog::AWS::Mock.request_id,
               'instancesSet'  => []
             }
             response.status = 200
@@ -86,7 +86,7 @@ module Fog
 
             response
           else
-            raise Fog::Compute::Eucalyptus::NotFound.new("The instance ID '#{instance_id}' does not exist")
+            raise Fog::Compute::AWS::NotFound.new("The instance ID '#{instance_id}' does not exist")
           end
         end
 

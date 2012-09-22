@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/describe_internet_gateways'
@@ -23,17 +23,17 @@ module Fog
         #   * 'key'<~String> - Tag's key
         #   * 'value'<~String> - Tag's value
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-ItemType-InternetGatewayType.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-ItemType-InternetGatewayType.html]
         def describe_internet_gateways(filters = {})
           unless filters.is_a?(Hash)
             Fog::Logger.warning("describe_internet_gateways with #{filters.class} param is deprecated, use internet_gateways('internet-gateway-id' => []) instead [light_black](#{caller.first})[/]")
             filters = {'internet-gateway-id' => [*filters]}
           end
-          params = Fog::Eucalyptus.indexed_filters(filters)
+          params = Fog::AWS.indexed_filters(filters)
           request({
             'Action' => 'DescribeInternetGateways',
             :idempotent => true,
-            :parser => Fog::Parsers::Compute::Eucalyptus::DescribeInternetGateways.new
+            :parser => Fog::Parsers::Compute::AWS::DescribeInternetGateways.new
           }.merge!(params))
         end
       end
@@ -49,7 +49,7 @@ module Fog
           Excon::Response.new(
             :status => 200,
             :body   => {
-              'requestId'           => Fog::Eucalyptus::Mock.request_id,
+              'requestId'           => Fog::AWS::Mock.request_id,
               'internetGatewaySet'  => internet_gateways
             }
           )

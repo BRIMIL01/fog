@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/import_key_pair'
@@ -18,13 +18,13 @@ module Fog
         #     * 'keyName'<~String> - Name of key
         #     * 'requestId'<~String> - Id of request
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-ImportKeyPair.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-ImportKeyPair.html]
         def import_key_pair(key_name, public_key_material)
           request(
             'Action'  => 'ImportKeyPair',
             'KeyName' => key_name,
             'PublicKeyMaterial' => Base64::encode64(public_key_material),
-            :parser   => Fog::Parsers::Compute::Eucalyptus::ImportKeyPair.new
+            :parser   => Fog::Parsers::Compute::AWS::ImportKeyPair.new
           )
         end
 
@@ -37,16 +37,16 @@ module Fog
           unless self.data[:key_pairs][key_name]
             response.status = 200
             data = {
-              'keyFingerprint'  => Fog::Eucalyptus::Mock.key_fingerprint,
+              'keyFingerprint'  => Fog::AWS::Mock.key_fingerprint,
               'keyName'         => key_name
             }
             self.data[:key_pairs][key_name] = data
             response.body = {
-              'requestId' => Fog::Eucalyptus::Mock.request_id
+              'requestId' => Fog::AWS::Mock.request_id
             }.merge!(data)
             response
           else
-            raise Fog::Compute::Eucalyptus::Error.new("InvalidKeyPair.Duplicate => The keypair '#{key_name}' already exists.")
+            raise Fog::Compute::AWS::Error.new("InvalidKeyPair.Duplicate => The keypair '#{key_name}' already exists.")
           end
         end
 

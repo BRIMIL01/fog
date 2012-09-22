@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/spot_instance_requests'
@@ -32,13 +32,13 @@ module Fog
         #       * 'state'<~String> - spot instance request state
         #       * 'type'<~String> - spot instance request type
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-DescribeSpotInstanceRequests.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeSpotInstanceRequests.html]
         def describe_spot_instance_requests(filters = {})
-          params = Fog::Eucalyptus.indexed_filters(filters)
+          params = Fog::AWS.indexed_filters(filters)
           request({
             'Action'    => 'DescribeSpotInstanceRequests',
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::Eucalyptus::SpotInstanceRequests.new
+            :parser     => Fog::Parsers::Compute::AWS::SpotInstanceRequests.new
           }.merge!(params))
         end
 

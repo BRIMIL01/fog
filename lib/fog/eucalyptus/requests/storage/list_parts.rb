@@ -1,6 +1,6 @@
 module Fog
   module Storage
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/storage/list_parts'
@@ -47,7 +47,7 @@ module Fog
             :host     => "#{bucket_name}.#{@host}",
             :idempotent => true,
             :method   => 'GET',
-            :parser   => Fog::Parsers::Storage::Eucalyptus::ListParts.new,
+            :parser   => Fog::Parsers::Storage::AWS::ListParts.new,
             :path     => CGI.escape(object_name),
             :query    => options.merge!({'uploadId' => upload_id})
           })

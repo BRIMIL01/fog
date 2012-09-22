@@ -1,6 +1,6 @@
 module Fog
   module Storage
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/requests/storage/acl_utils'
@@ -40,7 +40,7 @@ module Fog
           headers = {}
           
           if acl.is_a?(Hash)
-            data = Fog::Storage::Eucalyptus.hash_to_acl(acl)
+            data = Fog::Storage::AWS.hash_to_acl(acl)
           else
             if !['private', 'public-read', 'public-read-write', 'authenticated-read'].include?(acl)
               raise Excon::Errors::BadRequest.new('invalid x-amz-acl')
@@ -67,7 +67,7 @@ module Fog
       class Mock
         def put_object_acl(bucket_name, object_name, acl, options = {})
           if acl.is_a?(Hash)
-            self.data[:acls][:object][bucket_name][object_name] = Fog::Storage::Eucalyptus.hash_to_acl(acl)
+            self.data[:acls][:object][bucket_name][object_name] = Fog::Storage::AWS.hash_to_acl(acl)
           else
             if !['private', 'public-read', 'public-read-write', 'authenticated-read'].include?(acl)
               raise Excon::Errors::BadRequest.new('invalid x-amz-acl')

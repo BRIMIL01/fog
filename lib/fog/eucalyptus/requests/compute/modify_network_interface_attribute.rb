@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/basic'
@@ -18,27 +18,27 @@ module Fog
         #                                                       attachmentid - the attachment to change
         #                                                       deleteOnTermination - a boolean
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/2012-03-01/APIReference/ApiReference-query-ModifyNetworkInterfaceAttribute.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/2012-03-01/APIReference/ApiReference-query-ModifyNetworkInterfaceAttribute.html]
         def modify_network_interface_attribute(network_interface_id, attribute, value)
           params = {}
           case attribute
           when 'description'
             params['Description.Value'] = value
           when 'groupSet'
-            params.merge!(Fog::Eucalyptus.indexed_param('SecurityGroupId.%d', value))
+            params.merge!(Fog::AWS.indexed_param('SecurityGroupId.%d', value))
           when 'sourceDestCheck'
             params['SourceDestCheck.Value'] = value
           when 'attachment'
             params['Attachment.AttachmentId']        = value['attachmentId']
             params['Attachment.DeleteOnTermination'] = value['deleteOnTermination']
           else
-            raise Fog::Compute::Eucalyptus::Error.new("Illegal attribute '#{attribute}' specified")
+            raise Fog::Compute::AWS::Error.new("Illegal attribute '#{attribute}' specified")
           end
 
           request({
             'Action'             => 'ModifyNetworkInterfaceAttribute',
             'NetworkInterfaceId' => network_interface_id,
-            :parser              => Fog::Parsers::Compute::Eucalyptus::Basic.new
+            :parser              => Fog::Parsers::Compute::AWS::Basic.new
           }.merge!(params))
         end
       end
@@ -57,7 +57,7 @@ module Fog
               value.each do |group_id|
                 name = self.data[:security_groups].select { |k,v| v['groupId'] == group_id } .first.first
                 if name.nil?
-                  raise Fog::Compute::Eucalyptus::Error.new("Unknown security group '#{group_id}' specified")
+                  raise Fog::Compute::AWS::Error.new("Unknown security group '#{group_id}' specified")
                 end
                 groups[group_id] = name
               end
@@ -66,22 +66,22 @@ module Fog
               nic['sourceDestCheck'] = value
             when 'attachment'
               if nic['attachment'].nil? || value['attachmentId'] != nic['attachment']['attachmentId']
-                raise Fog::Compute::Eucalyptus::Error.new("Illegal attachment '#{value['attachmentId']}' specified")
+                raise Fog::Compute::AWS::Error.new("Illegal attachment '#{value['attachmentId']}' specified")
               end
               nic['attachment']['deleteOnTermination'] = value['deleteOnTermination']
             else
-              raise Fog::Compute::Eucalyptus::Error.new("Illegal attribute '#{attribute}' specified")
+              raise Fog::Compute::AWS::Error.new("Illegal attribute '#{attribute}' specified")
             end
 
             response.status = 200
             response.body = {
-              'requestId' => Fog::Eucalyptus::Mock.request_id,
+              'requestId' => Fog::AWS::Mock.request_id,
               'return'    => true
             }
 
             response
           else
-            raise Fog::Compute::Eucalyptus::NotFound.new("The network interface '#{network_interface_id}' does not exist")
+            raise Fog::Compute::AWS::NotFound.new("The network interface '#{network_interface_id}' does not exist")
           end
         end
       end

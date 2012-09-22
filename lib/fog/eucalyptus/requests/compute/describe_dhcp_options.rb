@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/describe_dhcp_options'
@@ -24,17 +24,17 @@ module Fog
         #   * 'key'<~String> - Tag's key
         #   * 'value'<~String> - Tag's value
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-ItemType-DhcpOptionsType.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-ItemType-DhcpOptionsType.html]
         def describe_dhcp_options(filters = {})
           unless filters.is_a?(Hash)
             Fog::Logger.warning("describe_dhcp_options with #{filters.class} param is deprecated, use dhcp_options('dhcp-options-id' => []) instead [light_black](#{caller.first})[/]")
             filters = {'dhcp-options-id' => [*filters]}
           end
-          params = Fog::Eucalyptus.indexed_filters(filters)
+          params = Fog::AWS.indexed_filters(filters)
           request({
             'Action' => 'DescribeDhcpOptions',
             :idempotent => true,
-            :parser => Fog::Parsers::Compute::Eucalyptus::DescribeDhcpOptions.new
+            :parser => Fog::Parsers::Compute::AWS::DescribeDhcpOptions.new
           }.merge!(params))
         end
       end
@@ -44,7 +44,7 @@ module Fog
           Excon::Response.new.tap do |response|
             response.status = 200
             response.body = {
-              'requestId' => Fog::Eucalyptus::Mock.request_id,
+              'requestId' => Fog::AWS::Mock.request_id,
               'dhcpOptionsSet'    => self.data[:dhcp_options]
             }
           end

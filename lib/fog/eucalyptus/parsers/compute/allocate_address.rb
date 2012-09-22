@@ -1,7 +1,7 @@
 module Fog
   module Parsers
     module Compute
-      module Euclayptus
+      module AWS
 
         class AllocateAddress < Fog::Parsers::Base
 

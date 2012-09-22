@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/basic'
@@ -39,9 +39,9 @@ module Fog
         #     * 'requestId'<~String> - Id of request
         #     * 'return'<~Boolean> - success?
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-AuthorizeSecurityGroupIngress.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-AuthorizeSecurityGroupIngress.html]
         def authorize_security_group_ingress(group_name, options = {})
-          options = Fog::Eucalyptus.parse_security_group_options(group_name, options)
+          options = Fog::AWS.parse_security_group_options(group_name, options)
 
           if ip_permissions = options.delete('IpPermissions')
             options.merge!(indexed_ip_permissions_params(ip_permissions))
@@ -50,7 +50,7 @@ module Fog
           request({
             'Action'    => 'AuthorizeSecurityGroupIngress',
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::Eucalyptus::Basic.new
+            :parser     => Fog::Parsers::Compute::AWS::Basic.new
           }.merge!(options))
         end
 
@@ -82,7 +82,7 @@ module Fog
       class Mock
 
         def authorize_security_group_ingress(group_name, options = {})
-          options = Fog::Eucalyptus.parse_security_group_options(group_name, options)
+          options = Fog::AWS.parse_security_group_options(group_name, options)
           if options.key?('GroupName')
             group_name = options['GroupName']
           else
@@ -100,11 +100,11 @@ module Fog
             normalized_permissions.each do |permission|
               if matching_group_permission = find_matching_permission(group, permission)
                 if permission['groups'].any? {|pg| matching_group_permission['groups'].include?(pg) }
-                  raise Fog::Compute::Eucalyptus::Error, "InvalidPermission.Duplicate => The permission '123' has already been authorized in the specified group"
+                  raise Fog::Compute::AWS::Error, "InvalidPermission.Duplicate => The permission '123' has already been authorized in the specified group"
                 end
 
                 if permission['ipRanges'].any? {|pr| matching_group_permission['ipRanges'].include?(pr) }
-                  raise Fog::Compute::Eucalyptus::Error, "InvalidPermission.Duplicate => The permission '123' has already been authorized in the specified group"
+                  raise Fog::Compute::AWS::Error, "InvalidPermission.Duplicate => The permission '123' has already been authorized in the specified group"
                 end
               end
             end
@@ -120,12 +120,12 @@ module Fog
 
             response.status = 200
             response.body = {
-              'requestId' => Fog::Eucalyptus::Mock.request_id,
+              'requestId' => Fog::AWS::Mock.request_id,
               'return'    => true
             }
             response
           else
-            raise Fog::Compute::Eucalyptus::NotFound.new("The security group '#{group_name}' does not exist")
+            raise Fog::Compute::AWS::NotFound.new("The security group '#{group_name}' does not exist")
           end
         end
 
@@ -133,17 +133,17 @@ module Fog
 
         def verify_permission_options(options, is_vpc)
           if options.size <= 1
-            raise Fog::Compute::Eucalyptus::Error.new("InvalidRequest => The request received was invalid.")
+            raise Fog::Compute::AWS::Error.new("InvalidRequest => The request received was invalid.")
           end
           if !is_vpc && options['IpProtocol'] && !['tcp', 'udp', 'icmp'].include?(options['IpProtocol'])
-            raise Fog::Compute::Eucalyptus::Error.new("InvalidPermission.Malformed => Unsupported IP protocol \"#{options['IpProtocol']}\"  - supported: [tcp, udp, icmp]")
+            raise Fog::Compute::AWS::Error.new("InvalidPermission.Malformed => Unsupported IP protocol \"#{options['IpProtocol']}\"  - supported: [tcp, udp, icmp]")
           end
           if !is_vpc && (options['IpProtocol'] && (!options['FromPort'] || !options['ToPort']))
-            raise Fog::Compute::Eucalyptus::Error.new("InvalidPermission.Malformed => TCP/UDP port (-1) out of range")
+            raise Fog::Compute::AWS::Error.new("InvalidPermission.Malformed => TCP/UDP port (-1) out of range")
           end
           if options.has_key?('IpPermissions')
             if !options['IpPermissions'].is_a?(Array) || options['IpPermissions'].empty?
-              raise Fog::Compute::Eucalyptus::Error.new("InvalidRequest => The request received was invalid.")
+              raise Fog::Compute::AWS::Error.new("InvalidRequest => The request received was invalid.")
             end
             options['IpPermissions'].each {|p| verify_permission_options(p, is_vpc) }
           end

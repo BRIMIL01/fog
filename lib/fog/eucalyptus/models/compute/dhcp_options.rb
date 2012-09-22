@@ -3,24 +3,24 @@ require 'fog/aws/models/compute/dhcp_option'
 
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
 
       class DhcpOptions < Fog::Collection
 
         attribute :filters
 
-        model Fog::Compute::Eucalyptus::DhcpOption
+        model Fog::Compute::AWS::DhcpOption
 
         # Creates a new dhcp option
         #
-        # Eucalyptus.dhcp_options.new
+        # AWS.dhcp_options.new
         #
         # ==== Returns
         #
         # Returns the details of the new DHCP options
         #
-        #>> Eucalyptus.dhcp_options.new
-        #=>   <Fog::Compute::Eucalyptus::DhcpOption
+        #>> AWS.dhcp_options.new
+        #=>   <Fog::Compute::AWS::DhcpOption
         #id=nil,
         #dhcp_configuration_set=nil,
         #tag_set=nil
@@ -34,17 +34,17 @@ module Fog
 
         # Returns an array of all DhcpOptions that have been created
         #
-        # Eucalyptus.dhcp_options.all
+        # AWS.dhcp_options.all
         #
         # ==== Returns
         #
         # Returns an array of all DhcpOptions
         #
-        #>> Eucalyptus.dhcp_options.all
-        #<Fog::Compute::Eucalyptus::DhcpOptions
+        #>> AWS.dhcp_options.all
+        #<Fog::Compute::AWS::DhcpOptions
         #filters={}
         #[
-        #<Fog::Compute::Eucalyptus::DhcpOption
+        #<Fog::Compute::AWS::DhcpOption
         #id="dopt-some-id",
         #dhcp_configuration_set={"vpcId"=>"vpc-some-id", "state"=>"available"},
         #tag_set={}
@@ -66,12 +66,12 @@ module Fog
         # Used to retrieve an DhcpOption
         #
         # You can run the following command to get the details:
-        # Eucalyptus.dhcp_options.get("dopt-12345678")
+        # AWS.dhcp_options.get("dopt-12345678")
         #
         # ==== Returns
         #
-        #>> Eucalyptus.dhcp_options.get("dopt-12345678")
-        #=>   <Fog::Compute::Eucalyptus::DhcpOption
+        #>> AWS.dhcp_options.get("dopt-12345678")
+        #=>   <Fog::Compute::AWS::DhcpOption
         #id="dopt-12345678",
         #dhcp_configuration_set={"vpcId"=>"vpc-12345678", "state"=>"available"},
         #tag_set={}

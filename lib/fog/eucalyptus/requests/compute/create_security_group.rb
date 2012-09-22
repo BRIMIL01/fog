@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/create_security_group'
@@ -19,14 +19,14 @@ module Fog
         #     * 'return'<~Boolean> - success?
         #     * 'groupId'<~String> - Id of created group
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-CreateSecurityGroup.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-CreateSecurityGroup.html]
         def create_security_group(name, description, vpc_id=nil)
           request(
             'Action'            => 'CreateSecurityGroup',
             'GroupName'         => name,
             'GroupDescription'  => description,
             'VpcId'             => vpc_id,
-            :parser             => Fog::Parsers::Compute::Eucalyptus::CreateSecurityGroup.new
+            :parser             => Fog::Parsers::Compute::AWS::CreateSecurityGroup.new
           )
         end
 
@@ -40,7 +40,7 @@ module Fog
             data = {
               'groupDescription'    => description,
               'groupName'           => name,
-              'groupId'             => Fog::Eucalyptus::Mock.security_group_id,
+              'groupId'             => Fog::AWS::Mock.security_group_id,
               'ipPermissionsEgress' => [],
               'ipPermissions'       => [],
               'ownerId'             => self.data[:owner_id],
@@ -48,13 +48,13 @@ module Fog
             }
             self.data[:security_groups][name] = data
             response.body = {
-              'requestId' => Fog::Eucalyptus::Mock.request_id,
+              'requestId' => Fog::AWS::Mock.request_id,
               'groupId'   => data['groupId'],
               'return'    => true
             }
             response
           else
-            raise Fog::Compute::Eucalyptus::Error.new("InvalidGroup.Duplicate => The security group '#{name}' already exists")
+            raise Fog::Compute::AWS::Error.new("InvalidGroup.Duplicate => The security group '#{name}' already exists")
           end
         end
 

@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/basic'
@@ -17,11 +17,11 @@ module Fog
         #     * 'requestId'<~String> - Id of request
         #     * 'return'<~Boolean> - success?
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-DeleteTags.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DeleteTags.html]
         def delete_tags(resources, tags)
           resources = [*resources]
           params = {}
-          params.merge!(Fog::Eucalyptus.indexed_param('ResourceId', resources))
+          params.merge!(Fog::AWS.indexed_param('ResourceId', resources))
 
           # can not rely on indexed_param because nil values should be omitted
           tags.keys.each_with_index do |key, index|
@@ -34,7 +34,7 @@ module Fog
 
           request({
             'Action'            => 'DeleteTags',
-            :parser             => Fog::Parsers::Compute::Eucalyptus::Basic.new
+            :parser             => Fog::Parsers::Compute::AWS::Basic.new
           }.merge!(params))
         end
 
@@ -74,7 +74,7 @@ module Fog
           response = Excon::Response.new
           response.status = true
           response.body = {
-            'requestId' => Fog::Eucalyptus::Mock.request_id,
+            'requestId' => Fog::AWS::Mock.request_id,
             'return'    => true
           }
           response

@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/basic'
@@ -16,13 +16,13 @@ module Fog
         #     * 'requestId'<~String> - Id of request
         #     * 'return'<~Boolean> - success?
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-DeleteVolume.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DeleteVolume.html]
         def delete_volume(volume_id)
           request(
             'Action'    => 'DeleteVolume',
             'VolumeId'  => volume_id,
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::Eucalyptus::Basic.new
+            :parser     => Fog::Parsers::Compute::AWS::Basic.new
           )
         end
 
@@ -35,18 +35,18 @@ module Fog
           if volume = self.data[:volumes][volume_id]
             if volume["attachmentSet"].any?
               attach = volume["attachmentSet"].first
-              raise Fog::Compute::Eucalyptus::Error.new("Client.VolumeInUse => Volume #{volume_id} is currently attached to #{attach["instanceId"]}")
+              raise Fog::Compute::AWS::Error.new("Client.VolumeInUse => Volume #{volume_id} is currently attached to #{attach["instanceId"]}")
             end
             self.data[:deleted_at][volume_id] = Time.now
             volume['status'] = 'deleting'
             response.status = 200
             response.body = {
-              'requestId' => Fog::Eucalyptus::Mock.request_id,
+              'requestId' => Fog::AWS::Mock.request_id,
               'return'    => true
             }
             response
           else
-            raise Fog::Compute::Eucalyptus::NotFound.new("The volume '#{volume_id}' does not exist.")
+            raise Fog::Compute::AWS::NotFound.new("The volume '#{volume_id}' does not exist.")
           end
         end
 

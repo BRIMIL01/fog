@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/describe_vpcs'
@@ -24,17 +24,17 @@ module Fog
         # * 'value'<~String> - Tag's value
         # * 'instanceTenancy'<~String> - The allowed tenancy of instances launched into the VPC.
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/2011-07-15/APIReference/index.html?ApiReference-query-DescribeVpcs.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/2011-07-15/APIReference/index.html?ApiReference-query-DescribeVpcs.html]
         def describe_vpcs(filters = {})
           unless filters.is_a?(Hash)
             Fog::Logger.warning("describe_vpcs with #{filters.class} param is deprecated, use describe_vpcs('vpc-id' => []) instead [light_black](#{caller.first})[/]")
             filters = {'vpc-id' => [*filters]}
           end
-          params = Fog::Eucalyptus.indexed_filters(filters)
+          params = Fog::AWS.indexed_filters(filters)
           request({
             'Action' => 'DescribeVpcs',
             :idempotent => true,
-            :parser => Fog::Parsers::Compute::Eucalyptus::DescribeVpcs.new
+            :parser => Fog::Parsers::Compute::AWS::DescribeVpcs.new
           }.merge!(params))
         end
       end
@@ -50,7 +50,7 @@ module Fog
           Excon::Response.new(
             :status => 200,
             :body   => {
-              'requestId' => Fog::Eucalyptus::Mock.request_id,
+              'requestId' => Fog::AWS::Mock.request_id,
               'vpcSet'    => vpcs
             }
           )

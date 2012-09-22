@@ -1,6 +1,6 @@
 module Fog
   module Storage
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/storage/get_bucket_lifecycle'
@@ -29,7 +29,7 @@ module Fog
                     :host     => "#{bucket_name}.#{@host}",
                     :idempotent => true,
                     :method   => 'GET',
-                    :parser   => Fog::Parsers::Storage::Eucalyptus::GetBucketLifecycle.new,
+                    :parser   => Fog::Parsers::Storage::AWS::GetBucketLifecycle.new,
                     :query    => {'lifecycle' => nil}
                   })
         end

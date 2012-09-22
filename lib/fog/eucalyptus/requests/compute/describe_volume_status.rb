@@ -1,19 +1,19 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/describe_volume_status'
 
-        # http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-DescribeVolumeStatus.html
+        # http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeVolumeStatus.html
         def describe_volume_status(filters = {})
           raise ArgumentError.new("Filters must be a hash, but is a #{filters.class}.") unless filters.is_a?(Hash)
           next_token = filters.delete('nextToken') || filters.delete('NextToken')
           max_results = filters.delete('maxResults') || filters.delete('MaxResults')
 
-          params = Fog::Eucalyptus.indexed_request_param('VolumeId', filters.delete('VolumeId'))
+          params = Fog::AWS.indexed_request_param('VolumeId', filters.delete('VolumeId'))
 
-          params.merge!(Fog::Eucalyptus.indexed_filters(filters))
+          params.merge!(Fog::AWS.indexed_filters(filters))
 
           params['NextToken'] = next_token if next_token
           params['MaxResults'] = max_results if max_results
@@ -21,7 +21,7 @@ module Fog
           request({
             'Action'    => 'DescribeVolumeStatus',
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::Eucalyptus::DescribeVolumeStatus.new
+            :parser     => Fog::Parsers::Compute::AWS::DescribeVolumeStatus.new
           }.merge!(params))
         end
       end
@@ -33,7 +33,7 @@ module Fog
 
           response.body = {
             'volumeStatusSet' => [],
-            'requestId' => Fog::Eucalyptus::Mock.request_id
+            'requestId' => Fog::AWS::Mock.request_id
           }
 
           response

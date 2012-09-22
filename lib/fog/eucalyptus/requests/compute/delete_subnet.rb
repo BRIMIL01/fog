@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/delete_subnet'
@@ -16,12 +16,12 @@ module Fog
         # * 'requestId'<~String> - Id of request
         # * 'return'<~Boolean> - Returns true if the request succeeds.
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/2011-07-15/APIReference/ApiReference-query-DeleteSubnet.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/2011-07-15/APIReference/ApiReference-query-DeleteSubnet.html]
         def delete_subnet(subnet_id)
           request(
             'Action' => 'DeleteSubnet',
             'SubnetId' => subnet_id,
-            :parser => Fog::Parsers::Compute::Eucalyptus::DeleteSubnet.new
+            :parser => Fog::Parsers::Compute::AWS::DeleteSubnet.new
           )
         end
       end
@@ -34,13 +34,13 @@ module Fog
               response.status = 200
             
               response.body = {
-                'requestId' => Fog::Eucalyptus::Mock.request_id,
+                'requestId' => Fog::AWS::Mock.request_id,
                 'return' => true
               }
             else
               message = 'MissingParameter => '
               message << 'The request must contain the parameter subnet_id'
-              raise Fog::Compute::Eucalyptus::Error.new(message)
+              raise Fog::Compute::AWS::Error.new(message)
             end
           end
         end

@@ -1,6 +1,6 @@
 module Fog
   module Storage
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/storage/complete_multipart_upload'
@@ -40,7 +40,7 @@ module Fog
             :headers    => { 'Content-Length' => data.length },
             :host       => "#{bucket_name}.#{@host}",
             :method     => 'POST',
-            :parser     => Fog::Parsers::Storage::Eucalyptus::CompleteMultipartUpload.new,
+            :parser     => Fog::Parsers::Storage::AWS::CompleteMultipartUpload.new,
             :path       => CGI.escape(object_name),
             :query      => {'uploadId' => upload_id}
           })
@@ -48,5 +48,5 @@ module Fog
 
       end # Real
     end # Storage
-  end # Eucalyptus
+  end # AWS
 end # Fog

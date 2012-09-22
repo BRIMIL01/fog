@@ -1,13 +1,13 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
 
       class Real
 
         require 'fog/aws/parsers/compute/monitor_unmonitor_instances'
 
         # UnMonitor specified instance
-        # http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-UnmonitorInstances.html
+        # http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-UnmonitorInstances.html
         #
         # ==== Parameters
         # * instance_ids<~Array> - Arrays of instances Ids to monitor
@@ -16,15 +16,15 @@ module Fog
         # * response<~Excon::Response>:
         #   * body<~Hash>:
         #     * 'requestId'<~String> - Id of request
-        #     * 'instancesSet': http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-ItemType-MonitorInstancesResponseSetItemType.html
+        #     * 'instancesSet': http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-ItemType-MonitorInstancesResponseSetItemType.html
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-UnmonitorInstances.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-UnmonitorInstances.html]
         def unmonitor_instances(instance_ids)
-          params = Fog::Eucalyptus.indexed_param('InstanceId', instance_ids)
+          params = Fog::AWS.indexed_param('InstanceId', instance_ids)
           request({
                           'Action' => 'UnmonitorInstances',
                           :idempotent => true,
-                          :parser => Fog::Parsers::Compute::Eucalyptus::MonitorUnmonitorInstances.new
+                          :parser => Fog::Parsers::Compute::AWS::MonitorUnmonitorInstances.new
                   }.merge!(params))
         end
 
@@ -39,7 +39,7 @@ module Fog
             if instance = self.data[:instances][instance_id]
               instance['monitoring']['state'] = 'enabled'
             else
-              raise Fog::Compute::Eucalyptus::NotFound.new("The instance ID '#{instance_ids}' does not exist")
+              raise Fog::Compute::AWS::NotFound.new("The instance ID '#{instance_ids}' does not exist")
             end
           end
           instances_set = [*instance_ids].inject([]) { |memo, id| memo << {'instanceId' => id, 'monitoring' => 'disabled'} }

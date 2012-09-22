@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/basic'
@@ -16,13 +16,13 @@ module Fog
         #     * 'requestId'<~String> - Id of request
         #     * 'return'<~Boolean> - success?
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-DeleteSnapshot.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DeleteSnapshot.html]
         def delete_snapshot(snapshot_id)
           request(
             'Action'      => 'DeleteSnapshot',
             'SnapshotId'  => snapshot_id,
             :idempotent   => true,
-            :parser       => Fog::Parsers::Compute::Eucalyptus::Basic.new
+            :parser       => Fog::Parsers::Compute::AWS::Basic.new
           )
         end
 
@@ -35,12 +35,12 @@ module Fog
           if snapshot = self.data[:snapshots].delete(snapshot_id)
             response.status = true
             response.body = {
-              'requestId' => Fog::Eucalyptus::Mock.request_id,
+              'requestId' => Fog::AWS::Mock.request_id,
               'return'    => true
             }
             response
           else
-            raise Fog::Compute::Eucalyptus::NotFound.new("The snapshot '#{snapshot_id}' does not exist.")
+            raise Fog::Compute::AWS::NotFound.new("The snapshot '#{snapshot_id}' does not exist.")
           end
         end
 

@@ -1,7 +1,7 @@
 module Fog
   module Parsers
     module Storage
-      module Eucalyptus
+      module AWS
 
         class GetBucketWebsite < Fog::Parsers::Base
 

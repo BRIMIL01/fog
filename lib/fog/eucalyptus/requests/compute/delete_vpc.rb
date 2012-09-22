@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/delete_vpc'
@@ -19,12 +19,12 @@ module Fog
         # * 'requestId'<~String> - Id of request
         # * 'return'<~Boolean> - Returns true if the request succeeds.
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/2011-07-15/APIReference/index.html?ApiReference-query-DeleteVpc.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/2011-07-15/APIReference/index.html?ApiReference-query-DeleteVpc.html]
         def delete_vpc(vpc_id)
           request(
             'Action' => 'DeleteVpc',
             'VpcId' => vpc_id,
-            :parser => Fog::Parsers::Compute::Eucalyptus::DeleteVpc.new
+            :parser => Fog::Parsers::Compute::AWS::DeleteVpc.new
           )
         end
       end
@@ -37,13 +37,13 @@ module Fog
               self.data[:vpcs].reject! { |v| v['vpcId'] == vpc_id }
 
               response.body = {
-                'requestId' => Fog::Eucalyptus::Mock.request_id,
+                'requestId' => Fog::AWS::Mock.request_id,
                 'return' => true
               }
             else
               message = 'MissingParameter => '
               message << 'The request must contain the parameter vpc_id'
-              raise Fog::Compute::Eucalyptus::Error.new(message)
+              raise Fog::Compute::AWS::Error.new(message)
             end
           end
         end

@@ -2,7 +2,7 @@ require 'fog/core/model'
 
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
 
       class InternetGateway < Fog::Model
 
@@ -60,7 +60,7 @@ module Fog
 
         # Create an internet gateway
         #
-        #  >> g = Eucalyptus.internet_gateways.new()
+        #  >> g = AWS.internet_gateways.new()
         #  >> g.save
         #
         # == Returns:

@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/create_network_interface'
@@ -47,15 +47,15 @@ module Fog
         # *     'key'<~String>              - Tag's key
         # *     'value'<~String>            - Tag's value
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/2012-03-01/APIReference/ApiReference-query-CreateNetworkInterface.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/2012-03-01/APIReference/ApiReference-query-CreateNetworkInterface.html]
         def create_network_interface(subnetId, options = {})
           if security_groups = options.delete('GroupSet')
-            options.merge!(Fog::Eucalyptus.indexed_param('SecurityGroupId', [*security_groups]))
+            options.merge!(Fog::AWS.indexed_param('SecurityGroupId', [*security_groups]))
           end
           request({
             'Action'     => 'CreateNetworkInterface',
             'SubnetId'   => subnetId,
-            :parser      => Fog::Parsers::Compute::Eucalyptus::CreateNetworkInterface.new
+            :parser      => Fog::Parsers::Compute::AWS::CreateNetworkInterface.new
           }.merge!(options))
 
         end
@@ -65,14 +65,14 @@ module Fog
         def create_network_interface(subnetId, options = {})
           response = Excon::Response.new
           if subnetId
-            id = Fog::Eucalyptus::Mock.network_interface_id
+            id = Fog::AWS::Mock.network_interface_id
 
             groups = {}
             if options['GroupSet']
               options['GroupSet'].each do |group_id|
                 name = self.data[:security_groups].select { |k,v| v['groupId'] == group_id } .first.first
                 if name.nil?
-                  raise Fog::Compute::Eucalyptus::Error.new("Unknown security group '#{group_id}' specified")
+                  raise Fog::Compute::AWS::Error.new("Unknown security group '#{group_id}' specified")
                 end
                 groups[group_id] = name
               end
@@ -100,7 +100,7 @@ module Fog
             }
             self.data[:network_interfaces][id] = data
             response.body = {
-              'requestId'        => Fog::Eucalyptus::Mock.request_id,
+              'requestId'        => Fog::AWS::Mock.request_id,
               'networkInterface' => data
             }
             response

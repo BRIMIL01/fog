@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/attach_internet_gateway'
@@ -16,14 +16,14 @@ module Fog
         #     * 'requestId'<~String> - Id of request
         #     * 'return'<~Boolean> - Returns true if the request succeeds.
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-AttachInternetGateway.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-AttachInternetGateway.html]
         def attach_internet_gateway(internet_gateway_id, vpc_id)
           request(
             'Action'               => 'AttachInternetGateway',
             'InternetGatewayId'    => internet_gateway_id,
             'VpcId'                => vpc_id,
             :idempotent   => true,
-            :parser       => Fog::Parsers::Compute::Eucalyptus::AttachInternetGateway.new
+            :parser       => Fog::Parsers::Compute::AWS::AttachInternetGateway.new
           )
         end
 
@@ -36,7 +36,7 @@ module Fog
           if internet_gateway_id && vpc_id
             response.status = 200
             response.body = {
-              'requestId' => Fog::Eucalyptus::Mock.request_id,
+              'requestId' => Fog::AWS::Mock.request_id,
               'return' => true
             }
             response
@@ -46,7 +46,7 @@ module Fog
             elsif !vpc_id
               message << 'The request must contain the parameter vpc_id'
             end
-            raise Fog::Compute::Eucalyptus::Error.new(message)
+            raise Fog::Compute::AWS::Error.new(message)
           end
         end
 

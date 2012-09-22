@@ -1,6 +1,6 @@
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
       class Real
 
         require 'fog/aws/parsers/compute/create_image'
@@ -19,7 +19,7 @@ module Fog
         #     * 'imageId'<~String> - The ID of the created AMI.
         #     * 'requestId'<~String> - Id of request.
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-CreateImage.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-CreateImage.html]
         def create_image(instance_id, name, description, no_reboot = false)
           request(
             'Action'            => 'CreateImage',
@@ -27,7 +27,7 @@ module Fog
             'Name'              => name,
             'Description'       => description,
             'NoReboot'          => no_reboot.to_s,
-            :parser             => Fog::Parsers::Compute::Eucalyptus::CreateImage.new
+            :parser             => Fog::Parsers::Compute::AWS::CreateImage.new
           )
         end
       end
@@ -36,7 +36,7 @@ module Fog
         
         # Usage
         # 
-        # Eucalyptus[:compute].create_image("i-ac65ee8c", "test", "something")
+        # AWS[:compute].create_image("i-ac65ee8c", "test", "something")
         #
         
         def create_image(instance_id, name, description, no_reboot = false)
@@ -44,8 +44,8 @@ module Fog
           if instance_id && !name.empty?
             response.status = 200
             response.body = {
-              'requestId' => Fog::Eucalyptus::Mock.request_id,
-              'imageId' => Fog::Eucalyptus::Mock.image_id
+              'requestId' => Fog::AWS::Mock.request_id,
+              'imageId' => Fog::AWS::Mock.image_id
             }
           else
             response.status = 400

@@ -2,7 +2,7 @@ require 'fog/core/model'
 
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
 
       class Subnet < Fog::Model
 
@@ -33,7 +33,7 @@ module Fog
 
         # Create a subnet
         #
-        #  >> g = Eucalyptus.subnets.new(:vpc_id => "vpc-someId", :cidr_block => "10.0.0.0/24")
+        #  >> g = AWS.subnets.new(:vpc_id => "vpc-someId", :cidr_block => "10.0.0.0/24")
         #  >> g.save
         #
         # == Returns:

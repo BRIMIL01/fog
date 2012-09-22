@@ -3,24 +3,24 @@ require 'fog/aws/models/compute/server'
 
 module Fog
   module Compute
-    class Eucalyptus
+    class AWS
 
       class Servers < Fog::Collection
 
         attribute :filters
 
-        model Fog::Compute::Eucalyptus::Server
+        model Fog::Compute::AWS::Server
 
         # Creates a new server
         #
-        # Eucalyptus.servers.new
+        # AWS.servers.new
         #
         # ==== Returns
         #
         # Returns the details of the new server
         #
-        #>> Eucalyptus.servers.new
-        #  <Fog::Eucalyptus::Compute::Server
+        #>> AWS.servers.new
+        #  <Fog::AWS::Compute::Server
         #    id=nil,
         #    ami_launch_index=nil,
         #    availability_zone=nil,
@@ -108,12 +108,12 @@ module Fog
         # server_id is required to get the associated server information.
         #
         # You can run the following command to get the details:
-        # Eucalyptus.servers.get("i-5c973972")
+        # AWS.servers.get("i-5c973972")
         #
         # ==== Returns
         #
-        #>> Eucalyptus.servers.get("i-5c973972")
-        #  <Fog::Eucalyptus::Compute::Server
+        #>> AWS.servers.get("i-5c973972")
+        #  <Fog::AWS::Compute::Server
         #    id="i-5c973972",
         #    ami_launch_index=0,
         #    availability_zone="us-east-1b",
