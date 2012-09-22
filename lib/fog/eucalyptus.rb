@@ -8,6 +8,7 @@ module Fog
 
     service(:compute,         'eucalyptus/compute',          'Compute')
     service(:storage,         'eucalyptus/storage',          'Storage')
+    service(:iam,             'eucalyptus/iam',              'IAM')
 
     def self.indexed_param(key, values)
       params = {}

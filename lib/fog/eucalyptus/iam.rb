@@ -152,7 +152,7 @@ module Fog
           @aws_secret_access_key  = options[:aws_secret_access_key]
           @connection_options     = options[:connection_options] || {}
           @instrumentor           = options[:instrumentor]
-          @instrumentor_name      = options[:instrumentor_name] || 'fog.aws.iam'
+          @instrumentor_name      = options[:instrumentor_name] || 'fog.eucalyptus.iam'
           @hmac       = Fog::HMAC.new('sha256', @aws_secret_access_key)
           @host       = options[:host]        || 'iam.amazonaws.com'
           @path       = options[:path]        || '/'
@@ -207,11 +207,11 @@ module Fog
           if match = error.message.match(/<Code>(.*)<\/Code>(?:.*<Message>(.*)<\/Message>)?/m)
             case match[1]
             when 'CertificateNotFound', 'NoSuchEntity'
-              raise Fog::AWS::IAM::NotFound.slurp(error, match[2])
+              raise Fog::Eucalyptus::IAM::NotFound.slurp(error, match[2])
             when 'EntityAlreadyExists', 'KeyPairMismatch', 'LimitExceeded', 'MalformedCertificate', 'ValidationError'
-              raise Fog::AWS::IAM.const_get(match[1]).slurp(error, match[2])
+              raise Fog::Eucalyptus::IAM.const_get(match[1]).slurp(error, match[2])
             else
-              raise Fog::AWS::IAM::Error.slurp(error, "#{match[1]} => #{match[2]}") if match[1]
+              raise Fog::Eucalyptus::IAM::Error.slurp(error, "#{match[1]} => #{match[2]}") if match[1]
               raise
             end
           else

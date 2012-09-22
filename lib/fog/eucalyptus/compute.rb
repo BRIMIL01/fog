@@ -11,7 +11,7 @@ module Fog
 
       secrets    :aws_secret_access_key, :hmac, :aws_session_token
 
-      model_path 'fog/aws/models/compute'
+      model_path 'fog/eucalyptus/models/compute'
       model       :address
       collection  :addresses
       model       :dhcp_options
@@ -32,78 +32,36 @@ module Fog
       collection  :servers
       model       :snapshot
       collection  :snapshots
-      model       :tag
-      collection  :tags
       model       :volume
       collection  :volumes
-      model       :spot_request
-      collection  :spot_requests
-      model       :subnet
-      collection  :subnets
-      model       :vpc
-      collection  :vpcs
 
-      request_path 'fog/aws/requests/compute'
+      request_path 'fog/eucalyptus/requests/compute'
       request :allocate_address
       request :associate_address
-      request :associate_dhcp_options
-      request :attach_network_interface
-      request :attach_internet_gateway
       request :attach_volume
       request :authorize_security_group_ingress
-      request :cancel_spot_instance_requests
-      request :create_dhcp_options
-      request :create_internet_gateway
       request :create_image
       request :create_key_pair
-      request :create_network_interface
-      request :create_placement_group
       request :create_security_group
       request :create_snapshot
-      request :create_spot_datafeed_subscription
       request :create_subnet
-      request :create_tags
       request :create_volume
-      request :create_vpc
-      request :delete_dhcp_options
-      request :delete_internet_gateway
       request :delete_key_pair
-      request :delete_network_interface
       request :delete_security_group
-      request :delete_placement_group
       request :delete_snapshot
-      request :delete_spot_datafeed_subscription
-      request :delete_subnet
-      request :delete_tags
       request :delete_volume
-      request :delete_vpc
       request :deregister_image
       request :describe_addresses
       request :describe_availability_zones
-      request :describe_dhcp_options
       request :describe_images
       request :describe_instances
-      request :describe_internet_gateways
-      request :describe_reserved_instances
       request :describe_instance_status
       request :describe_key_pairs
-      request :describe_network_interface_attribute
-      request :describe_network_interfaces
-      request :describe_placement_groups
       request :describe_regions
-      request :describe_reserved_instances_offerings
       request :describe_security_groups
       request :describe_snapshots
-      request :describe_spot_datafeed_subscription
-      request :describe_spot_instance_requests
-      request :describe_spot_price_history
-      request :describe_subnets
-      request :describe_tags
       request :describe_volumes
       request :describe_volume_status
-      request :describe_vpcs
-      request :detach_network_interface
-      request :detach_internet_gateway
       request :detach_volume
       request :disassociate_address
       request :get_console_output
@@ -111,21 +69,14 @@ module Fog
       request :import_key_pair
       request :modify_image_attribute
       request :modify_instance_attribute
-      request :modify_network_interface_attribute
-      request :modify_snapshot_attribute
-      request :purchase_reserved_instances_offering
       request :reboot_instances
       request :release_address
       request :register_image
-      request :request_spot_instances
-      request :reset_network_interface_attribute
       request :revoke_security_group_ingress
       request :run_instances
       request :terminate_instances
       request :start_instances
       request :stop_instances
-      request :monitor_instances
-      request :unmonitor_instances
 
       # deprecation
       class Real
@@ -194,15 +145,6 @@ module Fog
                 :network_interfaces => {},
                 :snapshots => {},
                 :volumes => {},
-                :internet_gateways => {},
-                :tags => {},
-                :tag_sets => Hash.new do |tag_set_hash, resource_id|
-                  tag_set_hash[resource_id] = {}
-                end,
-                :subnets => [],
-                :vpcs => [],
-                :dhcp_options => [],
-                :internet_gateways => []
               }
             end
           end
@@ -216,9 +158,9 @@ module Fog
           @use_iam_profile = options[:use_iam_profile]
           @aws_credentials_expire_at = Time::now + 20
           setup_credentials(options)
-          @region = options[:region] || 'us-east-1'
+          @region = options[:region] || 'eucalyptus'
 
-          unless ['ap-northeast-1', 'ap-southeast-1', 'eu-west-1', 'us-east-1', 'us-west-1', 'us-west-2', 'sa-east-1'].include?(@region)
+          unless ['eucalyptus'].include?(@region)
             raise ArgumentError, "Unknown region: #{@region.inspect}"
           end
         end
@@ -249,33 +191,6 @@ module Fog
           end
 
           images
-        end
-
-        def apply_tag_filters(resources, filters, resource_id_key)
-          tag_set_fetcher = lambda {|resource| self.data[:tag_sets][resource[resource_id_key]] }
-
-          # tag-key: match resources tagged with this key (any value)
-          if filters.has_key?('tag-key')
-            value = filters.delete('tag-key')
-            resources = resources.select{|r| tag_set_fetcher[r].has_key?(value)}
-          end
-
-          # tag-value: match resources tagged with this value (any key)
-          if filters.has_key?('tag-value')
-            value = filters.delete('tag-value')
-            resources = resources.select{|r| tag_set_fetcher[r].values.include?(value)}
-          end
-
-          # tag:key: match resources tagged with a key-value pair.  Value may be an array, which is OR'd.
-          tag_filters = {}
-          filters.keys.each do |key|
-            tag_filters[key.gsub('tag:', '')] = filters.delete(key) if /^tag:/ =~ key
-          end
-          for tag_key, tag_value in tag_filters
-            resources = resources.select{|r| tag_value.include?(tag_set_fetcher[r][tag_key])}
-          end
-
-          resources
         end
 
         def setup_credentials(options)
@@ -314,10 +229,10 @@ module Fog
           @use_iam_profile = options[:use_iam_profile]
           setup_credentials(options)
           @connection_options     = options[:connection_options] || {}
-          @region                 = options[:region] ||= 'us-east-1'
+          @region                 = options[:region] ||= 'eucalyptus'
           @instrumentor           = options[:instrumentor]
-          @instrumentor_name      = options[:instrumentor_name] || 'fog.aws.compute'
-          @version                = options[:version]     ||  '2012-07-20'
+          @instrumentor_name      = options[:instrumentor_name] || 'fog.eucalyptus.compute'
+          @version                = options[:version]     ||  '2010-08-31'
 
           if @endpoint = options[:endpoint]
             endpoint = URI.parse(@endpoint)
@@ -390,9 +305,9 @@ module Fog
           if match = error.message.match(/<Code>(.*)<\/Code><Message>(.*)<\/Message>/)
             raise case match[1].split('.').last
                   when 'NotFound', 'Unknown'
-                    Fog::Compute::AWS::NotFound.slurp(error, match[2])
+                    Fog::Compute::Eucalyptus::NotFound.slurp(error, match[2])
                   else
-                    Fog::Compute::AWS::Error.slurp(error, "#{match[1]} => #{match[2]}")
+                    Fog::Compute::Eucalyptus::Error.slurp(error, "#{match[1]} => #{match[2]}")
                   end
           else
             raise error
