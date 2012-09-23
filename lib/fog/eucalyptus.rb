@@ -118,11 +118,11 @@ module Fog
       end
 
       def self.dns_name_for(ip_address)
-        "ec2-#{ip_address.gsub('.','-')}.compute-1.amazoneucalyptus.com"
+        "euca-#{ip_address.gsub('.','-')}.eucalyptus.eucalyptus.com"
       end
 
       def self.private_dns_name_for(ip_address)
-        "ip-#{ip_address.gsub('.','-')}.ec2.internal"
+        "euca-#{ip_address.gsub('.','-')}.eucalyptus.internal"
       end
 
       def self.image
@@ -223,34 +223,11 @@ module Fog
         "sg-#{Fog::Mock.random_hex(8)}"
       end
 
-      def self.network_interface_id
-        "eni-#{Fog::Mock.random_hex(8)}"
-      end
-      def self.internet_gateway_id
-        "igw-#{Fog::Mock.random_hex(8)}"
-      end
-      def self.dhcp_options_id
-        "dopt-#{Fog::Mock.random_hex(8)}"
-      end
-      def self.vpc_id
-        "vpc-#{Fog::Mock.random_hex(8)}"
-      end
-      def self.subnet_id
-        "subnet-#{Fog::Mock.random_hex(8)}"
-      end
       def self.zone_id
         "zone-#{Fog::Mock.random_hex(8)}"
       end
       def self.change_id
         "change-#{Fog::Mock.random_hex(8)}"
-      end
-      def self.nameservers
-        [
-          'ns-2048.eucalyptusdns-64.com',
-          'ns-2049.eucalyptusdns-65.net',
-          'ns-2050.eucalyptusdns-66.org',
-          'ns-2051.eucalyptusdns-67.co.uk'
-        ]
       end
 
       def self.key_id(length=21)
@@ -258,9 +235,6 @@ module Fog
         Fog::Mock.random_selection('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',length)
       end
 
-      def self.rds_address(db_name,region)
-        "#{db_name}.#{Fog::Mock.random_letters(rand(12) + 4)}.#{region}.rds.amazoneucalyptus.com"
-      end
     end
 
     def self.parse_security_group_options(group_name, options)
