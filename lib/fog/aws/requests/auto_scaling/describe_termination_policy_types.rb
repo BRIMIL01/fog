@@ -22,8 +22,9 @@ module Fog
         #
         def describe_termination_policy_types()
           request({
-            'Action' => 'DescribeTerminationPolicyTypes',
-            :parser  => Fog::Parsers::AWS::AutoScaling::DescribeTerminationPolicyTypes.new
+            'Action'    => 'DescribeTerminationPolicyTypes',
+            :idempotent => true,
+            :parser     => Fog::Parsers::AWS::AutoScaling::DescribeTerminationPolicyTypes.new
           })
         end
 
@@ -33,7 +34,7 @@ module Fog
 
         def describe_termination_policy_types()
           results = { 'TerminationPolicyTypes' => [] }
-          data[:termination_policy_types].each do |termination_policy_type|
+          self.data[:termination_policy_types].each do |termination_policy_type|
             results['TerminationPolicyTypes'] << termination_policy_type
           end
           response = Excon::Response.new

@@ -3,13 +3,13 @@ require 'fog/aws/models/compute/server'
 
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
 
       class Servers < Fog::Collection
 
         attribute :filters
 
-        model Fog::Compute::AWS::Server
+        model Fog::Compute::Eucalyptus::Server
 
         # Creates a new server
         #

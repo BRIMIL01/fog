@@ -3,21 +3,21 @@ require 'fog/storage'
 
 module Fog
   module Storage
-    class AWS < Fog::Service
-      extend Fog::AWS::CredentialFetcher::ServiceMethods
+    class Eucalyptus < Fog::Service
+      extend Fog::Eucalyptus::CredentialFetcher::ServiceMethods
 
       requires :aws_access_key_id, :aws_secret_access_key
       recognizes :endpoint, :region, :host, :path, :port, :scheme, :persistent, :use_iam_profile, :aws_session_token, :aws_credentials_expire_at
 
       secrets    :aws_secret_access_key, :hmac
 
-      model_path 'fog/aws/models/storage'
+      model_path 'fog/eucalyptus/models/storage'
       collection  :directories
       model       :directory
       collection  :files
       model       :file
 
-      request_path 'fog/aws/requests/storage'
+      request_path 'fog/eucalyptus/requests/storage'
       request :abort_multipart_upload
       request :complete_multipart_upload
       request :copy_object

@@ -3,8 +3,8 @@ require 'fog/compute'
 
 module Fog
   module Compute
-    class AWS < Fog::Service
-      extend Fog::AWS::CredentialFetcher::ServiceMethods
+    class Eucalyptus < Fog::Service
+      extend Fog::Eucalyptus::CredentialFetcher::ServiceMethods
 
       requires :aws_access_key_id, :aws_secret_access_key
       recognizes :endpoint, :region, :host, :path, :port, :scheme, :persistent, :aws_session_token, :use_iam_profile, :aws_credentials_expire_at, :instrumentor, :instrumentor_name, :version
@@ -89,13 +89,13 @@ module Fog
       end
 
       class Mock
-        include Fog::AWS::CredentialFetcher::ConnectionMethods
+        include Fog::Eucalyptus::CredentialFetcher::ConnectionMethods
 
         def self.data
           @data ||= Hash.new do |hash, region|
             hash[region] = Hash.new do |region_hash, key|
-              owner_id = Fog::AWS::Mock.owner_id
-              security_group_id = Fog::AWS::Mock.security_group_id
+              owner_id = Fog::Eucalyptus::Mock.owner_id
+              security_group_id = Fog::Eucalyptus::Mock.security_group_id
               region_hash[key] = {
                 :deleted_at => {},
                 :addresses  => {},

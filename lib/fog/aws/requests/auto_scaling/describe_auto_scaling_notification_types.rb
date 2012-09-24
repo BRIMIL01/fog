@@ -6,7 +6,8 @@ module Fog
 
         require 'fog/aws/parsers/auto_scaling/describe_auto_scaling_notification_types'
 
-        # Returns a list of all notification types that are supported by Auto Scaling.
+        # Returns a list of all notification types that are supported by Auto
+        # Scaling.
         #
         # ==== Returns
         # * response<~Excon::Response>:
@@ -22,8 +23,9 @@ module Fog
         #
         def describe_auto_scaling_notification_types()
           request({
-            'Action' => 'DescribeAutoScalingNotificationTypes',
-            :parser  => Fog::Parsers::AWS::AutoScaling::DescribeAutoScalingNotificationTypes.new
+            'Action'    => 'DescribeAutoScalingNotificationTypes',
+            :idempotent => true,
+            :parser     => Fog::Parsers::AWS::AutoScaling::DescribeAutoScalingNotificationTypes.new
           })
         end
 
@@ -35,7 +37,7 @@ module Fog
           results = {
             'AutoScalingNotificationTypes' => [],
           }
-          data[:notification_types].each do |notification_type|
+          self.data[:notification_types].each do |notification_type|
             results['AutoScalingNotificationTypes'] << notification_type
           end
           response = Excon::Response.new

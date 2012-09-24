@@ -34,6 +34,19 @@ module Fog
         #   * 'LoadBalancerNames'<~Array> - A list of LoadBalancers to use.
         #   * 'PlacementGroup'<~String> - Physical location of your cluster
         #      placement group created in Amazon EC2.
+        #   * 'Tags'<~Array>:
+        #     * tag<~Hash>:
+        #       * 'Key'<~String> - The key of the tag.
+        #       * 'PropagateAtLaunch'<~Boolean> - Specifies whether the new tag
+        #         will be applied to instances launched after the tag is
+        #         created. The same behavior applies to updates: If you change
+        #         a tag, the changed tag will be applied to all instances
+        #         launched after you made the change.
+        #       * 'ResourceId'<~String>: The name of the AutoScaling group.
+        #       * 'ResourceType'<~String>: The kind of resource to which the
+        #         tag is applied. Currently, Auto Scaling supports the
+        #         auto-scaling-group resource type.
+        #       * 'Value'<~String>: The value of the tag.
         #   * 'TerminationPolicies'<~Array> - A standalone termination policy
         #     or a list of termination policies used to select the instance to
         #     terminate. The policies are executed in the order that they are
@@ -59,7 +72,7 @@ module Fog
           if tags = options.delete('Tags')
             tags.each_with_index do |tag, i|
               tag.each do |key, value|
-                options["Tags.member.#{i + 1}.#{key.to_s.capitalize}"] = value
+                options["Tags.member.#{i+1}.#{key}"] = value unless value.nil?
               end
             end
           end
@@ -81,18 +94,18 @@ module Fog
       class Mock
 
         def create_auto_scaling_group(auto_scaling_group_name, availability_zones, launch_configuration_name, max_size, min_size, options = {})
-          if data[:auto_scaling_groups].has_key?(auto_scaling_group_name)
+          if self.data[:auto_scaling_groups].has_key?(auto_scaling_group_name)
             raise Fog::AWS::AutoScaling::IdentifierTaken.new("AutoScalingGroup by this name already exists - A group with the name #{auto_scaling_group_name} already exists")
           end
-          unless data[:launch_configurations].has_key?(launch_configuration_name)
+          unless self.data[:launch_configurations].has_key?(launch_configuration_name)
             raise Fog::AWS::AutoScaling::ValidationError.new('Launch configuration name not found - null')
           end
-          data[:auto_scaling_groups][auto_scaling_group_name] = {
-            'AutoScalingGroupARN'     => "arn:aws:autoscaling:eu-west-1:000000000000:autoScalingGroup:00000000-0000-0000-0000-000000000000:autoScalingGroupName/#{auto_scaling_group_name}",
-            'AutoScalingGroupName'    => launch_configuration_name,
+          self.data[:auto_scaling_groups][auto_scaling_group_name] = {
+            'AutoScalingGroupARN'     => Fog::AWS::Mock.arn('autoscaling', self.data[:owner_id], "autoScalingGroup:00000000-0000-0000-0000-000000000000:autoScalingGroupName/#{auto_scaling_group_name}", @region),
+            'AutoScalingGroupName'    => auto_scaling_group_name,
             'AvailabilityZones'       => availability_zones.to_a,
             'CreatedTime'             => Time.now.utc,
-            'DefaultCooldown'         => 0,
+            'DefaultCooldown'         => 300,
             'DesiredCapacity'         => 0,
             'EnabledMetrics'          => [],
             'HealthCheckGracePeriod'  => 0,
@@ -104,6 +117,7 @@ module Fog
             'MinSize'                 => min_size,
             'PlacementGroup'          => nil,
             'SuspendedProcesses'      => [],
+            'Tags'                    => [],
             'TerminationPolicies'     => ['Default'],
             'VPCZoneIdentifier'       => nil
           }.merge!(options)

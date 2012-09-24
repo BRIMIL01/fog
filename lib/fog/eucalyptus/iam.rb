@@ -1,7 +1,7 @@
 require 'fog/aws'
 
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM < Fog::Service
 
       class EntityAlreadyExists < Fog::AWS::IAM::Error; end
@@ -13,7 +13,7 @@ module Fog
       requires :aws_access_key_id, :aws_secret_access_key
       recognizes :host, :path, :port, :scheme, :persistent, :instrumentor, :instrumentor_name
 
-      request_path 'fog/aws/requests/iam'
+      request_path 'fog/eucalyptus/requests/iam'
       request :add_user_to_group
       request :add_role_to_instance_profile
       request :create_access_key
@@ -71,7 +71,7 @@ module Fog
       request :upload_server_certificate
       request :upload_signing_certificate
 
-      model_path 'fog/aws/models/iam'
+      model_path 'fog/eucalyptus/models/iam'
       model       :user
       collection  :users
       model       :policy
@@ -84,20 +84,20 @@ module Fog
         def self.data
           @data ||= Hash.new do |hash, key|
             hash[key] = {
-              :owner_id => Fog::AWS::Mock.owner_id,
+              :owner_id => Fog::Eucalyptus::Mock.owner_id,
               :server_certificates => {},
               :users => Hash.new do |uhash, ukey|
                 uhash[ukey] = {
-                  :user_id     => Fog::AWS::Mock.key_id,
-                  :arn         => "arn:aws:iam::#{Fog::AWS::Mock.owner_id}:user/#{ukey}",
+                  :user_id     => Fog::Eucalyptus::Mock.key_id,
+                  :arn         => "arn:aws:iam::#{Fog::Eucalyptus::Mock.owner_id}:user/#{ukey}",
                   :access_keys => [],
                   :policies    => {}
                 }
               end,
               :groups => Hash.new do |ghash, gkey|
                 ghash[gkey] = {
-                  :group_id   => Fog::AWS::Mock.key_id,
-                  :arn        => "arn:aws:iam::#{Fog::AWS::Mock.owner_id}:group/#{gkey}",
+                  :group_id   => Fog::Eucalyptus::Mock.key_id,
+                  :arn        => "arn:aws:iam::#{Fog::Eucalyptus::Mock.owner_id}:group/#{gkey}",
                   :members    => []
                 }
               end

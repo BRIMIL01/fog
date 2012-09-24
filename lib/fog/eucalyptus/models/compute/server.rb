@@ -2,7 +2,7 @@ require 'fog/compute/models/server'
 
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
 
       class Server < Fog::Compute::Server
         extend Fog::Deprecation

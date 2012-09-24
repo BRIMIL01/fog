@@ -1,6 +1,6 @@
 require 'fog/core/json'
 module Fog
-  module AWS
+  module Eucalyptus
     module CredentialFetcher
       INSTANCE_METADATA_HOST = "http://169.254.169.254"
       INSTANCE_METADATA_PATH = "/latest/meta-data/iam/security-credentials/"
