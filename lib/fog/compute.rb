@@ -30,7 +30,7 @@ module Fog
         Fog::Compute::Ecloud.new(attributes)
       when :eucalyptus
         require 'fog/eucalyptus/compute'
-        Fog::Compute::AWS.new(attributes)
+        Fog::Compute::Eucalyptus.new(attributes)
       when :glesys
         require 'fog/glesys/compute'
         Fog::Compute::Glesys.new(attributes)

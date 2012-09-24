@@ -243,7 +243,7 @@ module Fog
         options = group_name
       elsif group_name
         if options.key?('GroupName')
-          raise Fog::Compute::eucalyptus::Error, 'Arguments specified both group_name and GroupName in options'
+          raise Fog::Compute::Eucalyptus::Error, 'Arguments specified both group_name and GroupName in options'
         end
         options = options.clone
         options['GroupName'] = group_name
@@ -251,7 +251,7 @@ module Fog
       name_specified = options.key?('GroupName') && !options['GroupName'].nil?
       group_id_specified = options.key?('GroupId') && !options['GroupId'].nil?
       unless name_specified || group_id_specified
-        raise Fog::Compute::eucalyptus::Error, 'Neither GroupName nor GroupId specified'
+        raise Fog::Compute::Eucalyptus::Error, 'Neither GroupName nor GroupId specified'
       end
       if name_specified && group_id_specified
         options.delete('GroupName')
