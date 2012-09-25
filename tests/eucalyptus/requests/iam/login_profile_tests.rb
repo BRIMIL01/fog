@@ -1,7 +1,7 @@
-Shindo.tests('AWS::IAM | user requests', ['aws']) do
+Shindo.tests('Eucalyptus::IAM | user requests', ['eucalyptus']) do
 
   unless Fog.mocking?
-    Fog::AWS[:iam].create_user('fog_user')
+    Fog::Eucalyptus[:iam].create_user('fog_user')
   end
 
 
@@ -17,34 +17,34 @@ Shindo.tests('AWS::IAM | user requests', ['aws']) do
     
     tests("#create_login_profile('fog_user')").formats(@login_profile_format) do
       pending if Fog.mocking?
-      Fog::AWS[:iam].create_login_profile('fog_user', 'somepassword').body
+      Fog::Eucalyptus[:iam].create_login_profile('fog_user', 'somepassword').body
     end
 
     tests("#get_login_profile('fog_user')").formats(@login_profile_format) do
       pending if Fog.mocking?
-      result = Fog::AWS[:iam].get_login_profile('fog_user').body
+      result = Fog::Eucalyptus[:iam].get_login_profile('fog_user').body
       returns('fog_user') {result['LoginProfile']['UserName']}
       result
     end
 
-    tests("#update_login_profile('fog_user')").formats(AWS::IAM::Formats::BASIC) do
+    tests("#update_login_profile('fog_user')").formats(Eucalyptus::IAM::Formats::BASIC) do
       pending if Fog.mocking?
       begin
-        Fog::AWS[:iam].update_login_profile('fog_user', 'otherpassword').body
+        Fog::Eucalyptus[:iam].update_login_profile('fog_user', 'otherpassword').body
       rescue Excon::Errors::Conflict #profile cannot be updated or deleted until it has finished creating; api provides no way of telling whether creation process complete
         sleep 5
         retry
       end
     end
 
-    tests("#delete_login_profile('fog_user')").formats(AWS::IAM::Formats::BASIC) do
+    tests("#delete_login_profile('fog_user')").formats(Eucalyptus::IAM::Formats::BASIC) do
       pending if Fog.mocking?
-      Fog::AWS[:iam].delete_login_profile('fog_user').body
+      Fog::Eucalyptus[:iam].delete_login_profile('fog_user').body
     end
 
     tests("#get_login_profile('fog_user')") do
       pending if Fog.mocking?
-      raises(Excon::Errors::NotFound) {Fog::AWS[:iam].get_login_profile('fog_user')}
+      raises(Excon::Errors::NotFound) {Fog::Eucalyptus[:iam].get_login_profile('fog_user')}
     end
 
   end
@@ -52,13 +52,13 @@ Shindo.tests('AWS::IAM | user requests', ['aws']) do
   tests('failure') do
     tests('get login profile for non existing user') do
       pending if Fog.mocking?
-      raises(Fog::AWS::IAM::NotFound) { Fog::AWS[:iam].get_login_profile('idontexist')}
-      raises(Fog::AWS::IAM::NotFound) { Fog::AWS[:iam].delete_login_profile('fog_user')}
+      raises(Fog::Eucalyptus::IAM::NotFound) { Fog::Eucalyptus[:iam].get_login_profile('idontexist')}
+      raises(Fog::Eucalyptus::IAM::NotFound) { Fog::Eucalyptus[:iam].delete_login_profile('fog_user')}
     end
   end
 
 
   unless Fog.mocking?
-    Fog::AWS[:iam].delete_user('fog_user')
+    Fog::Eucalyptus[:iam].delete_user('fog_user')
   end
 end

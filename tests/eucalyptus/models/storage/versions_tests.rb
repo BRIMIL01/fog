@@ -1,4 +1,4 @@
-Shindo.tests("Storage[:aws] | versions", ["aws"]) do
+Shindo.tests("Storage[:eucalyptus] | versions", ["eucalyptus"]) do
 
   file_attributes = {
       :key => 'fog_file_tests',
@@ -10,7 +10,7 @@ Shindo.tests("Storage[:aws] | versions", ["aws"]) do
       :key => 'fogfilestests'
   }
 
-  model_tests(Fog::Storage[:aws].directories, directory_attributes, Fog.mocking?) do
+  model_tests(Fog::Storage[:eucalyptus].directories, directory_attributes, Fog.mocking?) do
     @instance.versioning = true
 
     versions = []

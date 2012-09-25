@@ -1,4 +1,4 @@
-Shindo.tests("Storage[:aws] | file", ["aws"]) do
+Shindo.tests("Storage[:eucalyptus] | file", ["eucalyptus"]) do
 
   require 'tempfile'
 
@@ -13,7 +13,7 @@ Shindo.tests("Storage[:aws] | file", ["aws"]) do
     :key => "fogfilestests-#{rand(65536)}"
   }
 
-  @directory = Fog::Storage[:aws].directories.create(directory_attributes)
+  @directory = Fog::Storage[:eucalyptus].directories.create(directory_attributes)
 
   model_tests(@directory.files, file_attributes, Fog.mocking?) do
 
@@ -60,7 +60,7 @@ Shindo.tests("Storage[:aws] | file", ["aws"]) do
       pending if Fog.mocking?
 
       # A 6MB file
-      @large_file = Tempfile.new("fog-test-aws-s3-multipart")
+      @large_file = Tempfile.new("fog-test-eucalyptus-s3-multipart")
       6.times { @large_file.write("x" * (1024**2)) }
       @large_file.rewind
 

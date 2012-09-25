@@ -1,4 +1,4 @@
-class AWS
+class Eucalyptus
 
   module Compute
 

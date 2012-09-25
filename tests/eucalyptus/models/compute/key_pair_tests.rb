@@ -1,13 +1,13 @@
-Shindo.tests("Fog::Compute[:aws] | key_pair", ['aws']) do
+Shindo.tests("Fog::Compute[:eucalyptus] | key_pair", ['eucalyptus']) do
 
-  model_tests(Fog::Compute[:aws].key_pairs, {:name => 'fogkeyname'}, true)
+  model_tests(Fog::Compute[:eucalyptus].key_pairs, {:name => 'fogkeyname'}, true)
 
   after do
     @keypair.destroy
   end
 
   tests("new keypair") do
-    @keypair = Fog::Compute[:aws].key_pairs.create(:name => 'testkey')
+    @keypair = Fog::Compute[:eucalyptus].key_pairs.create(:name => 'testkey')
 
     test ("writable?") do
       @keypair.writable? == true
@@ -15,8 +15,8 @@ Shindo.tests("Fog::Compute[:aws] | key_pair", ['aws']) do
   end
 
   tests("existing keypair") do
-    Fog::Compute[:aws].key_pairs.create(:name => 'testkey')
-    @keypair = Fog::Compute[:aws].key_pairs.get('testkey')
+    Fog::Compute[:eucalyptus].key_pairs.create(:name => 'testkey')
+    @keypair = Fog::Compute[:eucalyptus].key_pairs.get('testkey')
 
     test("writable?") do
       @keypair.writable? == false

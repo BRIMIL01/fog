@@ -1,4 +1,4 @@
-Shindo.tests('AWS::IAM | role requests', ['aws']) do
+Shindo.tests('Eucalyptus::IAM | role requests', ['eucalyptus']) do
   tests('success') do
 
     @role = {
@@ -15,12 +15,12 @@ Shindo.tests('AWS::IAM | role requests', ['aws']) do
     }
     tests("#create_role('fogrole')").formats(@role_format) do
       pending if Fog.mocking?
-      Fog::AWS[:iam].create_role('fogrole', Fog::AWS::IAM::EC2_ASSUME_ROLE_POLICY).body
+      Fog::Eucalyptus[:iam].create_role('fogrole', Fog::Eucalyptus::IAM::EC2_ASSUME_ROLE_POLICY).body
     end
 
     tests("#get_role('fogrole')").formats(@role_format) do
       pending if Fog.mocking?
-      Fog::AWS[:iam].get_role('fogrole').body
+      Fog::Eucalyptus[:iam].get_role('fogrole').body
     end
 
     @list_roles_format = {
@@ -38,7 +38,7 @@ Shindo.tests('AWS::IAM | role requests', ['aws']) do
 
     tests("#list_roles").formats(@list_roles_format) do
       pending if Fog.mocking?
-      body = Fog::AWS[:iam].list_roles.body
+      body = Fog::Eucalyptus[:iam].list_roles.body
       returns(true){!! body['Roles'].detect {|role| role['RoleName'] == 'fogrole'}}
       body
     end
@@ -57,17 +57,17 @@ Shindo.tests('AWS::IAM | role requests', ['aws']) do
     }
     tests("#create_instance_profile('fogprofile')").formats(@profile_format) do
       pending if Fog.mocking?
-      Fog::AWS[:iam].create_instance_profile('fogprofile').body
+      Fog::Eucalyptus[:iam].create_instance_profile('fogprofile').body
     end
 
     tests("#get_instance_profile('fogprofile')").formats(@profile_format) do
       pending if Fog.mocking?
-      Fog::AWS[:iam].get_instance_profile('fogprofile').body
+      Fog::Eucalyptus[:iam].get_instance_profile('fogprofile').body
     end
 
-    tests("#add_role_to_instance_profile('fogprofile','fogrole')").formats(AWS::IAM::Formats::BASIC) do
+    tests("#add_role_to_instance_profile('fogprofile','fogrole')").formats(Eucalyptus::IAM::Formats::BASIC) do
       pending if Fog.mocking?
-      Fog::AWS[:iam].add_role_to_instance_profile('fogrole', 'fogprofile').body
+      Fog::Eucalyptus[:iam].add_role_to_instance_profile('fogrole', 'fogprofile').body
     end
 
     @profiles_format = {
@@ -85,21 +85,21 @@ Shindo.tests('AWS::IAM | role requests', ['aws']) do
     }
     tests("list_instance_profiles_for_role('fogrole')").formats(@profiles_format) do
       pending if Fog.mocking?
-      body = Fog::AWS[:iam].list_instance_profiles_for_role('fogrole').body
+      body = Fog::Eucalyptus[:iam].list_instance_profiles_for_role('fogrole').body
       returns(['fogprofile']) { body['InstanceProfiles'].collect {|hash| hash['InstanceProfileName']}}      
       body
     end
 
     tests("list_instance_profiles").formats(@profiles_format) do
       pending if Fog.mocking?
-      Fog::AWS[:iam].list_instance_profiles.body
+      Fog::Eucalyptus[:iam].list_instance_profiles.body
     end
 
     sample_policy = {"Statement" => [{"Effect" => "Allow", "Action" => "*", "Resource" => "*"}]}
     
-    tests("put_role_policy").formats(AWS::IAM::Formats::BASIC) do
+    tests("put_role_policy").formats(Eucalyptus::IAM::Formats::BASIC) do
       pending if Fog.mocking?
-      Fog::AWS[:iam].put_role_policy('fogrole', 'fogpolicy', sample_policy).body
+      Fog::Eucalyptus[:iam].put_role_policy('fogrole', 'fogpolicy', sample_policy).body
     end
 
     @get_role_policy_format = {
@@ -113,7 +113,7 @@ Shindo.tests('AWS::IAM | role requests', ['aws']) do
 
     tests("get_role_policy").formats(@get_role_policy_format) do
       pending if Fog.mocking?
-      body = Fog::AWS[:iam].get_role_policy('fogrole','fogpolicy').body
+      body = Fog::Eucalyptus[:iam].get_role_policy('fogrole','fogpolicy').body
       returns('fogpolicy') {body['Policy']['PolicyName']}
       returns(sample_policy){body['Policy']['PolicyDocument']}
       body
@@ -127,40 +127,40 @@ Shindo.tests('AWS::IAM | role requests', ['aws']) do
 
     tests("list_role_policies").formats(@list_role_policies_format) do
       pending if Fog.mocking?
-      body = Fog::AWS[:iam].list_role_policies('fogrole').body
+      body = Fog::Eucalyptus[:iam].list_role_policies('fogrole').body
 
       returns(['fogpolicy']) {body['PolicyNames']}
       body
     end
 
-    tests("delete_role_policy").formats(AWS::IAM::Formats::BASIC) do
+    tests("delete_role_policy").formats(Eucalyptus::IAM::Formats::BASIC) do
       pending if Fog.mocking?
-      Fog::AWS[:iam].delete_role_policy('fogrole', 'fogpolicy').body
+      Fog::Eucalyptus[:iam].delete_role_policy('fogrole', 'fogpolicy').body
     end
     
     returns([]) do
       pending if Fog.mocking?
-      Fog::AWS[:iam].list_role_policies('fogrole').body['PolicyNames']
+      Fog::Eucalyptus[:iam].list_role_policies('fogrole').body['PolicyNames']
     end
 
-    tests("remove_role_from_instance_profile").formats(AWS::IAM::Formats::BASIC) do
+    tests("remove_role_from_instance_profile").formats(Eucalyptus::IAM::Formats::BASIC) do
       pending if Fog.mocking?
-      Fog::AWS[:iam].remove_role_from_instance_profile('fogrole', 'fogprofile').body
+      Fog::Eucalyptus[:iam].remove_role_from_instance_profile('fogrole', 'fogprofile').body
     end
 
     returns([]) do
       pending if Fog.mocking?
-      Fog::AWS[:iam].list_instance_profiles_for_role('fogrole').body['InstanceProfiles']
+      Fog::Eucalyptus[:iam].list_instance_profiles_for_role('fogrole').body['InstanceProfiles']
     end
 
-    tests("#delete_instance_profile('fogprofile'").formats(AWS::IAM::Formats::BASIC) do
+    tests("#delete_instance_profile('fogprofile'").formats(Eucalyptus::IAM::Formats::BASIC) do
       pending if Fog.mocking?
-      Fog::AWS[:iam].delete_instance_profile('fogprofile').body
+      Fog::Eucalyptus[:iam].delete_instance_profile('fogprofile').body
     end
 
-    tests("#delete_role('fogrole'").formats(AWS::IAM::Formats::BASIC) do
+    tests("#delete_role('fogrole'").formats(Eucalyptus::IAM::Formats::BASIC) do
       pending if Fog.mocking?
-      Fog::AWS[:iam].delete_role('fogrole').body
+      Fog::Eucalyptus[:iam].delete_role('fogrole').body
     end
   end
 

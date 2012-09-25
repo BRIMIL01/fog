@@ -1,8 +1,8 @@
-Shindo.tests("Fog::Compute[:aws] | address", ['aws']) do
+Shindo.tests("Fog::Compute[:eucalyptus] | address", ['eucalyptus']) do
 
-  model_tests(Fog::Compute[:aws].addresses, {}, true) do
+  model_tests(Fog::Compute[:eucalyptus].addresses, {}, true) do
 
-    @server = Fog::Compute[:aws].servers.create
+    @server = Fog::Compute[:eucalyptus].servers.create
     @server.wait_for { ready? }
 
     tests('#server=').succeeds do
@@ -19,6 +19,4 @@ Shindo.tests("Fog::Compute[:aws] | address", ['aws']) do
     @server.destroy
 
   end
-
-  model_tests(Fog::Compute[:aws].addresses, { :domain => "vpc" }, true)
 end

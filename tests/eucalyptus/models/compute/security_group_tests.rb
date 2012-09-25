@@ -1,11 +1,11 @@
-Shindo.tests("Fog::Compute[:aws] | security_group", ['aws']) do
+Shindo.tests("Fog::Compute[:eucalyptus] | security_group", ['eucalyptus']) do
 
-  model_tests(Fog::Compute[:aws].security_groups, {:description => 'foggroupdescription', :name => 'foggroupname'}, true)
+  model_tests(Fog::Compute[:eucalyptus].security_groups, {:description => 'foggroupdescription', :name => 'foggroupname'}, true)
 
   tests("authorize and revoke helpers") do
-    @group = Fog::Compute[:aws].security_groups.create(:name => "foggroup", :description => "fog group desc")
+    @group = Fog::Compute[:eucalyptus].security_groups.create(:name => "foggroup", :description => "fog group desc")
 
-    @other_group = Fog::Compute[:aws].security_groups.create(:name => 'fog other group', :description => 'another fog group')
+    @other_group = Fog::Compute[:eucalyptus].security_groups.create(:name => 'fog other group', :description => 'another fog group')
     @other_group.reload
 
     test("authorize access by another security group") do

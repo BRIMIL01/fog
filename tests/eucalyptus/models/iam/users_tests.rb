@@ -1,4 +1,4 @@
-Shindo.tests("Fog::Compute[:iam] | users", ['aws','iam']) do
+Shindo.tests("Fog::Compute[:iam] | users", ['eucalyptus','iam']) do
 
   Fog.mock!
   @iam = Fog::AWS[:iam]

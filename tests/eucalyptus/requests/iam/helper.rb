@@ -1,4 +1,4 @@
-class AWS
+class Eucalyptus
 
   module IAM
     # A self-signed test keypair. Generated using the command:

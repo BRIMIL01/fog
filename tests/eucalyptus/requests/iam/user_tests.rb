@@ -1,6 +1,6 @@
-Shindo.tests('AWS::IAM | user requests', ['aws']) do
+Shindo.tests('Eucalyptus::IAM | user requests', ['eucalyptus']) do
 
-  Fog::AWS[:iam].create_group('fog_user_tests')
+  Fog::Eucalyptus[:iam].create_group('fog_user_tests')
 
   tests('success') do
 
@@ -15,7 +15,7 @@ Shindo.tests('AWS::IAM | user requests', ['aws']) do
     }
 
     tests("#create_user('fog_user')").formats(@user_format) do
-      Fog::AWS[:iam].create_user('fog_user').body
+      Fog::Eucalyptus[:iam].create_user('fog_user').body
     end
 
     @users_format = {
@@ -30,15 +30,15 @@ Shindo.tests('AWS::IAM | user requests', ['aws']) do
     }
 
     tests("#list_users").formats(@users_format) do
-      Fog::AWS[:iam].list_users.body
+      Fog::Eucalyptus[:iam].list_users.body
     end
 
     tests("#get_user").formats(@user_format) do
-      Fog::AWS[:iam].get_user('fog_user').body
+      Fog::Eucalyptus[:iam].get_user('fog_user').body
     end
 
-    tests("#add_user_to_group('fog_user_tests', 'fog_user')").formats(AWS::IAM::Formats::BASIC) do
-      Fog::AWS[:iam].add_user_to_group('fog_user_tests', 'fog_user').body
+    tests("#add_user_to_group('fog_user_tests', 'fog_user')").formats(Eucalyptus::IAM::Formats::BASIC) do
+      Fog::Eucalyptus[:iam].add_user_to_group('fog_user_tests', 'fog_user').body
     end
 
     @groups_format = {
@@ -53,15 +53,15 @@ Shindo.tests('AWS::IAM | user requests', ['aws']) do
     }
 
     tests("#list_groups_for_user('fog_user')").formats(@groups_format) do
-      Fog::AWS[:iam].list_groups_for_user('fog_user').body
+      Fog::Eucalyptus[:iam].list_groups_for_user('fog_user').body
     end
 
-    tests("#remove_user_from_group('fog_user_tests', 'fog_user')").formats(AWS::IAM::Formats::BASIC) do
-      Fog::AWS[:iam].remove_user_from_group('fog_user_tests', 'fog_user').body
+    tests("#remove_user_from_group('fog_user_tests', 'fog_user')").formats(Eucalyptus::IAM::Formats::BASIC) do
+      Fog::Eucalyptus[:iam].remove_user_from_group('fog_user_tests', 'fog_user').body
     end
 
-    tests("#delete_user('fog_user')").formats(AWS::IAM::Formats::BASIC) do
-      Fog::AWS[:iam].delete_user('fog_user').body
+    tests("#delete_user('fog_user')").formats(Eucalyptus::IAM::Formats::BASIC) do
+      Fog::Eucalyptus[:iam].delete_user('fog_user').body
     end
 
 
@@ -71,6 +71,6 @@ Shindo.tests('AWS::IAM | user requests', ['aws']) do
     test('failing conditions')
   end
 
-  Fog::AWS[:iam].delete_group('fog_user_tests')
+  Fog::Eucalyptus[:iam].delete_group('fog_user_tests')
 
 end

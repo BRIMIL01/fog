@@ -1,5 +1,5 @@
-Shindo.tests('Fog::Storage[:aws] | bucket requests', ["aws"]) do
-  @aws_bucket_name = 'fogbuckettests-' + Time.now.to_i.to_s(32)
+Shindo.tests('Fog::Storage[:eucalyptus] | bucket requests', ["eucalyptus"]) do
+  @eucalyptus_bucket_name = 'fogbuckettests-' + Time.now.to_i.to_s(32)
 
   tests('success') do
 
@@ -34,31 +34,31 @@ Shindo.tests('Fog::Storage[:aws] | bucket requests', ["aws"]) do
       }
     }
 
-    tests("#put_bucket('#{@aws_bucket_name}')").succeeds do
-      Fog::Storage[:aws].put_bucket(@aws_bucket_name)
-      @aws_owner = Fog::Storage[:aws].get_bucket_acl(Fog::Storage[:aws].directories.first.key).body['Owner']
+    tests("#put_bucket('#{@eucalyptus_bucket_name}')").succeeds do
+      Fog::Storage[:eucalyptus].put_bucket(@eucalyptus_bucket_name)
+      @eucalyptus_owner = Fog::Storage[:eucalyptus].get_bucket_acl(Fog::Storage[:eucalyptus].directories.first.key).body['Owner']
     end
 
     tests("#get_service").formats(@service_format) do
-      Fog::Storage[:aws].get_service.body
+      Fog::Storage[:eucalyptus].get_service.body
     end
 
-    file = Fog::Storage[:aws].directories.get(@aws_bucket_name).files.create(:body => 'y', :key => 'x')
+    file = Fog::Storage[:eucalyptus].directories.get(@eucalyptus_bucket_name).files.create(:body => 'y', :key => 'x')
 
-    tests("#get_bucket('#{@aws_bucket_name}')").formats(@bucket_format) do
-      Fog::Storage[:aws].get_bucket(@aws_bucket_name).body
+    tests("#get_bucket('#{@eucalyptus_bucket_name}')").formats(@bucket_format) do
+      Fog::Storage[:eucalyptus].get_bucket(@eucalyptus_bucket_name).body
     end
 
     file.destroy
 
-    file1 = Fog::Storage[:aws].directories.get(@aws_bucket_name).files.create(:body => 'a',    :key => 'a/a1/file1')
-    file2 = Fog::Storage[:aws].directories.get(@aws_bucket_name).files.create(:body => 'ab',   :key => 'a/file2')
-    file3 = Fog::Storage[:aws].directories.get(@aws_bucket_name).files.create(:body => 'abc',  :key => 'b/file3')
-    file4 = Fog::Storage[:aws].directories.get(@aws_bucket_name).files.create(:body => 'abcd', :key => 'file4')
+    file1 = Fog::Storage[:eucalyptus].directories.get(@eucalyptus_bucket_name).files.create(:body => 'a',    :key => 'a/a1/file1')
+    file2 = Fog::Storage[:eucalyptus].directories.get(@eucalyptus_bucket_name).files.create(:body => 'ab',   :key => 'a/file2')
+    file3 = Fog::Storage[:eucalyptus].directories.get(@eucalyptus_bucket_name).files.create(:body => 'abc',  :key => 'b/file3')
+    file4 = Fog::Storage[:eucalyptus].directories.get(@eucalyptus_bucket_name).files.create(:body => 'abcd', :key => 'file4')
 
-    tests("#get_bucket('#{@aws_bucket_name}')") do
+    tests("#get_bucket('#{@eucalyptus_bucket_name}')") do
       before do
-        @bucket = Fog::Storage[:aws].get_bucket(@aws_bucket_name)
+        @bucket = Fog::Storage[:eucalyptus].get_bucket(@eucalyptus_bucket_name)
       end
 
       tests(".body['Contents'].map{|n| n['Key']}").returns(["a/a1/file1", "a/file2", "b/file3", "file4"]) do
@@ -74,9 +74,9 @@ Shindo.tests('Fog::Storage[:aws] | bucket requests', ["aws"]) do
       end
     end
 
-    tests("#get_bucket('#{@aws_bucket_name}', 'delimiter' => '/')") do
+    tests("#get_bucket('#{@eucalyptus_bucket_name}', 'delimiter' => '/')") do
       before do
-        @bucket = Fog::Storage[:aws].get_bucket(@aws_bucket_name, 'delimiter' => '/')
+        @bucket = Fog::Storage[:eucalyptus].get_bucket(@eucalyptus_bucket_name, 'delimiter' => '/')
       end
 
       tests(".body['Contents'].map{|n| n['Key']}").returns(['file4']) do
@@ -88,9 +88,9 @@ Shindo.tests('Fog::Storage[:aws] | bucket requests', ["aws"]) do
       end
     end
 
-    tests("#get_bucket('#{@aws_bucket_name}', 'delimiter' => '/', 'prefix' => 'a/')") do
+    tests("#get_bucket('#{@eucalyptus_bucket_name}', 'delimiter' => '/', 'prefix' => 'a/')") do
       before do
-        @bucket = Fog::Storage[:aws].get_bucket(@aws_bucket_name, 'delimiter' => '/', 'prefix' => 'a/')
+        @bucket = Fog::Storage[:eucalyptus].get_bucket(@eucalyptus_bucket_name, 'delimiter' => '/', 'prefix' => 'a/')
       end
 
       tests(".body['Contents'].map{|n| n['Key']}").returns(['a/file2']) do
@@ -104,42 +104,42 @@ Shindo.tests('Fog::Storage[:aws] | bucket requests', ["aws"]) do
 
     file1.destroy; file2.destroy; file3.destroy; file4.destroy
 
-    tests("#get_bucket_location('#{@aws_bucket_name}')").formats('LocationConstraint' => NilClass) do
-      Fog::Storage[:aws].get_bucket_location(@aws_bucket_name).body
+    tests("#get_bucket_location('#{@eucalyptus_bucket_name}')").formats('LocationConstraint' => NilClass) do
+      Fog::Storage[:eucalyptus].get_bucket_location(@eucalyptus_bucket_name).body
     end
 
-    tests("#get_request_payment('#{@aws_bucket_name}')").formats('Payer' => String) do
-      Fog::Storage[:aws].get_request_payment(@aws_bucket_name).body
+    tests("#get_request_payment('#{@eucalyptus_bucket_name}')").formats('Payer' => String) do
+      Fog::Storage[:eucalyptus].get_request_payment(@eucalyptus_bucket_name).body
     end
 
-    tests("#put_request_payment('#{@aws_bucket_name}', 'Requester')").succeeds do
-      Fog::Storage[:aws].put_request_payment(@aws_bucket_name, 'Requester')
+    tests("#put_request_payment('#{@eucalyptus_bucket_name}', 'Requester')").succeeds do
+      Fog::Storage[:eucalyptus].put_request_payment(@eucalyptus_bucket_name, 'Requester')
     end
 
-    tests("#put_bucket_website('#{@aws_bucket_name}', 'index.html')").succeeds do
-      Fog::Storage[:aws].put_bucket_website(@aws_bucket_name, 'index.html')
+    tests("#put_bucket_website('#{@eucalyptus_bucket_name}', 'index.html')").succeeds do
+      Fog::Storage[:eucalyptus].put_bucket_website(@eucalyptus_bucket_name, 'index.html')
     end
 
-    tests("#put_bucket_acl('#{@aws_bucket_name}', 'private')").succeeds do
-      Fog::Storage[:aws].put_bucket_acl(@aws_bucket_name, 'private')
+    tests("#put_bucket_acl('#{@eucalyptus_bucket_name}', 'private')").succeeds do
+      Fog::Storage[:eucalyptus].put_bucket_acl(@eucalyptus_bucket_name, 'private')
     end
 
     acl = {
-      'Owner' => @aws_owner,
+      'Owner' => @eucalyptus_owner,
       'AccessControlList' => [
         {
-          'Grantee' => @aws_owner,
+          'Grantee' => @eucalyptus_owner,
           'Permission' => "FULL_CONTROL"
         }
       ]
     }
-    tests("#put_bucket_acl('#{@aws_bucket_name}', hash with id)").returns(acl) do
-      Fog::Storage[:aws].put_bucket_acl(@aws_bucket_name, acl)
-      Fog::Storage[:aws].get_bucket_acl(@aws_bucket_name).body
+    tests("#put_bucket_acl('#{@eucalyptus_bucket_name}', hash with id)").returns(acl) do
+      Fog::Storage[:eucalyptus].put_bucket_acl(@eucalyptus_bucket_name, acl)
+      Fog::Storage[:eucalyptus].get_bucket_acl(@eucalyptus_bucket_name).body
     end
 
-    tests("#put_bucket_acl('#{@aws_bucket_name}', hash with email)").returns({
-        'Owner' => @aws_owner,
+    tests("#put_bucket_acl('#{@eucalyptus_bucket_name}', hash with email)").returns({
+        'Owner' => @eucalyptus_owner,
         'AccessControlList' => [
           {
             'Grantee' => { 'ID' => 'f62f0218873cfa5d56ae9429ae75a592fec4fd22a5f24a20b1038a7db9a8f150', 'DisplayName' => 'mtd' },
@@ -148,8 +148,8 @@ Shindo.tests('Fog::Storage[:aws] | bucket requests', ["aws"]) do
         ]
     }) do
       pending if Fog.mocking?
-      Fog::Storage[:aws].put_bucket_acl(@aws_bucket_name, {
-        'Owner' => @aws_owner,
+      Fog::Storage[:eucalyptus].put_bucket_acl(@eucalyptus_bucket_name, {
+        'Owner' => @eucalyptus_owner,
         'AccessControlList' => [
           {
             'Grantee' => { 'EmailAddress' => 'mtd@amazon.com' },
@@ -157,26 +157,26 @@ Shindo.tests('Fog::Storage[:aws] | bucket requests', ["aws"]) do
           }
         ]
       })
-      Fog::Storage[:aws].get_bucket_acl(@aws_bucket_name).body
+      Fog::Storage[:eucalyptus].get_bucket_acl(@eucalyptus_bucket_name).body
     end
 
     acl = {
-      'Owner' => @aws_owner,
+      'Owner' => @eucalyptus_owner,
       'AccessControlList' => [
         {
-          'Grantee' => { 'URI' => 'http://acs.amazonaws.com/groups/global/AllUsers' },
+          'Grantee' => { 'URI' => 'http://acs.amazoneucalyptus.com/groups/global/AllUsers' },
           'Permission' => "FULL_CONTROL"
         }
       ]
     }
-    tests("#put_bucket_acl('#{@aws_bucket_name}', hash with uri)").returns(acl) do
-      Fog::Storage[:aws].put_bucket_acl(@aws_bucket_name, acl)
-      Fog::Storage[:aws].get_bucket_acl(@aws_bucket_name).body
+    tests("#put_bucket_acl('#{@eucalyptus_bucket_name}', hash with uri)").returns(acl) do
+      Fog::Storage[:eucalyptus].put_bucket_acl(@eucalyptus_bucket_name, acl)
+      Fog::Storage[:eucalyptus].get_bucket_acl(@eucalyptus_bucket_name).body
     end
 
-    tests("#delete_bucket_website('#{@aws_bucket_name}')").succeeds do
+    tests("#delete_bucket_website('#{@eucalyptus_bucket_name}')").succeeds do
       pending if Fog.mocking?
-      Fog::Storage[:aws].delete_bucket_website(@aws_bucket_name)
+      Fog::Storage[:eucalyptus].delete_bucket_website(@eucalyptus_bucket_name)
     end
 
     tests('bucket lifecycle') do
@@ -186,21 +186,21 @@ Shindo.tests('Fog::Storage[:aws] | bucket requests', ["aws"]) do
       tests('non-existant bucket') do
         tests('#put_bucket_lifecycle').returns([404, 'NoSuchBucket']) do
           begin
-            Fog::Storage[:aws].put_bucket_lifecycle('fognonbucket', lifecycle)
+            Fog::Storage[:eucalyptus].put_bucket_lifecycle('fognonbucket', lifecycle)
           rescue Excon::Errors::NotFound => e
             [e.response.status, e.response.body.match(%r{<Code>(.*)</Code>})[1]]
           end
         end
         tests('#get_bucket_lifecycle').returns([404, 'NoSuchBucket']) do
           begin
-            Fog::Storage[:aws].get_bucket_lifecycle('fognonbucket')
+            Fog::Storage[:eucalyptus].get_bucket_lifecycle('fognonbucket')
           rescue Excon::Errors::NotFound => e
             [e.response.status, e.response.body.match(%r{<Code>(.*)</Code>})[1]]
           end
         end
         tests('#delete_bucket_lifecycle').returns([404, 'NoSuchBucket']) do
           begin
-            Fog::Storage[:aws].delete_bucket_lifecycle('fognonbucket')
+            Fog::Storage[:eucalyptus].delete_bucket_lifecycle('fognonbucket')
           rescue Excon::Errors::NotFound => e
             [e.response.status, e.response.body.match(%r{<Code>(.*)</Code>})[1]]
           end
@@ -209,40 +209,40 @@ Shindo.tests('Fog::Storage[:aws] | bucket requests', ["aws"]) do
       tests('no lifecycle') do
         tests('#get_bucket_lifecycle').returns([404, 'NoSuchLifecycleConfiguration']) do
           begin
-            Fog::Storage[:aws].get_bucket_lifecycle(@aws_bucket_name)
+            Fog::Storage[:eucalyptus].get_bucket_lifecycle(@eucalyptus_bucket_name)
           rescue Excon::Errors::NotFound => e
             [e.response.status, e.response.body.match(%r{<Code>(.*)</Code>})[1]]
           end
         end
         tests('#delete_bucket_lifecycle').succeeds do
-          Fog::Storage[:aws].delete_bucket_lifecycle(@aws_bucket_name)
+          Fog::Storage[:eucalyptus].delete_bucket_lifecycle(@eucalyptus_bucket_name)
         end
       end
       tests('create').succeeds do
-        Fog::Storage[:aws].put_bucket_lifecycle(@aws_bucket_name, lifecycle)
+        Fog::Storage[:eucalyptus].put_bucket_lifecycle(@eucalyptus_bucket_name, lifecycle)
       end
       tests('read').returns(lifecycle) do
-        Fog::Storage[:aws].get_bucket_lifecycle(@aws_bucket_name).body
+        Fog::Storage[:eucalyptus].get_bucket_lifecycle(@eucalyptus_bucket_name).body
       end
       lifecycle = { 'Rules' => 5.upto(6).map { |i| {'ID' => "rule\##{i}", 'Prefix' => i.to_s, 'Enabled' => true, 'Days' => i} } }
       tests('update').returns(lifecycle) do
-        Fog::Storage[:aws].put_bucket_lifecycle(@aws_bucket_name, lifecycle)
-        Fog::Storage[:aws].get_bucket_lifecycle(@aws_bucket_name).body
+        Fog::Storage[:eucalyptus].put_bucket_lifecycle(@eucalyptus_bucket_name, lifecycle)
+        Fog::Storage[:eucalyptus].get_bucket_lifecycle(@eucalyptus_bucket_name).body
       end
       tests('delete').succeeds do
-          Fog::Storage[:aws].delete_bucket_lifecycle(@aws_bucket_name)
+          Fog::Storage[:eucalyptus].delete_bucket_lifecycle(@eucalyptus_bucket_name)
       end
       tests('read').returns([404, 'NoSuchLifecycleConfiguration']) do
         begin
-          Fog::Storage[:aws].get_bucket_lifecycle(@aws_bucket_name)
+          Fog::Storage[:eucalyptus].get_bucket_lifecycle(@eucalyptus_bucket_name)
         rescue Excon::Errors::NotFound => e
           [e.response.status, e.response.body.match(%r{<Code>(.*)</Code>})[1]]
         end
       end
     end
 
-    tests("#delete_bucket('#{@aws_bucket_name}')").succeeds do
-      Fog::Storage[:aws].delete_bucket(@aws_bucket_name)
+    tests("#delete_bucket('#{@eucalyptus_bucket_name}')").succeeds do
+      Fog::Storage[:eucalyptus].delete_bucket(@eucalyptus_bucket_name)
     end
 
   end
@@ -250,45 +250,45 @@ Shindo.tests('Fog::Storage[:aws] | bucket requests', ["aws"]) do
   tests('failure') do
 
     tests("#delete_bucket('fognonbucket')").raises(Excon::Errors::NotFound) do
-      Fog::Storage[:aws].delete_bucket('fognonbucket')
+      Fog::Storage[:eucalyptus].delete_bucket('fognonbucket')
     end
 
-    @bucket = Fog::Storage[:aws].directories.create(:key => 'fognonempty')
+    @bucket = Fog::Storage[:eucalyptus].directories.create(:key => 'fognonempty')
     @file = @bucket.files.create(:key => 'foo', :body => 'bar')
 
     tests("#delete_bucket('fognonempty')").raises(Excon::Errors::Conflict) do
-      Fog::Storage[:aws].delete_bucket('fognonempty')
+      Fog::Storage[:eucalyptus].delete_bucket('fognonempty')
     end
 
     @file.destroy
     @bucket.destroy
 
     tests("#get_bucket('fognonbucket')").raises(Excon::Errors::NotFound) do
-      Fog::Storage[:aws].get_bucket('fognonbucket')
+      Fog::Storage[:eucalyptus].get_bucket('fognonbucket')
     end
 
     tests("#get_bucket_location('fognonbucket')").raises(Excon::Errors::NotFound) do
-      Fog::Storage[:aws].get_bucket_location('fognonbucket')
+      Fog::Storage[:eucalyptus].get_bucket_location('fognonbucket')
     end
 
     tests("#get_request_payment('fognonbucket')").raises(Excon::Errors::NotFound) do
-      Fog::Storage[:aws].get_request_payment('fognonbucket')
+      Fog::Storage[:eucalyptus].get_request_payment('fognonbucket')
     end
 
     tests("#put_request_payment('fognonbucket', 'Requester')").raises(Excon::Errors::NotFound) do
-      Fog::Storage[:aws].put_request_payment('fognonbucket', 'Requester')
+      Fog::Storage[:eucalyptus].put_request_payment('fognonbucket', 'Requester')
     end
 
     tests("#put_bucket_acl('fognonbucket', 'invalid')").raises(Excon::Errors::BadRequest) do
-      Fog::Storage[:aws].put_bucket_acl('fognonbucket', 'invalid')
+      Fog::Storage[:eucalyptus].put_bucket_acl('fognonbucket', 'invalid')
     end
 
     tests("#put_bucket_website('fognonbucket', 'index.html')").raises(Excon::Errors::NotFound) do
-      Fog::Storage[:aws].put_bucket_website('fognonbucket', 'index.html')
+      Fog::Storage[:eucalyptus].put_bucket_website('fognonbucket', 'index.html')
     end
 
   end
 
   # don't keep the bucket around
-  Fog::Storage[:aws].delete_bucket(@aws_bucket_name) rescue nil
+  Fog::Storage[:eucalyptus].delete_bucket(@eucalyptus_bucket_name) rescue nil
 end

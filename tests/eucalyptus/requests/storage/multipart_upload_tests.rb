@@ -1,6 +1,6 @@
-Shindo.tests('Fog::Storage[:aws] | multipart upload requests', ["aws"]) do
+Shindo.tests('Fog::Storage[:eucalyptus] | multipart upload requests', ["eucalyptus"]) do
 
-  @directory = Fog::Storage[:aws].directories.create(:key => 'fogmultipartuploadtests')
+  @directory = Fog::Storage[:eucalyptus].directories.create(:key => 'fogmultipartuploadtests')
 
   tests('success') do
 
@@ -12,7 +12,7 @@ Shindo.tests('Fog::Storage[:aws] | multipart upload requests', ["aws"]) do
 
     tests("#initiate_multipart_upload('#{@directory.identity}')", 'fog_multipart_upload').formats(@initiate_multipart_upload_format) do
       pending if Fog.mocking?
-      data = Fog::Storage[:aws].initiate_multipart_upload(@directory.identity, 'fog_multipart_upload').body
+      data = Fog::Storage[:eucalyptus].initiate_multipart_upload(@directory.identity, 'fog_multipart_upload').body
       @upload_id = data['UploadId']
       data
     end
@@ -43,14 +43,14 @@ Shindo.tests('Fog::Storage[:aws] | multipart upload requests', ["aws"]) do
 
     tests("#list_multipart_uploads('#{@directory.identity})").formats(@list_multipart_uploads_format) do
       pending if Fog.mocking?
-      Fog::Storage[:aws].list_multipart_uploads(@directory.identity).body
+      Fog::Storage[:eucalyptus].list_multipart_uploads(@directory.identity).body
     end
 
     @parts = []
 
     tests("#upload_part('#{@directory.identity}', 'fog_multipart_upload', '#{@upload_id}', 1, ('x' * 6 * 1024 * 1024))").succeeds do
       pending if Fog.mocking?
-      data = Fog::Storage[:aws].upload_part(@directory.identity, 'fog_multipart_upload', @upload_id, 1, ('x' * 6 * 1024 * 1024))
+      data = Fog::Storage[:eucalyptus].upload_part(@directory.identity, 'fog_multipart_upload', @upload_id, 1, ('x' * 6 * 1024 * 1024))
       @parts << data.headers['ETag']
     end
 
@@ -77,11 +77,11 @@ Shindo.tests('Fog::Storage[:aws] | multipart upload requests', ["aws"]) do
 
     tests("#list_parts('#{@directory.identity}', 'fog_multipart_upload', '#{@upload_id}')").formats(@list_parts_format) do
       pending if Fog.mocking?
-      Fog::Storage[:aws].list_parts(@directory.identity, 'fog_multipart_upload', @upload_id).body
+      Fog::Storage[:eucalyptus].list_parts(@directory.identity, 'fog_multipart_upload', @upload_id).body
     end
 
     if !Fog.mocking?
-      @parts << Fog::Storage[:aws].upload_part(@directory.identity, 'fog_multipart_upload', @upload_id, 2, ('x' * 4 * 1024 * 1024)).headers['ETag']
+      @parts << Fog::Storage[:eucalyptus].upload_part(@directory.identity, 'fog_multipart_upload', @upload_id, 2, ('x' * 4 * 1024 * 1024)).headers['ETag']
     end
 
     @complete_multipart_upload_format = {
@@ -93,12 +93,12 @@ Shindo.tests('Fog::Storage[:aws] | multipart upload requests', ["aws"]) do
 
     tests("#complete_multipart_upload('#{@directory.identity}', 'fog_multipart_upload', '#{@upload_id}', #{@parts.inspect})").formats(@complete_multipart_upload_format) do
       pending if Fog.mocking?
-      Fog::Storage[:aws].complete_multipart_upload(@directory.identity, 'fog_multipart_upload', @upload_id, @parts).body
+      Fog::Storage[:eucalyptus].complete_multipart_upload(@directory.identity, 'fog_multipart_upload', @upload_id, @parts).body
     end
 
     tests("#get_object('#{@directory.identity}', 'fog_multipart_upload').body").succeeds do
       pending if Fog.mocking?
-      Fog::Storage[:aws].get_object(@directory.identity, 'fog_multipart_upload').body == ('x' * 10 * 1024 * 1024)
+      Fog::Storage[:eucalyptus].get_object(@directory.identity, 'fog_multipart_upload').body == ('x' * 10 * 1024 * 1024)
     end
 
     if !Fog.mocking?
@@ -106,12 +106,12 @@ Shindo.tests('Fog::Storage[:aws] | multipart upload requests', ["aws"]) do
     end
 
     if !Fog.mocking?
-      @upload_id = Fog::Storage[:aws].initiate_multipart_upload(@directory.identity, 'fog_multipart_abort').body['UploadId']
+      @upload_id = Fog::Storage[:eucalyptus].initiate_multipart_upload(@directory.identity, 'fog_multipart_abort').body['UploadId']
     end
 
     tests("#abort_multipart_upload('#{@directory.identity}', 'fog_multipart_abort', '#{@upload_id}')").succeeds do
       pending if Fog.mocking?
-      Fog::Storage[:aws].abort_multipart_upload(@directory.identity, 'fog_multipart_abort', @upload_id)
+      Fog::Storage[:eucalyptus].abort_multipart_upload(@directory.identity, 'fog_multipart_abort', @upload_id)
     end
 
   end

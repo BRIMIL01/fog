@@ -1,13 +1,13 @@
-Shindo.tests('AWS::IAM | user policy requests', ['aws']) do
+Shindo.tests('Eucalyptus::IAM | user policy requests', ['eucalyptus']) do
 
-  Fog::AWS[:iam].create_user('fog_user_policy_tests')
+  Fog::Eucalyptus[:iam].create_user('fog_user_policy_tests')
 
   tests('success') do
 
     @policy = {"Statement" => [{"Effect" => "Allow", "Action" => "*", "Resource" => "*"}]}
 
-    tests("#put_user_policy('fog_user_policy_tests', 'fog_policy', #{@policy.inspect})").formats(AWS::IAM::Formats::BASIC) do
-      Fog::AWS[:iam].put_user_policy('fog_user_policy_tests', 'fog_policy', @policy).body
+    tests("#put_user_policy('fog_user_policy_tests', 'fog_policy', #{@policy.inspect})").formats(Eucalyptus::IAM::Formats::BASIC) do
+      Fog::Eucalyptus[:iam].put_user_policy('fog_user_policy_tests', 'fog_policy', @policy).body
     end
 
     @user_policies_format = {
@@ -17,7 +17,7 @@ Shindo.tests('AWS::IAM | user policy requests', ['aws']) do
     }
 
     tests("#list_user_policies('fog_user_policy_tests')").formats(@user_policies_format) do
-      Fog::AWS[:iam].list_user_policies('fog_user_policy_tests').body
+      Fog::Eucalyptus[:iam].list_user_policies('fog_user_policy_tests').body
     end
 
     @user_policy_format = {
@@ -27,11 +27,11 @@ Shindo.tests('AWS::IAM | user policy requests', ['aws']) do
     }
 
     tests("#get_user_policy('fog_user_policy_tests', 'fog_policy'").formats(@user_policy_format) do
-      Fog::AWS[:iam].get_user_policy('fog_policy', 'fog_user_policy_tests').body['Policy']
+      Fog::Eucalyptus[:iam].get_user_policy('fog_policy', 'fog_user_policy_tests').body['Policy']
     end
 
-    tests("#delete_user_policy('fog_user_policy_tests', 'fog_policy')").formats(AWS::IAM::Formats::BASIC) do
-      Fog::AWS[:iam].delete_user_policy('fog_user_policy_tests', 'fog_policy').body
+    tests("#delete_user_policy('fog_user_policy_tests', 'fog_policy')").formats(Eucalyptus::IAM::Formats::BASIC) do
+      Fog::Eucalyptus[:iam].delete_user_policy('fog_user_policy_tests', 'fog_policy').body
     end
 
   end
@@ -40,6 +40,6 @@ Shindo.tests('AWS::IAM | user policy requests', ['aws']) do
     test('failing conditions')
   end
 
-  Fog::AWS[:iam].delete_user('fog_user_policy_tests')
+  Fog::Eucalyptus[:iam].delete_user('fog_user_policy_tests')
 
 end

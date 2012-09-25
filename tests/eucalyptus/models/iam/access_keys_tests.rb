@@ -1,4 +1,4 @@
-Shindo.tests("Fog::Compute[:iam] | access_keys", ['aws','iam']) do
+Shindo.tests("Fog::Compute[:iam] | access_keys", ['eucalyptus','iam']) do
 
   Fog.mock!
   iam = Fog::AWS[:iam]

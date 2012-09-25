@@ -1,4 +1,4 @@
-Shindo.tests('Fog::Compute[:aws] | security group requests', ['aws']) do
+Shindo.tests('Fog::Compute[:eucalyptus] | security group requests', ['eucalyptus']) do
   @create_security_group_format = {
     'requestId' => String,
     'groupId'   => String,
@@ -24,25 +24,25 @@ Shindo.tests('Fog::Compute[:aws] | security group requests', ['aws']) do
     }]
   }
 
-  @owner_id = Fog::Compute[:aws].describe_security_groups('group-name' => 'default').body['securityGroupInfo'].first['ownerId']
-  @group_id_default = Fog::Compute[:aws].describe_security_groups('group-name' => 'default').body['securityGroupInfo'].first['groupId']
+  @owner_id = Fog::Compute[:eucalyptus].describe_security_groups('group-name' => 'default').body['securityGroupInfo'].first['ownerId']
+  @group_id_default = Fog::Compute[:eucalyptus].describe_security_groups('group-name' => 'default').body['securityGroupInfo'].first['groupId']
 
   tests('success') do
 
     tests("#create_security_group('fog_security_group', 'tests group')").formats(@create_security_group_format) do
-      Fog::Compute[:aws].create_security_group('fog_security_group', 'tests group').body
+      Fog::Compute[:eucalyptus].create_security_group('fog_security_group', 'tests group').body
     end
     tests("#create_security_group('fog_security_group_two', 'tests group')").formats(@create_security_group_format) do
-      Fog::Compute[:aws].create_security_group('fog_security_group_two', 'tests group').body
+      Fog::Compute[:eucalyptus].create_security_group('fog_security_group_two', 'tests group').body
     end
-    @group_id_two = Fog::Compute[:aws].describe_security_groups('group-name' => 'fog_security_group_two').body['securityGroupInfo'].first['groupId']
-    group_id = Fog::Compute[:aws].describe_security_groups('group-name' => 'fog_security_group').body['securityGroupInfo'].first['groupId']
+    @group_id_two = Fog::Compute[:eucalyptus].describe_security_groups('group-name' => 'fog_security_group_two').body['securityGroupInfo'].first['groupId']
+    group_id = Fog::Compute[:eucalyptus].describe_security_groups('group-name' => 'fog_security_group').body['securityGroupInfo'].first['groupId']
     to_be_revoked = []
     expected_permissions = []
 
     permission = { 'SourceSecurityGroupName' => 'default' }
-    tests("#authorize_security_group_ingress('fog_security_group', #{permission.inspect})").formats(AWS::Compute::Formats::BASIC) do
-      Fog::Compute[:aws].authorize_security_group_ingress('fog_security_group', permission).body
+    tests("#authorize_security_group_ingress('fog_security_group', #{permission.inspect})").formats(Eucalyptus::Compute::Formats::BASIC) do
+      Fog::Compute[:eucalyptus].authorize_security_group_ingress('fog_security_group', permission).body
     end
 
     to_be_revoked.push([permission, expected_permissions.dup])
@@ -66,16 +66,16 @@ Shindo.tests('Fog::Compute[:aws] | security group requests', ['aws']) do
     ]
 
     tests("#describe_security_groups('group-name' => 'fog_security_group')").returns([]) do
-      array_differences(expected_permissions, Fog::Compute[:aws].describe_security_groups('group-name' => 'fog_security_group').body['securityGroupInfo'].first['ipPermissions'])
+      array_differences(expected_permissions, Fog::Compute[:eucalyptus].describe_security_groups('group-name' => 'fog_security_group').body['securityGroupInfo'].first['ipPermissions'])
     end
 
     tests("#describe_security_groups('group-id' => '#{group_id}')").returns([]) do
-      array_differences(expected_permissions, Fog::Compute[:aws].describe_security_groups('group-id' => group_id).body['securityGroupInfo'].first['ipPermissions'])
+      array_differences(expected_permissions, Fog::Compute[:eucalyptus].describe_security_groups('group-id' => group_id).body['securityGroupInfo'].first['ipPermissions'])
     end
 
     permission = { 'SourceSecurityGroupName' => 'fog_security_group_two', 'SourceSecurityGroupOwnerId' => @owner_id }
-    tests("#authorize_security_group_ingress('fog_security_group', #{permission.inspect})").formats(AWS::Compute::Formats::BASIC) do
-      Fog::Compute[:aws].authorize_security_group_ingress('fog_security_group', permission).body
+    tests("#authorize_security_group_ingress('fog_security_group', #{permission.inspect})").formats(Eucalyptus::Compute::Formats::BASIC) do
+      Fog::Compute[:eucalyptus].authorize_security_group_ingress('fog_security_group', permission).body
     end
 
     to_be_revoked.push([permission, expected_permissions.dup])
@@ -105,24 +105,24 @@ Shindo.tests('Fog::Compute[:aws] | security group requests', ['aws']) do
     ]
 
     tests("#describe_security_groups('group-name' => 'fog_security_group')").returns([]) do
-      array_differences(expected_permissions, Fog::Compute[:aws].describe_security_groups('group-name' => 'fog_security_group').body['securityGroupInfo'].first['ipPermissions'])
+      array_differences(expected_permissions, Fog::Compute[:eucalyptus].describe_security_groups('group-name' => 'fog_security_group').body['securityGroupInfo'].first['ipPermissions'])
     end
 
     permission = { 'IpProtocol' => 'tcp', 'FromPort' => '22', 'ToPort' => '22' }
-    tests("#authorize_security_group_ingress('fog_security_group', #{permission.inspect})").formats(AWS::Compute::Formats::BASIC) do
-      Fog::Compute[:aws].authorize_security_group_ingress('fog_security_group', permission).body
+    tests("#authorize_security_group_ingress('fog_security_group', #{permission.inspect})").formats(Eucalyptus::Compute::Formats::BASIC) do
+      Fog::Compute[:eucalyptus].authorize_security_group_ingress('fog_security_group', permission).body
     end
 
     to_be_revoked.push([permission, expected_permissions.dup])
 
     # previous did nothing
     tests("#describe_security_groups('group-name' => 'fog_security_group')").returns([]) do
-      array_differences(expected_permissions, Fog::Compute[:aws].describe_security_groups('group-name' => 'fog_security_group').body['securityGroupInfo'].first['ipPermissions'])
+      array_differences(expected_permissions, Fog::Compute[:eucalyptus].describe_security_groups('group-name' => 'fog_security_group').body['securityGroupInfo'].first['ipPermissions'])
     end
 
     permission = { 'IpProtocol' => 'tcp', 'FromPort' => '22', 'ToPort' => '22', 'CidrIp' => '10.0.0.0/8' }
-    tests("#authorize_security_group_ingress('fog_security_group', #{permission.inspect})").formats(AWS::Compute::Formats::BASIC) do
-      Fog::Compute[:aws].authorize_security_group_ingress('fog_security_group', permission).body
+    tests("#authorize_security_group_ingress('fog_security_group', #{permission.inspect})").formats(Eucalyptus::Compute::Formats::BASIC) do
+      Fog::Compute[:eucalyptus].authorize_security_group_ingress('fog_security_group', permission).body
     end
 
     to_be_revoked.push([permission, expected_permissions.dup])
@@ -136,7 +136,7 @@ Shindo.tests('Fog::Compute[:aws] | security group requests', ['aws']) do
     ]
 
     tests("#describe_security_groups('group-name' => 'fog_security_group')").returns([]) do
-      array_differences(expected_permissions, Fog::Compute[:aws].describe_security_groups('group-name' => 'fog_security_group').body['securityGroupInfo'].first['ipPermissions'])
+      array_differences(expected_permissions, Fog::Compute[:eucalyptus].describe_security_groups('group-name' => 'fog_security_group').body['securityGroupInfo'].first['ipPermissions'])
     end
 
     # authorize with nested IpProtocol without IpRanges or Groups does nothing
@@ -145,15 +145,15 @@ Shindo.tests('Fog::Compute[:aws] | security group requests', ['aws']) do
         { 'IpProtocol' => 'tcp', 'FromPort' => '22', 'ToPort' => '22' }
       ]
     }
-    tests("#authorize_security_group_ingress('fog_security_group', #{permissions.inspect})").formats(AWS::Compute::Formats::BASIC) do
-      Fog::Compute[:aws].authorize_security_group_ingress('fog_security_group', permissions).body
+    tests("#authorize_security_group_ingress('fog_security_group', #{permissions.inspect})").formats(Eucalyptus::Compute::Formats::BASIC) do
+      Fog::Compute[:eucalyptus].authorize_security_group_ingress('fog_security_group', permissions).body
     end
 
     to_be_revoked.push([permissions, expected_permissions.dup])
 
     # previous did nothing
     tests("#describe_security_groups('group-name' => 'fog_security_group')").returns([]) do
-      array_differences(expected_permissions, Fog::Compute[:aws].describe_security_groups('group-name' => 'fog_security_group').body['securityGroupInfo'].first['ipPermissions'])
+      array_differences(expected_permissions, Fog::Compute[:eucalyptus].describe_security_groups('group-name' => 'fog_security_group').body['securityGroupInfo'].first['ipPermissions'])
     end
 
     # authorize with nested IpProtocol with IpRanges
@@ -165,8 +165,8 @@ Shindo.tests('Fog::Compute[:aws] | security group requests', ['aws']) do
         }
       ]
     }
-    tests("#authorize_security_group_ingress('fog_security_group', #{permissions.inspect})").formats(AWS::Compute::Formats::BASIC) do
-      Fog::Compute[:aws].authorize_security_group_ingress('fog_security_group', permissions).body
+    tests("#authorize_security_group_ingress('fog_security_group', #{permissions.inspect})").formats(Eucalyptus::Compute::Formats::BASIC) do
+      Fog::Compute[:eucalyptus].authorize_security_group_ingress('fog_security_group', permissions).body
     end
 
     to_be_revoked.push([permissions, expected_permissions.dup])
@@ -180,7 +180,7 @@ Shindo.tests('Fog::Compute[:aws] | security group requests', ['aws']) do
     ]
 
     tests("#describe_security_groups('group-name' => 'fog_security_group')").returns([]) do
-      array_differences(expected_permissions, Fog::Compute[:aws].describe_security_groups('group-name' => 'fog_security_group').body['securityGroupInfo'].first['ipPermissions'])
+      array_differences(expected_permissions, Fog::Compute[:eucalyptus].describe_security_groups('group-name' => 'fog_security_group').body['securityGroupInfo'].first['ipPermissions'])
     end
 
     # authorize with nested IpProtocol with Groups
@@ -192,8 +192,8 @@ Shindo.tests('Fog::Compute[:aws] | security group requests', ['aws']) do
         }
       ]
     }
-    tests("#authorize_security_group_ingress('fog_security_group', #{permissions.inspect})").formats(AWS::Compute::Formats::BASIC) do
-      Fog::Compute[:aws].authorize_security_group_ingress('fog_security_group', permissions).body
+    tests("#authorize_security_group_ingress('fog_security_group', #{permissions.inspect})").formats(Eucalyptus::Compute::Formats::BASIC) do
+      Fog::Compute[:eucalyptus].authorize_security_group_ingress('fog_security_group', permissions).body
     end
 
     to_be_revoked.push([permissions, expected_permissions.dup])
@@ -206,7 +206,7 @@ Shindo.tests('Fog::Compute[:aws] | security group requests', ['aws']) do
         "toPort"=>8000}
     ]
     tests("#describe_security_groups('group-name' => 'fog_security_group')").returns([]) do
-      array_differences(expected_permissions, Fog::Compute[:aws].describe_security_groups('group-name' => 'fog_security_group').body['securityGroupInfo'].first['ipPermissions'])
+      array_differences(expected_permissions, Fog::Compute[:eucalyptus].describe_security_groups('group-name' => 'fog_security_group').body['securityGroupInfo'].first['ipPermissions'])
     end
 
     # authorize with nested IpProtocol with IpRanges and Groups
@@ -220,8 +220,8 @@ Shindo.tests('Fog::Compute[:aws] | security group requests', ['aws']) do
         }
       ]
     }
-    tests("#authorize_security_group_ingress('fog_security_group', #{permissions.inspect})").formats(AWS::Compute::Formats::BASIC) do
-      Fog::Compute[:aws].authorize_security_group_ingress('fog_security_group', permissions).body
+    tests("#authorize_security_group_ingress('fog_security_group', #{permissions.inspect})").formats(Eucalyptus::Compute::Formats::BASIC) do
+      Fog::Compute[:eucalyptus].authorize_security_group_ingress('fog_security_group', permissions).body
     end
 
     to_be_revoked.push([permissions, expected_permissions.dup])
@@ -236,43 +236,43 @@ Shindo.tests('Fog::Compute[:aws] | security group requests', ['aws']) do
     ]
 
     tests("#describe_security_groups('group-name' => 'fog_security_group')").returns([]) do
-      array_differences(expected_permissions, Fog::Compute[:aws].describe_security_groups('group-name' => 'fog_security_group').body['securityGroupInfo'].first['ipPermissions'])
+      array_differences(expected_permissions, Fog::Compute[:eucalyptus].describe_security_groups('group-name' => 'fog_security_group').body['securityGroupInfo'].first['ipPermissions'])
     end
 
     tests("#describe_security_groups").formats(@security_groups_format) do
-      Fog::Compute[:aws].describe_security_groups.body
+      Fog::Compute[:eucalyptus].describe_security_groups.body
     end
 
     tests("#describe_security_groups('group-name' => 'fog_security_group')").formats(@security_groups_format) do
-      Fog::Compute[:aws].describe_security_groups('group-name' => 'fog_security_group').body
+      Fog::Compute[:eucalyptus].describe_security_groups('group-name' => 'fog_security_group').body
     end
 
     to_be_revoked.reverse.each do |permission, expected_permissions_after|
-      tests("#revoke_security_group_ingress('fog_security_group', #{permission.inspect})").formats(AWS::Compute::Formats::BASIC) do
-        Fog::Compute[:aws].revoke_security_group_ingress('fog_security_group', permission).body
+      tests("#revoke_security_group_ingress('fog_security_group', #{permission.inspect})").formats(Eucalyptus::Compute::Formats::BASIC) do
+        Fog::Compute[:eucalyptus].revoke_security_group_ingress('fog_security_group', permission).body
       end
 
       tests("#describe_security_groups('group-name' => 'fog_security_group')").returns([]) do
-        array_differences(expected_permissions_after, Fog::Compute[:aws].describe_security_groups('group-name' => 'fog_security_group').body['securityGroupInfo'].first['ipPermissions'])
+        array_differences(expected_permissions_after, Fog::Compute[:eucalyptus].describe_security_groups('group-name' => 'fog_security_group').body['securityGroupInfo'].first['ipPermissions'])
       end
     end
 
-    tests("#delete_security_group('fog_security_group')").formats(AWS::Compute::Formats::BASIC) do
-      Fog::Compute[:aws].delete_security_group('fog_security_group').body
+    tests("#delete_security_group('fog_security_group')").formats(Eucalyptus::Compute::Formats::BASIC) do
+      Fog::Compute[:eucalyptus].delete_security_group('fog_security_group').body
     end
 
-    tests("#delete_security_group('fog_security_group_two')").formats(AWS::Compute::Formats::BASIC) do
-      Fog::Compute[:aws].delete_security_group('fog_security_group_two').body
+    tests("#delete_security_group('fog_security_group_two')").formats(Eucalyptus::Compute::Formats::BASIC) do
+      Fog::Compute[:eucalyptus].delete_security_group('fog_security_group_two').body
     end
 
-    vpc_id = Fog::Compute[:aws].create_vpc('10.255.254.64/28').body['vpcSet'].first['vpcId']
+    vpc_id = Fog::Compute[:eucalyptus].create_vpc('10.255.254.64/28').body['vpcSet'].first['vpcId']
 
     # Create security group in VPC
     tests("#create_security_group('vpc_security_group', 'tests group')").formats(@create_security_group_format) do
-      Fog::Compute[:aws].create_security_group('vpc_security_group', 'tests group', vpc_id).body
+      Fog::Compute[:eucalyptus].create_security_group('vpc_security_group', 'tests group', vpc_id).body
     end
 
-    group_id = Fog::Compute[:aws].describe_security_groups('group-name' => 'vpc_security_group').body['securityGroupInfo'].first['groupId']
+    group_id = Fog::Compute[:eucalyptus].describe_security_groups('group-name' => 'vpc_security_group').body['securityGroupInfo'].first['groupId']
 
     permissions = {
       'IpPermissions' => [
@@ -291,36 +291,36 @@ Shindo.tests('Fog::Compute[:aws] | security group requests', ['aws']) do
 
     options = permissions.clone
     options['GroupId'] = group_id
-    tests("#authorize_security_group_ingress(#{options.inspect})").formats(AWS::Compute::Formats::BASIC) do
-      Fog::Compute[:aws].authorize_security_group_ingress(options).body
+    tests("#authorize_security_group_ingress(#{options.inspect})").formats(Eucalyptus::Compute::Formats::BASIC) do
+      Fog::Compute[:eucalyptus].authorize_security_group_ingress(options).body
     end
 
     tests("#describe_security_groups('group-name' => 'vpc_security_group')").returns([]) do
-      array_differences(expected_permissions, Fog::Compute[:aws].describe_security_groups('group-name' => 'vpc_security_group').body['securityGroupInfo'].first['ipPermissions'])
+      array_differences(expected_permissions, Fog::Compute[:eucalyptus].describe_security_groups('group-name' => 'vpc_security_group').body['securityGroupInfo'].first['ipPermissions'])
     end
 
-    tests("#revoke_security_group_ingress(#{options.inspect})").formats(AWS::Compute::Formats::BASIC) do
-      Fog::Compute[:aws].revoke_security_group_ingress(options).body
+    tests("#revoke_security_group_ingress(#{options.inspect})").formats(Eucalyptus::Compute::Formats::BASIC) do
+      Fog::Compute[:eucalyptus].revoke_security_group_ingress(options).body
     end
 
-    vpc_group=Fog::Compute[:aws].security_groups.get_by_id(group_id)
+    vpc_group=Fog::Compute[:eucalyptus].security_groups.get_by_id(group_id)
     vpc_group.destroy
 
-    Fog::Compute[:aws].delete_vpc(vpc_id)
+    Fog::Compute[:eucalyptus].delete_vpc(vpc_id)
 
   end
   ## Rate limiting seems to want us to take a break otherwise it will throw errors
   tests('failure') do
 
-    @security_group = Fog::Compute[:aws].security_groups.create(:description => 'tests group', :name => 'fog_security_group')
-    @other_security_group = Fog::Compute[:aws].security_groups.create(:description => 'tests group', :name => 'fog_other_security_group')
+    @security_group = Fog::Compute[:eucalyptus].security_groups.create(:description => 'tests group', :name => 'fog_security_group')
+    @other_security_group = Fog::Compute[:eucalyptus].security_groups.create(:description => 'tests group', :name => 'fog_other_security_group')
 
-    tests("duplicate #create_security_group(#{@security_group.name}, #{@security_group.description})").raises(Fog::Compute::AWS::Error) do
-      Fog::Compute[:aws].create_security_group(@security_group.name, @security_group.description)
+    tests("duplicate #create_security_group(#{@security_group.name}, #{@security_group.description})").raises(Fog::Compute::Eucalyptus::Error) do
+      Fog::Compute[:eucalyptus].create_security_group(@security_group.name, @security_group.description)
     end
 
-    tests("#authorize_security_group_ingress('not_a_group_name', {'FromPort' => 80, 'IpProtocol' => 'tcp', 'toPort' => 80})").raises(Fog::Compute::AWS::NotFound) do
-      Fog::Compute[:aws].authorize_security_group_ingress(
+    tests("#authorize_security_group_ingress('not_a_group_name', {'FromPort' => 80, 'IpProtocol' => 'tcp', 'toPort' => 80})").raises(Fog::Compute::Eucalyptus::NotFound) do
+      Fog::Compute[:eucalyptus].authorize_security_group_ingress(
         'not_a_group_name',
         {
           'FromPort' => 80,
@@ -330,8 +330,8 @@ Shindo.tests('Fog::Compute[:aws] | security group requests', ['aws']) do
       )
     end
 
-    tests("#authorize_security_group_ingress('not_a_group_name', {'SourceSecurityGroupName' => 'not_a_group_name', 'SourceSecurityGroupOwnerId' => '#{@owner_id}'})").raises(Fog::Compute::AWS::NotFound) do
-      Fog::Compute[:aws].authorize_security_group_ingress(
+    tests("#authorize_security_group_ingress('not_a_group_name', {'SourceSecurityGroupName' => 'not_a_group_name', 'SourceSecurityGroupOwnerId' => '#{@owner_id}'})").raises(Fog::Compute::Eucalyptus::NotFound) do
+      Fog::Compute[:eucalyptus].authorize_security_group_ingress(
         'not_a_group_name',
         {
           'SourceSecurityGroupName'     => 'not_a_group_name',
@@ -340,20 +340,20 @@ Shindo.tests('Fog::Compute[:aws] | security group requests', ['aws']) do
       )
     end
 
-    tests("#authorize_security_group_ingress('fog_security_group', {'IpPermissions' => [{'IpProtocol' => 'tcp', 'FromPort' => 80, 'ToPort' => 80, 'IpRanges' => [{'CidrIp' => '10.0.0.0/8'}]}]})").formats(AWS::Compute::Formats::BASIC) do
-      Fog::Compute[:aws].authorize_security_group_ingress('fog_security_group', {'IpPermissions' => [{'IpProtocol' => 'tcp', 'FromPort' => 80, 'ToPort' => 80, 'IpRanges' => [{'CidrIp' => '10.0.0.0/8'}]}]}).body
+    tests("#authorize_security_group_ingress('fog_security_group', {'IpPermissions' => [{'IpProtocol' => 'tcp', 'FromPort' => 80, 'ToPort' => 80, 'IpRanges' => [{'CidrIp' => '10.0.0.0/8'}]}]})").formats(Eucalyptus::Compute::Formats::BASIC) do
+      Fog::Compute[:eucalyptus].authorize_security_group_ingress('fog_security_group', {'IpPermissions' => [{'IpProtocol' => 'tcp', 'FromPort' => 80, 'ToPort' => 80, 'IpRanges' => [{'CidrIp' => '10.0.0.0/8'}]}]}).body
     end
 
-    tests("#authorize_security_group_ingress('fog_security_group', {'IpPermissions' => [{'IpProtocol' => 'tcp', 'FromPort' => 80, 'ToPort' => 80, 'IpRanges' => [{'CidrIp' => '10.0.0.0/8'}]}]})").raises(Fog::Compute::AWS::Error) do
-      Fog::Compute[:aws].authorize_security_group_ingress('fog_security_group', {'IpPermissions' => [{'IpProtocol' => 'tcp', 'FromPort' => 80, 'ToPort' => 80, 'IpRanges' => [{'CidrIp' => '10.0.0.0/8'}]}]})
+    tests("#authorize_security_group_ingress('fog_security_group', {'IpPermissions' => [{'IpProtocol' => 'tcp', 'FromPort' => 80, 'ToPort' => 80, 'IpRanges' => [{'CidrIp' => '10.0.0.0/8'}]}]})").raises(Fog::Compute::Eucalyptus::Error) do
+      Fog::Compute[:eucalyptus].authorize_security_group_ingress('fog_security_group', {'IpPermissions' => [{'IpProtocol' => 'tcp', 'FromPort' => 80, 'ToPort' => 80, 'IpRanges' => [{'CidrIp' => '10.0.0.0/8'}]}]})
     end
 
-    tests("#authorize_security_group_ingress('fog_security_group', {'IpPermissions' => [{'Groups' => [{'GroupName' => '#{@other_security_group.name}'}], 'FromPort' => 80, 'ToPort' => 80, 'IpProtocol' => 'tcp'}]})").formats(AWS::Compute::Formats::BASIC) do
-      Fog::Compute[:aws].authorize_security_group_ingress('fog_security_group', {'IpPermissions' => [{'Groups' => [{'GroupName' => @other_security_group.name}], 'FromPort' => 80, 'ToPort' => 80, 'IpProtocol' => 'tcp'}]}).body
+    tests("#authorize_security_group_ingress('fog_security_group', {'IpPermissions' => [{'Groups' => [{'GroupName' => '#{@other_security_group.name}'}], 'FromPort' => 80, 'ToPort' => 80, 'IpProtocol' => 'tcp'}]})").formats(Eucalyptus::Compute::Formats::BASIC) do
+      Fog::Compute[:eucalyptus].authorize_security_group_ingress('fog_security_group', {'IpPermissions' => [{'Groups' => [{'GroupName' => @other_security_group.name}], 'FromPort' => 80, 'ToPort' => 80, 'IpProtocol' => 'tcp'}]}).body
     end
 
-    tests("#delete_security_group('#{@other_security_group.name}')").raises(Fog::Compute::AWS::Error) do
-      Fog::Compute[:aws].delete_security_group(@other_security_group.name)
+    tests("#delete_security_group('#{@other_security_group.name}')").raises(Fog::Compute::Eucalyptus::Error) do
+      Fog::Compute[:eucalyptus].delete_security_group(@other_security_group.name)
     end
 
     broken_params = [
@@ -371,17 +371,17 @@ Shindo.tests('Fog::Compute[:aws] | security group requests', ['aws']) do
     ]
 
     broken_params.each do |broken_params_item|
-      tests("#authorize_security_group_ingress('fog_security_group', #{broken_params_item.inspect})").raises(Fog::Compute::AWS::Error) do
-        Fog::Compute[:aws].authorize_security_group_ingress('fog_security_group', broken_params_item)
+      tests("#authorize_security_group_ingress('fog_security_group', #{broken_params_item.inspect})").raises(Fog::Compute::Eucalyptus::Error) do
+        Fog::Compute[:eucalyptus].authorize_security_group_ingress('fog_security_group', broken_params_item)
       end
 
-      tests("#revoke_security_group_ingress('fog_security_group', #{broken_params_item.inspect})").raises(Fog::Compute::AWS::Error) do
-        Fog::Compute[:aws].revoke_security_group_ingress('fog_security_group', broken_params_item)
+      tests("#revoke_security_group_ingress('fog_security_group', #{broken_params_item.inspect})").raises(Fog::Compute::Eucalyptus::Error) do
+        Fog::Compute[:eucalyptus].revoke_security_group_ingress('fog_security_group', broken_params_item)
       end
     end
 
-    tests("#revoke_security_group_ingress('not_a_group_name', {'FromPort' => 80, 'IpProtocol' => 'tcp', 'toPort' => 80})").raises(Fog::Compute::AWS::NotFound) do
-      Fog::Compute[:aws].revoke_security_group_ingress(
+    tests("#revoke_security_group_ingress('not_a_group_name', {'FromPort' => 80, 'IpProtocol' => 'tcp', 'toPort' => 80})").raises(Fog::Compute::Eucalyptus::NotFound) do
+      Fog::Compute[:eucalyptus].revoke_security_group_ingress(
         'not_a_group_name',
         {
           'FromPort' => 80,
@@ -391,8 +391,8 @@ Shindo.tests('Fog::Compute[:aws] | security group requests', ['aws']) do
       )
     end
 
-    tests("#revoke_security_group_ingress('not_a_group_name', {'SourceSecurityGroupName' => 'not_a_group_name', 'SourceSecurityGroupOwnerId' => '#{@owner_id}'})").raises(Fog::Compute::AWS::NotFound) do
-      Fog::Compute[:aws].revoke_security_group_ingress(
+    tests("#revoke_security_group_ingress('not_a_group_name', {'SourceSecurityGroupName' => 'not_a_group_name', 'SourceSecurityGroupOwnerId' => '#{@owner_id}'})").raises(Fog::Compute::Eucalyptus::NotFound) do
+      Fog::Compute[:eucalyptus].revoke_security_group_ingress(
         'not_a_group_name',
         {
           'SourceSecurityGroupName'     => 'not_a_group_name',
@@ -401,15 +401,15 @@ Shindo.tests('Fog::Compute[:aws] | security group requests', ['aws']) do
       )
     end
 
-    tests("#delete_security_group('not_a_group_name')").raises(Fog::Compute::AWS::NotFound) do
-      Fog::Compute[:aws].delete_security_group('not_a_group_name')
+    tests("#delete_security_group('not_a_group_name')").raises(Fog::Compute::Eucalyptus::NotFound) do
+      Fog::Compute[:eucalyptus].delete_security_group('not_a_group_name')
     end
 
     @security_group.destroy
     @other_security_group.destroy
 
-    tests("#delete_security_group('default')").raises(Fog::Compute::AWS::Error) do
-      Fog::Compute[:aws].delete_security_group('default')
+    tests("#delete_security_group('default')").raises(Fog::Compute::Eucalyptus::Error) do
+      Fog::Compute[:eucalyptus].delete_security_group('default')
     end
 
     broken_params = [
@@ -420,12 +420,12 @@ Shindo.tests('Fog::Compute[:aws] | security group requests', ['aws']) do
                     ]
 
     broken_params.each do |list_elem|
-      tests("#authorize_security_group_ingress(#{list_elem[0].inspect}, #{list_elem[1].inspect})").raises(Fog::Compute::AWS::Error) do
-        Fog::Compute[:aws].authorize_security_group_ingress(list_elem[0], list_elem[1])
+      tests("#authorize_security_group_ingress(#{list_elem[0].inspect}, #{list_elem[1].inspect})").raises(Fog::Compute::Eucalyptus::Error) do
+        Fog::Compute[:eucalyptus].authorize_security_group_ingress(list_elem[0], list_elem[1])
       end
 
-      tests("#revoke_security_group_ingress(#{list_elem[0].inspect}, #{list_elem[1].inspect})").raises(Fog::Compute::AWS::Error) do
-        Fog::Compute[:aws].revoke_security_group_ingress(list_elem[0], list_elem[1])
+      tests("#revoke_security_group_ingress(#{list_elem[0].inspect}, #{list_elem[1].inspect})").raises(Fog::Compute::Eucalyptus::Error) do
+        Fog::Compute[:eucalyptus].revoke_security_group_ingress(list_elem[0], list_elem[1])
       end
     end
 

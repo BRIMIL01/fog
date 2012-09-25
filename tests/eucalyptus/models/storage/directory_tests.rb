@@ -1,10 +1,10 @@
-Shindo.tests("Storage[:aws] | directory", ["aws"]) do
+Shindo.tests("Storage[:eucalyptus] | directory", ["eucalyptus"]) do
 
   directory_attributes = {
     :key => 'fogdirectorytests'
   }
 
-  model_tests(Fog::Storage[:aws].directories, directory_attributes, Fog.mocking?) do
+  model_tests(Fog::Storage[:eucalyptus].directories, directory_attributes, Fog.mocking?) do
 
     tests("#versioning=") do
       tests("#versioning=(true)").succeeds do
@@ -28,7 +28,7 @@ Shindo.tests("Storage[:aws] | directory", ["aws"]) do
 
   end
 
-  model_tests(Fog::Storage[:aws].directories, directory_attributes, Fog.mocking?) do
+  model_tests(Fog::Storage[:eucalyptus].directories, directory_attributes, Fog.mocking?) do
 
     tests("#versioning?") do
       tests("#versioning? false if not enabled").returns(false) do

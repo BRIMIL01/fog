@@ -1,4 +1,4 @@
-Shindo.tests("Fog::Compute[:iam] | policies", ['aws','iam']) do
+Shindo.tests("Fog::Compute[:iam] | policies", ['eucalyptus','iam']) do
 
   Fog.mock!
   iam = Fog::AWS[:iam]

@@ -1,4 +1,4 @@
-Shindo.tests('AWS::IAM | group requests', ['aws']) do
+Shindo.tests('Eucalyptus::IAM | group requests', ['eucalyptus']) do
 
   tests('success') do
 
@@ -13,7 +13,7 @@ Shindo.tests('AWS::IAM | group requests', ['aws']) do
     }
 
     tests("#create_group('fog_group')").formats(@group_format) do
-      Fog::AWS[:iam].create_group('fog_group').body
+      Fog::Eucalyptus[:iam].create_group('fog_group').body
     end
 
     @groups_format = {
@@ -28,11 +28,11 @@ Shindo.tests('AWS::IAM | group requests', ['aws']) do
     }
 
     tests("#list_groups").formats(@groups_format) do
-      Fog::AWS[:iam].list_groups.body
+      Fog::Eucalyptus[:iam].list_groups.body
     end
 
-    tests("#delete_group('fog_group')").formats(AWS::IAM::Formats::BASIC) do
-      Fog::AWS[:iam].delete_group('fog_group').body
+    tests("#delete_group('fog_group')").formats(Eucalyptus::IAM::Formats::BASIC) do
+      Fog::Eucalyptus[:iam].delete_group('fog_group').body
     end
 
   end

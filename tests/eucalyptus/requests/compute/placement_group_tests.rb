@@ -1,4 +1,4 @@
-Shindo.tests('Fog::Compute[:aws] | placement group requests', ['aws']) do
+Shindo.tests('Fog::Compute[:eucalyptus] | placement group requests', ['eucalyptus']) do
   @placement_group_format = {
     'requestId'         => String,
     'placementGroupSet' => [{
@@ -9,40 +9,40 @@ Shindo.tests('Fog::Compute[:aws] | placement group requests', ['aws']) do
   }
 
   tests('success') do
-    tests("#create_placement_group('fog_placement_group', 'cluster')").formats(AWS::Compute::Formats::BASIC) do
+    tests("#create_placement_group('fog_placement_group', 'cluster')").formats(Eucalyptus::Compute::Formats::BASIC) do
       pending if Fog.mocking?
-      Fog::Compute[:aws].create_placement_group('fog_placement_group', 'cluster').body
+      Fog::Compute[:eucalyptus].create_placement_group('fog_placement_group', 'cluster').body
     end
 
     tests("#describe_placement_groups").formats(@placement_group_format) do
       pending if Fog.mocking?
-      Fog::Compute[:aws].describe_placement_groups.body
+      Fog::Compute[:eucalyptus].describe_placement_groups.body
     end
 
     tests("#describe_placement_groups('group-name' => 'fog_placement_group)").formats(@placement_group_format) do
       pending if Fog.mocking?
-      Fog::Compute[:aws].describe_placement_groups('group-name' => 'fog_security_group').body
+      Fog::Compute[:eucalyptus].describe_placement_groups('group-name' => 'fog_security_group').body
     end
 
-    tests("#delete_placement_group('fog_placement_group')").formats(AWS::Compute::Formats::BASIC) do
+    tests("#delete_placement_group('fog_placement_group')").formats(Eucalyptus::Compute::Formats::BASIC) do
       pending if Fog.mocking?
-      Fog::Compute[:aws].delete_placement_group('fog_placement_group').body
+      Fog::Compute[:eucalyptus].delete_placement_group('fog_placement_group').body
     end
   end
 
   tests('failure') do
     pending if Fog.mocking?
 
-    Fog::Compute[:aws].create_placement_group('fog_placement_group', 'cluster')
+    Fog::Compute[:eucalyptus].create_placement_group('fog_placement_group', 'cluster')
 
-    tests("duplicate #create_placement_group('fog_placement_group', 'cluster')").raises(Fog::Compute::AWS::Error) do
-      Fog::Compute[:aws].create_placement_group('fog_placement_group', 'cluster')
+    tests("duplicate #create_placement_group('fog_placement_group', 'cluster')").raises(Fog::Compute::Eucalyptus::Error) do
+      Fog::Compute[:eucalyptus].create_placement_group('fog_placement_group', 'cluster')
     end
 
-    tests("#delete_placement_group('not_a_group_name')").raises(Fog::Compute::AWS::NotFound) do
-      Fog::Compute[:aws].delete_placement_group('not_a_group_name')
+    tests("#delete_placement_group('not_a_group_name')").raises(Fog::Compute::Eucalyptus::NotFound) do
+      Fog::Compute[:eucalyptus].delete_placement_group('not_a_group_name')
     end
 
-    Fog::Compute[:aws].delete_placement_group('fog_placement_group')
+    Fog::Compute[:eucalyptus].delete_placement_group('fog_placement_group')
   end
 end

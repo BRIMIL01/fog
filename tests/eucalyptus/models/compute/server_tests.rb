@@ -1,6 +1,6 @@
-Shindo.tests("Fog::Compute[:aws] | monitor", ['aws']) do
+Shindo.tests("Fog::Compute[:eucalyptus] | monitor", ['eucalyptus']) do
 
-  @instance = Fog::Compute[:aws].servers.new
+  @instance = Fog::Compute[:eucalyptus].servers.new
 
   [:addresses, :flavor, :key_pair, :key_pair=, :volumes].each do |association|
     responds_to(association)
@@ -45,7 +45,7 @@ Shindo.tests("Fog::Compute[:aws] | monitor", ['aws']) do
   @instance.destroy
 
   tests('tags') do
-    @instance = Fog::Compute[:aws].servers.create(:tags => {'key' => 'value'})
+    @instance = Fog::Compute[:eucalyptus].servers.create(:tags => {'key' => 'value'})
 
     @instance.wait_for { ready? }
 
@@ -54,7 +54,7 @@ Shindo.tests("Fog::Compute[:aws] | monitor", ['aws']) do
     end
 
     unless Fog.mocking?
-      Fog::Compute[:aws].tags.all('resource-id' => @instance.identity).each {|tag| tag.destroy}
+      Fog::Compute[:eucalyptus].tags.all('resource-id' => @instance.identity).each {|tag| tag.destroy}
     end
 
     @instance.destroy

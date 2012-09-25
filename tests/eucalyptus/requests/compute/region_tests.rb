@@ -1,4 +1,4 @@
-Shindo.tests('Fog::Compute[:aws] | region requests', ['aws']) do
+Shindo.tests('Fog::Compute[:eucalyptus] | region requests', ['eucalyptus']) do
 
   @regions_format = {
     'regionInfo'  => [{
@@ -11,11 +11,11 @@ Shindo.tests('Fog::Compute[:aws] | region requests', ['aws']) do
   tests('success') do
 
     tests("#describe_regions").formats(@regions_format) do
-      Fog::Compute[:aws].describe_regions.body
+      Fog::Compute[:eucalyptus].describe_regions.body
     end
 
-    tests("#describe_regions('region-name' => 'us-east-1')").formats(@regions_format) do
-      Fog::Compute[:aws].describe_regions('region-name' => 'us-east-1').body
+    tests("#describe_regions('region-name' => 'eucalyptus')").formats(@regions_format) do
+      Fog::Compute[:eucalyptus].describe_regions('region-name' => 'eucalyptus').body
     end
 
   end
