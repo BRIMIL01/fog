@@ -74,7 +74,7 @@ module Fog
 
     def self.signed_params(params, options = {})
       params.merge!({
-        'eucalyptusAccessKeyId'    => options[:eucalyptus_access_key_id],
+        'AWSAccessKeyId'    => options[:aws_access_key_id],
         'SignatureMethod'   => 'HmacSHA256',
         'SignatureVersion'  => '2',
         'Timestamp'         => Time.now.utc.strftime("%Y-%m-%dT%H:%M:%SZ"),
