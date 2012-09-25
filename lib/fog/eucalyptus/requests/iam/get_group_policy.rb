@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/get_group_policy'
+        require 'fog/eucalyptus/parsers/iam/get_group_policy'
 
         # Get Group Policy
         # 
@@ -26,7 +26,7 @@ module Fog
             'Action'      => 'GetGroupPolicy',
             'PolicyName'  => policy_name,
             'GroupName'    => group_name,
-            :parser       => Fog::Parsers::AWS::IAM::GetGroupPolicy.new
+            :parser       => Fog::Parsers::Eucalyptus::IAM::GetGroupPolicy.new
           })
         end
 

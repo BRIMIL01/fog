@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/basic'
+        require 'fog/eucalyptus/parsers/iam/basic'
 
         # Delete a user
         # 
@@ -22,7 +22,7 @@ module Fog
           request(
             'Action'    => 'DeleteUser',
             'UserName'  => user_name,
-            :parser     => Fog::Parsers::AWS::IAM::Basic.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::Basic.new
           )
         end
 
@@ -34,11 +34,11 @@ module Fog
           if data[:users].has_key? user_name
             data[:users].delete user_name
             Excon::Response.new.tap do |response|
-              response.body = { 'RequestId' => Fog::AWS::Mock.request_id }
+              response.body = { 'RequestId' => Fog::Eucalyptus::Mock.request_id }
               response.status = 200
             end
           else
-            raise Fog::AWS::IAM::NotFound.new("The user with name #{user_name} cannot be found.")
+            raise Fog::Eucalyptus::IAM::NotFound.new("The user with name #{user_name} cannot be found.")
           end
 
         end

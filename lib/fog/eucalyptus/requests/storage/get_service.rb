@@ -1,9 +1,9 @@
 module Fog
   module Storage
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/storage/get_service'
+        require 'fog/eucalyptus/parsers/storage/get_service'
 
         # List information about S3 buckets for authorized user
         #
@@ -27,7 +27,7 @@ module Fog
             :host     => @host,
             :idempotent => true,
             :method   => 'GET',
-            :parser   => Fog::Parsers::Storage::AWS::GetService.new,
+            :parser   => Fog::Parsers::Storage::Eucalyptus::GetService.new,
             :url      => @host
           })
         end

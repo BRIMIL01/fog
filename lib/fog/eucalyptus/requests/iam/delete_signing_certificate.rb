@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/basic'
+        require 'fog/eucalyptus/parsers/iam/basic'
 
         # Upload signing certificate for user (by default detects user from access credentials)
         #
@@ -23,7 +23,7 @@ module Fog
           request({
             'Action'        => 'DeleteSigningCertificate',
             'CertificateId' => certificate_id,
-            :parser         => Fog::Parsers::AWS::IAM::Basic.new
+            :parser         => Fog::Parsers::Eucalyptus::IAM::Basic.new
           }.merge!(options))
         end
 

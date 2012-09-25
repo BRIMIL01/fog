@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/list_roles'
+        require 'fog/eucalyptus/parsers/iam/list_roles'
 
         # Lists roles
         # 
@@ -33,7 +33,7 @@ module Fog
         def list_roles(options={})
           request({
             'Action'    => 'ListRoles',
-            :parser     => Fog::Parsers::AWS::IAM::ListRoles.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::ListRoles.new
           }.merge!(options))
         end
 

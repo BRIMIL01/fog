@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/basic'
+        require 'fog/eucalyptus/parsers/iam/basic'
 
         # Deletes a user's login profile
         # 
@@ -21,7 +21,7 @@ module Fog
           request({
             'Action'    => 'DeleteLoginProfile',
             'UserName'  => user_name,
-            :parser     => Fog::Parsers::AWS::IAM::Basic.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::Basic.new
           })
         end
 

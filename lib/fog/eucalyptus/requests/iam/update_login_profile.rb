@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/basic'
+        require 'fog/eucalyptus/parsers/iam/basic'
 
         # Updates a login profile for a user
         # 
@@ -23,7 +23,7 @@ module Fog
             'Action'    => 'UpdateLoginProfile',
             'UserName'  => user_name,
             'Password'  => password,
-            :parser     => Fog::Parsers::AWS::IAM::Basic.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::Basic.new
           })
         end
 

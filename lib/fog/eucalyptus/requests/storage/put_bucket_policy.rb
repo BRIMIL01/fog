@@ -1,6 +1,6 @@
 module Fog
   module Storage
-    class AWS
+    class Eucalyptus
       class Real
 
         # Change bucket policy for an S3 bucket

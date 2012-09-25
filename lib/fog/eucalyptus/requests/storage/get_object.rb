@@ -1,6 +1,6 @@
 module Fog
   module Storage
-    class AWS
+    class Eucalyptus
       class Real
 
         # Get an object from S3
@@ -105,7 +105,7 @@ module Fog
 
                 body = object[:body]
                 if options['Range']
-                  # since AWS S3 itself does not support multiple range headers, we will use only the first
+                  # since Eucalyptus S3 itself does not support multiple range headers, we will use only the first
                   ranges = byte_ranges(options['Range'], body.size)
                   unless ranges.nil? || ranges.empty?
                     response.status = 206

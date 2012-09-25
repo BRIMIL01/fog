@@ -1,6 +1,6 @@
 module Fog
   module Storage
-    class AWS
+    class Eucalyptus
       module PutObjectUrl
 
         def put_object_url(bucket_name, object_name, expires, headers = {}, options = {})

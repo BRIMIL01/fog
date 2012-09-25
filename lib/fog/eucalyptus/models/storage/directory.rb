@@ -1,10 +1,10 @@
 require 'fog/core/model'
-require 'fog/aws/models/storage/files'
-require 'fog/aws/models/storage/versions'
+require 'fog/eucalyptus/models/storage/files'
+require 'fog/eucalyptus/models/storage/versions'
 
 module Fog
   module Storage
-    class AWS
+    class Eucalyptus
 
       class Directory < Fog::Model
         VALID_ACLS = ['private', 'public-read', 'public-read-write', 'authenticated-read']
@@ -48,7 +48,7 @@ module Fog
         end
 
         def files
-          @files ||= Fog::Storage::AWS::Files.new(:directory => self, :connection => connection)
+          @files ||= Fog::Storage::Eucalyptus::Files.new(:directory => self, :connection => connection)
         end
 
         def payer
@@ -75,7 +75,7 @@ module Fog
         end
 
         def versions
-          @versions ||= Fog::Storage::AWS::Versions.new(:directory => self, :connection => connection)
+          @versions ||= Fog::Storage::Eucalyptus::Versions.new(:directory => self, :connection => connection)
         end
 
         def public=(new_public)

@@ -1,7 +1,7 @@
 module Fog
   module Parsers
     module Compute
-      module AWS
+      module Eucalyptus
 
         class DetachVolume < Fog::Parsers::Base
 

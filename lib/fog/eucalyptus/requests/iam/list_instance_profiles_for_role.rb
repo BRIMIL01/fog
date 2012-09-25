@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/list_instance_profiles'
+        require 'fog/eucalyptus/parsers/iam/list_instance_profiles'
 
         # Lists the instance profiles that have the specified associated role
         #
@@ -41,7 +41,7 @@ module Fog
           request({
             'Action'    => 'ListInstanceProfilesForRole',
             'RoleName'  => role_name,
-            :parser     => Fog::Parsers::AWS::IAM::ListInstanceProfiles.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::ListInstanceProfiles.new
           }.merge!(options))
         end
 

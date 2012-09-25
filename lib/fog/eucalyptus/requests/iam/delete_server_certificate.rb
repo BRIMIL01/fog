@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/basic'
+        require 'fog/eucalyptus/parsers/iam/basic'
 
         # Deletes the specified server certificate.
         #
@@ -22,7 +22,7 @@ module Fog
           request({
             'Action'                => 'DeleteServerCertificate',
             'ServerCertificateName' => server_certificate_name,
-            :parser                 => Fog::Parsers::AWS::IAM::Basic.new
+            :parser                 => Fog::Parsers::Eucalyptus::IAM::Basic.new
           })
         end
 
@@ -33,7 +33,7 @@ module Fog
           response = Excon::Response.new
           response.status = 200
           response.body = {
-            'RequestId' => Fog::AWS::Mock.request_id
+            'RequestId' => Fog::Eucalyptus::Mock.request_id
           }
 
           self.data[:server_certificates].delete(server_certificate_name)

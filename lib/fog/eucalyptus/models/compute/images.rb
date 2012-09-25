@@ -1,26 +1,26 @@
 require 'fog/core/collection'
-require 'fog/aws/models/compute/image'
+require 'fog/eucalyptus/models/compute/image'
 
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
 
       class Images < Fog::Collection
 
         attribute :filters
 
-        model Fog::Compute::AWS::Image
+        model Fog::Compute::Eucalyptus::Image
         
         # Creates a new Amazon machine image
         #
-        # AWS.images.new
+        # Eucalyptus.images.new
         #
         # ==== Returns
         #
         # Returns the details of the new image
         #
-        #>> AWS.images.new
-        #  <Fog::AWS::Compute::Image
+        #>> Eucalyptus.images.new
+        #  <Fog::Eucalyptus::Compute::Image
         #    id=nil,
         #    architecture=nil,
         #    block_device_mapping=nil,

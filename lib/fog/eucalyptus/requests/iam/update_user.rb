@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/update_user'
+        require 'fog/eucalyptus/parsers/iam/update_user'
 
         # Update a user
         # 
@@ -29,7 +29,7 @@ module Fog
           request({
             'Action'      => 'UpdateUser',
             'UserName'    => user_name,
-            :parser       => Fog::Parsers::AWS::IAM::UpdateUser.new
+            :parser       => Fog::Parsers::Eucalyptus::IAM::UpdateUser.new
           }.merge!(options))
         end
 

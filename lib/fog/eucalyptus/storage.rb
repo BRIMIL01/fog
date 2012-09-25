@@ -1,4 +1,4 @@
-require 'fog/aws'
+require 'fog/eucalyptus'
 require 'fog/storage'
 
 module Fog
@@ -67,7 +67,7 @@ module Fog
         attr_accessor :region
 
         def cdn
-          @cdn ||= Fog::AWS::CDN.new(
+          @cdn ||= Fog::Eucalyptus::CDN.new(
             :aws_access_key_id => @aws_access_key_id,
             :aws_secret_access_key => @aws_secret_access_key,
             :use_iam_profile => @use_iam_profile
@@ -83,7 +83,7 @@ module Fog
         end
 
         def url(params, expires)
-          Fog::Logger.deprecation("Fog::Storage::AWS => #url is deprecated, use #https_url instead [light_black](#{caller.first})[/]")
+          Fog::Logger.deprecation("Fog::Storage::Eucalyptus => #url is deprecated, use #https_url instead [light_black](#{caller.first})[/]")
           https_url(params, expires)
         end
 
@@ -99,18 +99,18 @@ module Fog
           end
           params[:headers] ||= {}
           params[:headers]['Date'] = expires.to_i
-          params[:path] = Fog::AWS.escape(params[:path]).gsub('%2F', '/')
+          params[:path] = Fog::Eucalyptus.escape(params[:path]).gsub('%2F', '/')
           query = []
           params[:headers]['x-amz-security-token'] = @aws_session_token if @aws_session_token
           if params[:query]
             for key, value in params[:query]
-              query << "#{key}=#{Fog::AWS.escape(value)}"
+              query << "#{key}=#{Fog::Eucalyptus.escape(value)}"
             end
           end
-          query << "AWSAccessKeyId=#{@aws_access_key_id}"
-          query << "Signature=#{Fog::AWS.escape(signature(params))}"
+          query << "EucalyptusAccessKeyId=#{@aws_access_key_id}"
+          query << "Signature=#{Fog::Eucalyptus.escape(signature(params))}"
           query << "Expires=#{params[:headers]['Date']}"
-          query << "x-amz-security-token=#{Fog::AWS.escape(@aws_session_token)}" if @aws_session_token
+          query << "x-amz-security-token=#{Fog::Eucalyptus.escape(@aws_session_token)}" if @aws_session_token
           port_part = params[:port] && ":#{params[:port]}"
           "#{params[:scheme]}://#{params[:host]}#{port_part}/#{params[:path]}?#{query.join('&')}"
         end
@@ -203,7 +203,7 @@ module Fog
           require 'mime/types'
           @use_iam_profile = options[:use_iam_profile]
           setup_credentials(options)
-          options[:region] ||= 'us-east-1'
+          options[:region] ||= 'eucalyptus'
           @host = options[:host] || case options[:region]
           when 'us-east-1'
             's3.amazonaws.com'
@@ -237,7 +237,7 @@ module Fog
 
       class Real
         include Utils
-        include Fog::AWS::CredentialFetcher::ConnectionMethods
+        include Fog::Eucalyptus::CredentialFetcher::ConnectionMethods
         # Initialize connection to S3
         #
         # ==== Notes
@@ -246,7 +246,7 @@ module Fog
         #
         # ==== Examples
         #   s3 = Fog::Storage.new(
-        #     :provider => "AWS",
+        #     :provider => "Eucalyptus",
         #     :aws_access_key_id => your_aws_access_key_id,
         #     :aws_secret_access_key => your_aws_secret_access_key
         #   )
@@ -275,7 +275,7 @@ module Fog
             @port = endpoint.port
             @scheme = endpoint.scheme
           else
-            options[:region] ||= 'us-east-1'
+            options[:region] ||= 'eucalyptus'
             @region = options[:region]
             @host = options[:host] || case options[:region]
             when 'us-east-1'
@@ -330,7 +330,7 @@ DATA
 
           canonical_resource  = @path.dup
           unless subdomain.nil? || subdomain == @host
-            canonical_resource << "#{Fog::AWS.escape(subdomain).downcase}/"
+            canonical_resource << "#{Fog::Eucalyptus.escape(subdomain).downcase}/"
           end
           canonical_resource << params[:path].to_s
           canonical_resource << '?'
@@ -384,7 +384,7 @@ DATA
 
           params[:headers]['Date'] = Fog::Time.now.to_date_header
           params[:headers]['x-amz-security-token'] = @aws_session_token if @aws_session_token
-          params[:headers]['Authorization'] = "AWS #{@aws_access_key_id}:#{signature(params)}"
+          params[:headers]['Authorization'] = "Eucalyptus #{@aws_access_key_id}:#{signature(params)}"
           # FIXME: ToHashParser should make this not needed
           original_params = params.dup
 

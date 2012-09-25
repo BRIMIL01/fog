@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/upload_server_certificate'
+        require 'fog/eucalyptus/parsers/iam/upload_server_certificate'
 
         # Gets the specified server certificate.
         #
@@ -22,7 +22,7 @@ module Fog
           request({
             'Action'                => 'GetServerCertificate',
             'ServerCertificateName' => name,
-            :parser                 => Fog::Parsers::AWS::IAM::UploadServerCertificate.new
+            :parser                 => Fog::Parsers::Eucalyptus::IAM::UploadServerCertificate.new
           })
         end
 
@@ -30,13 +30,13 @@ module Fog
 
       class Mock
         def get_server_certificate(name)
-          raise Fog::AWS::IAM::NotFound unless certificate = self.data[:server_certificates][name]
+          raise Fog::Eucalyptus::IAM::NotFound unless certificate = self.data[:server_certificates][name]
 
           response = Excon::Response.new
           response.status = 200
           response.body = {
             'Certificate' => certificate,
-            'RequestId' => Fog::AWS::Mock.request_id
+            'RequestId' => Fog::Eucalyptus::Mock.request_id
           }
 
           response

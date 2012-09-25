@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/list_signing_certificates'
+        require 'fog/eucalyptus/parsers/iam/list_signing_certificates'
 
         # List signing certificates for user (by default detects user from access credentials)
         #
@@ -28,7 +28,7 @@ module Fog
         def list_signing_certificates(options = {})
           request({
             'Action'  => 'ListSigningCertificates',
-            :parser   => Fog::Parsers::AWS::IAM::ListSigningCertificates.new
+            :parser   => Fog::Parsers::Eucalyptus::IAM::ListSigningCertificates.new
           }.merge!(options))
         end
 

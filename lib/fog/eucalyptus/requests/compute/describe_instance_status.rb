@@ -1,11 +1,11 @@
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/compute/describe_instance_status'
+        require 'fog/eucalyptus/parsers/compute/describe_instance_status'
 
-        # http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeInstanceStatus.html
+        # http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-DescribeInstanceStatus.html
         #
         def describe_instance_status(filters = {})
           raise ArgumentError.new("Filters must be a hash, but is a #{filters.class}.") unless filters.is_a?(Hash)
@@ -13,9 +13,9 @@ module Fog
           max_results = filters.delete('maxResults') || filters.delete('MaxResults')
           all_instances = filters.delete('includeAllInstances') || filters.delete('IncludeAllInstances')
 
-          params = Fog::AWS.indexed_request_param('InstanceId', filters.delete('InstanceId'))
+          params = Fog::Eucalyptus.indexed_request_param('InstanceId', filters.delete('InstanceId'))
 
-          params.merge!(Fog::AWS.indexed_filters(filters))
+          params.merge!(Fog::Eucalyptus.indexed_filters(filters))
 
           params['NextToken'] = next_token if next_token
           params['MaxResults'] = max_results if max_results
@@ -24,7 +24,7 @@ module Fog
           request({
             'Action'    => 'DescribeInstanceStatus',
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::AWS::DescribeInstanceStatus.new
+            :parser     => Fog::Parsers::Compute::Eucalyptus::DescribeInstanceStatus.new
           }.merge!(params))
         end
       end
@@ -36,7 +36,7 @@ module Fog
 
           response.body = {
             'instanceStatusSet' => [],
-            'requestId' => Fog::AWS::Mock.request_id
+            'requestId' => Fog::Eucalyptus::Mock.request_id
           }
 
           response

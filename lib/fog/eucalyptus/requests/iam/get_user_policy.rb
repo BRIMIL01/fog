@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/get_user_policy'
+        require 'fog/eucalyptus/parsers/iam/get_user_policy'
 
         # Get User Policy
         # 
@@ -26,15 +26,15 @@ module Fog
             'Action'      => 'GetUserPolicy',
             'PolicyName'  => policy_name,
             'UserName'    => user_name,
-            :parser       => Fog::Parsers::AWS::IAM::GetUserPolicy.new
+            :parser       => Fog::Parsers::Eucalyptus::IAM::GetUserPolicy.new
           })
         end
 
       end
       class Mock
         def get_user_policy(policy_name, user_name)
-          raise Fog::AWS::IAM::NotFound.new("The user with name #{user} cannot be found.") unless self.data[:users].key?(user_name)
-          raise Fog::AWS::IAM::NotFound.new("The policy with name #{policy_name} cannot be found.") unless self.data[:users][user_name][:policies].key?(policy_name)
+          raise Fog::Eucalyptus::IAM::NotFound.new("The user with name #{user} cannot be found.") unless self.data[:users].key?(user_name)
+          raise Fog::Eucalyptus::IAM::NotFound.new("The policy with name #{policy_name} cannot be found.") unless self.data[:users][user_name][:policies].key?(policy_name)
           Excon::Response.new.tap do |response|
             response.body = { 'Policy' =>  { 
                                 'PolicyName' => policy_name,
@@ -42,7 +42,7 @@ module Fog
                                 'PolicyDocument' => data[:users][user_name][:policies][policy_name]
                               },
                               'IsTruncated' => false,
-                              'RequestId'   => Fog::AWS::Mock.request_id 
+                              'RequestId'   => Fog::Eucalyptus::Mock.request_id 
                             }
             response.status = 200
           end

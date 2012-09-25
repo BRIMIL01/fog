@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/basic'
+        require 'fog/eucalyptus/parsers/iam/basic'
 
         # Remove a policy from a group
         # 
@@ -24,7 +24,7 @@ module Fog
             'Action'          => 'DeleteGroupPolicy',
             'GroupName'       => group_name,
             'PolicyName'      => policy_name,
-            :parser           => Fog::Parsers::AWS::IAM::Basic.new
+            :parser           => Fog::Parsers::Eucalyptus::IAM::Basic.new
           )
         end
 

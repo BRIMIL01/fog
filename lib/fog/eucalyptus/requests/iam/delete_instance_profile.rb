@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/basic'
+        require 'fog/eucalyptus/parsers/iam/basic'
 
         # Delete a instance_profile
         # 
@@ -22,7 +22,7 @@ module Fog
           request(
             'Action'    => 'DeleteInstanceProfile',
             'InstanceProfileName'  => instance_profile_name,
-            :parser     => Fog::Parsers::AWS::IAM::Basic.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::Basic.new
           )
         end
 

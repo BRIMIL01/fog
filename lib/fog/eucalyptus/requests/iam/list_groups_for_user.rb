@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/list_groups_for_user'
+        require 'fog/eucalyptus/parsers/iam/list_groups_for_user'
 
         # List groups_for_user
         #
@@ -33,7 +33,7 @@ module Fog
           request({
             'Action'    => 'ListGroupsForUser',
             'UserName'  => user_name,
-            :parser     => Fog::Parsers::AWS::IAM::ListGroupsForUser.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::ListGroupsForUser.new
           }.merge!(options))
         end
 
@@ -54,11 +54,11 @@ module Fog
                                                        'Arn'       => (group[:arn]).strip }
                                                    end,
                                 'IsTruncated' => false,
-                                'RequestId' => Fog::AWS::Mock.request_id
+                                'RequestId' => Fog::Eucalyptus::Mock.request_id
                               }
             end
           else
-            raise Fog::AWS::IAM::NotFound.new("The user with name #{user_name} cannot be found.")
+            raise Fog::Eucalyptus::IAM::NotFound.new("The user with name #{user_name} cannot be found.")
           end
         end
       end

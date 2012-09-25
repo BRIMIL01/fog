@@ -1,9 +1,9 @@
 module Fog
   module Storage
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/storage/get_bucket_location'
+        require 'fog/eucalyptus/parsers/storage/get_bucket_location'
 
         # Get location constraint for an S3 bucket
         #
@@ -25,7 +25,7 @@ module Fog
             :host     => "#{bucket_name}.#{@host}",
             :idempotent => true,
             :method   => 'GET',
-            :parser   => Fog::Parsers::Storage::AWS::GetBucketLocation.new,
+            :parser   => Fog::Parsers::Storage::Eucalyptus::GetBucketLocation.new,
             :query    => {'location' => nil}
           })
         end

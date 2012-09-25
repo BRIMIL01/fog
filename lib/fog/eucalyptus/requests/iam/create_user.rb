@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/create_user'
+        require 'fog/eucalyptus/parsers/iam/create_user'
 
         # Create a new user
         # 
@@ -29,7 +29,7 @@ module Fog
             'Action'    => 'CreateUser',
             'UserName'  => user_name,
             'Path'      => path,
-            :parser     => Fog::Parsers::AWS::IAM::CreateUser.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::CreateUser.new
           )
         end
 
@@ -38,7 +38,7 @@ module Fog
       class Mock
         def create_user(user_name, path='/')
           if data[:users].has_key? user_name
-            raise Fog::AWS::IAM::EntityAlreadyExists.new "User with name #{user_name} already exists."
+            raise Fog::Eucalyptus::IAM::EntityAlreadyExists.new "User with name #{user_name} already exists."
           else
             data[:users][user_name][:path] = path
             Excon::Response.new.tap do |response|
@@ -49,7 +49,7 @@ module Fog
                                            "UserName" => user_name,
                                            "Arn"      => (data[:users][user_name][:arn]).strip
                                            },
-                                'RequestId' => Fog::AWS::Mock.request_id
+                                'RequestId' => Fog::Eucalyptus::Mock.request_id
                                }
             end
           end

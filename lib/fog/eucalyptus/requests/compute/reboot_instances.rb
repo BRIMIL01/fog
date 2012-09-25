@@ -1,9 +1,9 @@
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/compute/basic'
+        require 'fog/eucalyptus/parsers/compute/basic'
 
         # Reboot specified instances
         #
@@ -16,13 +16,13 @@ module Fog
         #     * 'requestId'<~String> - Id of request
         #     * 'return'<~Boolean> - success?
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-RebootInstances.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-RebootInstances.html]
         def reboot_instances(instance_id = [])
-          params = Fog::AWS.indexed_param('InstanceId', instance_id)
+          params = Fog::Eucalyptus.indexed_param('InstanceId', instance_id)
           request({
             'Action'    => 'RebootInstances',
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::AWS::Basic.new
+            :parser     => Fog::Parsers::Compute::Eucalyptus::Basic.new
           }.merge!(params))
         end
 
@@ -39,12 +39,12 @@ module Fog
             end
             response.status = 200
             response.body = {
-              'requestId' => Fog::AWS::Mock.request_id,
+              'requestId' => Fog::Eucalyptus::Mock.request_id,
               'return'    => true
             }
             response
           else
-            raise Fog::Compute::AWS::NotFound.new("The instance ID #{instance_id.inspect} does not exist")
+            raise Fog::Compute::Eucalyptus::NotFound.new("The instance ID #{instance_id.inspect} does not exist")
           end
         end
 

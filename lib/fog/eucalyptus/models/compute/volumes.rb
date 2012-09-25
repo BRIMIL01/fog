@@ -1,23 +1,23 @@
 require 'fog/core/collection'
-require 'fog/aws/models/compute/volume'
+require 'fog/eucalyptus/models/compute/volume'
 
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
 
       class Volumes < Fog::Collection
 
         attribute :filters
         attribute :server
 
-        model Fog::Compute::AWS::Volume
+        model Fog::Compute::Eucalyptus::Volume
 
         # Used to create a volume.  There are 3 arguments and availability_zone and size are required.  You can generate a new key_pair as follows:
-        # AWS.volumes.create(:availability_zone => 'us-east-1a', :size => 10)
+        # Eucalyptus.volumes.create(:availability_zone => 'us-east-1a', :size => 10)
         #
         # ==== Returns
         #
-        #<Fog::AWS::Compute::Volume
+        #<Fog::Eucalyptus::Compute::Volume
         #  id="vol-1e2028b9",
         #  attached_at=nil,
         #  availability_zone="us-east-1a",
@@ -31,7 +31,7 @@ module Fog
         #  tags=nil
         #>
         #
-        # The volume can be retrieved by running AWS.volumes.get("vol-1e2028b9").  See get method below.
+        # The volume can be retrieved by running Eucalyptus.volumes.get("vol-1e2028b9").  See get method below.
         #
 
         def initialize(attributes)
@@ -40,12 +40,12 @@ module Fog
         end
 
         # Used to return all volumes.
-        # AWS.volumes.all
+        # Eucalyptus.volumes.all
         #
         # ==== Returns
         #
-        #>>AWS.volumes.all
-        #<Fog::AWS::Compute::Volume
+        #>>Eucalyptus.volumes.all
+        #<Fog::Eucalyptus::Compute::Volume
         #  id="vol-1e2028b9",
         #  attached_at=nil,
         #  availability_zone="us-east-1a",
@@ -59,7 +59,7 @@ module Fog
         #  tags=nil
         #>
         #
-        # The volume can be retrieved by running AWS.volumes.get("vol-1e2028b9").  See get method below.
+        # The volume can be retrieved by running Eucalyptus.volumes.get("vol-1e2028b9").  See get method below.
         #
 
         def all(filters = filters)
@@ -80,12 +80,12 @@ module Fog
         # volume_id is required to get the associated volume information.
         #
         # You can run the following command to get the details:
-        # AWS.volumes.get("vol-1e2028b9")
+        # Eucalyptus.volumes.get("vol-1e2028b9")
         #
         # ==== Returns
         #
-        #>> AWS.volumes.get("vol-1e2028b9")
-        # <Fog::AWS::Compute::Volume
+        #>> Eucalyptus.volumes.get("vol-1e2028b9")
+        # <Fog::Eucalyptus::Compute::Volume
         #    id="vol-1e2028b9",
         #    attached_at=nil,
         #    availability_zone="us-east-1a",

@@ -1,9 +1,9 @@
 require 'fog/core/collection'
-require 'fog/aws/models/compute/flavor'
+require 'fog/eucalyptus/models/compute/flavor'
 
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
 
       FLAVORS = [
         { :bits => 0,  :cores =>   2,  :disk => 0,    :id =>  't1.micro',   :name => 'Micro Instance',       :ram => 613},
@@ -29,20 +29,20 @@ module Fog
 
       class Flavors < Fog::Collection
 
-        model Fog::Compute::AWS::Flavor
+        model Fog::Compute::Eucalyptus::Flavor
 
         # Returns an array of all flavors that have been created
         #
-        # AWS.flavors.all
+        # Eucalyptus.flavors.all
         #
         # ==== Returns
         #
         # Returns an array of all available instance sizes
         #
-        #>> AWS.flavors.all
-        #  <Fog::AWS::Compute::Flavors
+        #>> Eucalyptus.flavors.all
+        #  <Fog::Eucalyptus::Compute::Flavors
         #    [
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Eucalyptus::Compute::Flavor
         #        id="t1.micro",
         #        bits=0,
         #        cores=2,
@@ -50,7 +50,7 @@ module Fog
         #        name="Micro Instance",
         #        ram=613
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Eucalyptus::Compute::Flavor
         #        id="m1.small",
         #        bits=32,
         #        cores=1,
@@ -58,7 +58,7 @@ module Fog
         #        name="Small Instance",
         #        ram=1740.8
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Eucalyptus::Compute::Flavor
         #        id="m1.medium",
         #        bits=32,
         #        cores=2,
@@ -66,7 +66,7 @@ module Fog
         #        name="Medium Instance",
         #        ram=3750
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Eucalyptus::Compute::Flavor
         #        id="m1.large",
         #        bits=64,
         #        cores=4,
@@ -74,7 +74,7 @@ module Fog
         #        name="Large Instance",
         #        ram=7680
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Eucalyptus::Compute::Flavor
         #        id="m1.xlarge",
         #        bits=64,
         #        cores=8,
@@ -82,7 +82,7 @@ module Fog
         #        name="Extra Large Instance",
         #        ram=15360
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Eucalyptus::Compute::Flavor
         #        id="c1.medium",
         #        bits=32,
         #        cores=5,
@@ -90,7 +90,7 @@ module Fog
         #        name="High-CPU Medium",
         #        ram=1740.8
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Eucalyptus::Compute::Flavor
         #        id="c1.xlarge",
         #        bits=64,
         #        cores=20,
@@ -98,7 +98,7 @@ module Fog
         #        name="High-CPU Extra Large",
         #        ram=7168
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Eucalyptus::Compute::Flavor
         #        id="m2.xlarge",
         #        bits=64,
         #        cores=6.5,
@@ -106,7 +106,7 @@ module Fog
         #        name="High-Memory Extra Large",
         #        ram=17510.4
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Eucalyptus::Compute::Flavor
         #        id="m2.2xlarge",
         #        bits=64,
         #        cores=13,
@@ -114,7 +114,7 @@ module Fog
         #        name="High Memory Double Extra Large",
         #        ram=35020.8
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Eucalyptus::Compute::Flavor
         #        id="m2.4xlarge",
         #        bits=64,
         #        cores=26,
@@ -122,7 +122,7 @@ module Fog
         #        name="High Memory Quadruple Extra Large",
         #        ram=70041.6
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Eucalyptus::Compute::Flavor
         #        id="cc1.4xlarge",
         #        bits=64,
         #        cores=33.5,
@@ -130,7 +130,7 @@ module Fog
         #        name="Cluster Compute Quadruple Extra Large",
         #        ram=23552
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Eucalyptus::Compute::Flavor
         #        id="cc2.8xlarge",
         #        bits=64,
         #        cores=88,
@@ -138,7 +138,7 @@ module Fog
         #        name="Cluster Compute Eight Extra Large",
         #        ram=61952
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Eucalyptus::Compute::Flavor
         #        id="cg1.4xlarge",
         #        bits=64,
         #        cores=33.5,
@@ -151,7 +151,7 @@ module Fog
         #
 
         def all
-          load(Fog::Compute::AWS::FLAVORS)
+          load(Fog::Compute::Eucalyptus::FLAVORS)
           self
         end
 
@@ -161,12 +161,12 @@ module Fog
         # 't1.micro', 'm1.small', 'm1.large', 'm1.xlarge', 'c1.medium', 'c1.xlarge', 'm2.xlarge', 'm2.2xlarge', 'm2.4xlarge', 'cc1.4xlarge', 'cc2.8xlarge', 'cg1.4xlarge'
         #
         # You can run the following command to get the details:
-        # AWS.flavors.get("t1.micro")
+        # Eucalyptus.flavors.get("t1.micro")
         #
         # ==== Returns
         #
-        #>> AWS.flavors.get("t1.micro")
-        # <Fog::AWS::Compute::Flavor
+        #>> Eucalyptus.flavors.get("t1.micro")
+        # <Fog::Eucalyptus::Compute::Flavor
         #  id="t1.micro",
         #  bits=0,
         #  cores=2,

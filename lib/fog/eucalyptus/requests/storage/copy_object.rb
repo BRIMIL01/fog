@@ -1,9 +1,9 @@
 module Fog
   module Storage
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/storage/copy_object'
+        require 'fog/eucalyptus/parsers/storage/copy_object'
 
         # Copy an object from one S3 bucket to another
         #
@@ -36,7 +36,7 @@ module Fog
             :headers  => headers,
             :host     => "#{target_bucket_name}.#{@host}",
             :method   => 'PUT',
-            :parser   => Fog::Parsers::Storage::AWS::CopyObject.new,
+            :parser   => Fog::Parsers::Storage::Eucalyptus::CopyObject.new,
             :path     => CGI.escape(target_object_name)
           })
         end

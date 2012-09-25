@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/login_profile'
+        require 'fog/eucalyptus/parsers/iam/login_profile'
 
         # Creates a login profile for a user
         # 
@@ -26,7 +26,7 @@ module Fog
             'Action'    => 'CreateLoginProfile',
             'UserName'  => user_name,
             'Password'  => password,
-            :parser     => Fog::Parsers::AWS::IAM::LoginProfile.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::LoginProfile.new
           })
         end
 

@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/basic'
+        require 'fog/eucalyptus/parsers/iam/basic'
 
         # Update an access key for a user
         # 
@@ -26,7 +26,7 @@ module Fog
             'AccessKeyId' => access_key_id,
             'Action'      => 'UpdateAccessKey',
             'Status'      => status,
-            :parser       => Fog::Parsers::AWS::IAM::Basic.new
+            :parser       => Fog::Parsers::Eucalyptus::IAM::Basic.new
           }.merge!(options))
         end
 

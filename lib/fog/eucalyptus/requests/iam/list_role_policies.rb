@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/list_policies'
+        require 'fog/eucalyptus/parsers/iam/list_policies'
 
         # Lists the names of policies associated with a role
         # 
@@ -29,7 +29,7 @@ module Fog
           request({
             'Action'    => 'ListRolePolicies',
             'RoleName'  => role_name,
-            :parser     => Fog::Parsers::AWS::IAM::ListPolicies.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::ListPolicies.new
           }.merge!(options))
         end
 

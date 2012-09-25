@@ -1,9 +1,9 @@
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/compute/basic'
+        require 'fog/eucalyptus/parsers/compute/basic'
 
         # Release an elastic IP address.
         #
@@ -13,7 +13,7 @@ module Fog
         #     * 'requestId'<~String> - Id of request
         #     * 'return'<~Boolean> - success?
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-ReleaseAddress.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-ReleaseAddress.html]
         #
         # non-VPC: requires public_ip only
         #     VPC: requires allocation_id only
@@ -27,7 +27,7 @@ module Fog
             'Action'    => 'ReleaseAddress',
             field       => ip_or_allocation,
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::AWS::Basic.new
+            :parser     => Fog::Parsers::Compute::Eucalyptus::Basic.new
           )
         end
 
@@ -42,18 +42,18 @@ module Fog
 
           if address
             if address['allocationId'] && public_ip_or_allocation_id == address['publicIp']
-              raise Fog::Compute::AWS::Error, "InvalidParameterValue => You must specify an allocation id when releasing a VPC elastic IP address"
+              raise Fog::Compute::Eucalyptus::Error, "InvalidParameterValue => You must specify an allocation id when releasing a VPC elastic IP address"
             end
 
             self.data[:addresses].delete(address['publicIp'])
             response.status = 200
             response.body = {
-              'requestId' => Fog::AWS::Mock.request_id,
+              'requestId' => Fog::Eucalyptus::Mock.request_id,
               'return'    => true
             }
             response
           else
-            raise Fog::Compute::AWS::Error.new("AuthFailure => The address '#{public_ip_or_allocation_id}' does not belong to you.")
+            raise Fog::Compute::Eucalyptus::Error.new("AuthFailure => The address '#{public_ip_or_allocation_id}' does not belong to you.")
           end
         end
 

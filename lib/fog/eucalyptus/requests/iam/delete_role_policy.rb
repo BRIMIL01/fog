@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/basic'
+        require 'fog/eucalyptus/parsers/iam/basic'
 
         # Remove a policy from a role
         # 
@@ -24,7 +24,7 @@ module Fog
             'Action'          => 'DeleteRolePolicy',
             'PolicyName'      => policy_name,
             'RoleName'        => role_name,
-            :parser           => Fog::Parsers::AWS::IAM::Basic.new
+            :parser           => Fog::Parsers::Eucalyptus::IAM::Basic.new
           )
         end
 

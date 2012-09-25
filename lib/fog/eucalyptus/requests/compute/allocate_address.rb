@@ -1,9 +1,9 @@
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/compute/allocate_address'
+        require 'fog/eucalyptus/parsers/compute/allocate_address'
 
         # Acquire an elastic IP address.
         #
@@ -15,13 +15,13 @@ module Fog
         #     * 'publicIp'<~String> - The acquired address
         #     * 'requestId'<~String> - Id of the request
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-AllocateAddress.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-AllocateAddress.html]
         def allocate_address(domain='standard')
           domain = domain == 'vpc' ? 'vpc' : 'standard'
           request(
             'Action'  => 'AllocateAddress',
             'Domain'  => domain,
-            :parser   => Fog::Parsers::Compute::AWS::AllocateAddress.new
+            :parser   => Fog::Parsers::Compute::Eucalyptus::AllocateAddress.new
           )
         end
 
@@ -34,7 +34,7 @@ module Fog
           response = Excon::Response.new
           if describe_addresses.body['addressesSet'].size < self.data[:limits][:addresses]
             response.status = 200
-            public_ip = Fog::AWS::Mock.ip_address
+            public_ip = Fog::Eucalyptus::Mock.ip_address
             data = {
               'instanceId' => nil,
               'publicIp'   => public_ip,
@@ -44,11 +44,11 @@ module Fog
               data['allocationId'] = "eipalloc-#{Fog::Mock.random_hex(8)}"
             end
             self.data[:addresses][public_ip] = data
-            response.body = data.reject {|k, v| k == 'instanceId' }.merge('requestId' => Fog::AWS::Mock.request_id)
+            response.body = data.reject {|k, v| k == 'instanceId' }.merge('requestId' => Fog::Eucalyptus::Mock.request_id)
             response
           else
             response.status = 400
-            response.body = "<?xml version=\"1.0\"?><Response><Errors><Error><Code>AddressLimitExceeded</Code><Message>Too many addresses allocated</Message></Error></Errors><RequestID>#{Fog::AWS::Mock.request_id}</RequestID></Response>"
+            response.body = "<?xml version=\"1.0\"?><Response><Errors><Error><Code>AddressLimitExceeded</Code><Message>Too many addresses allocated</Message></Error></Errors><RequestID>#{Fog::Eucalyptus::Mock.request_id}</RequestID></Response>"
             raise(Excon::Errors.status_error({:expects => 200}, response))
           end
         end

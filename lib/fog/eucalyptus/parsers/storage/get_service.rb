@@ -1,7 +1,7 @@
 module Fog
   module Parsers
     module Storage
-      module AWS
+      module Eucalyptus
 
         class GetService < Fog::Parsers::Base
 

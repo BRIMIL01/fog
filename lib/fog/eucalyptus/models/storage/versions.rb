@@ -1,16 +1,16 @@
 require 'fog/core/collection'
-require 'fog/aws/models/storage/version'
+require 'fog/eucalyptus/models/storage/version'
 
 module Fog
   module Storage
-    class AWS
+    class Eucalyptus
 
       class Versions < Fog::Collection
 
         attribute :file
         attribute :directory
 
-        model Fog::Storage::AWS::Version
+        model Fog::Storage::Eucalyptus::Version
 
         def all(options = {})
           data = if file

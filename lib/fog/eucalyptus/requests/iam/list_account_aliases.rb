@@ -1,14 +1,14 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/list_account_aliases'
+        require 'fog/eucalyptus/parsers/iam/list_account_aliases'
     
         def list_account_aliases(options = {})
           request({
             'Action'  => 'ListAccountAliases',
-            :parser   => Fog::Parsers::AWS::IAM::ListAccountAliases.new
+            :parser   => Fog::Parsers::Eucalyptus::IAM::ListAccountAliases.new
           }.merge!(options))
         end
 

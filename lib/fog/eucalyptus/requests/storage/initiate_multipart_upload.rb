@@ -1,9 +1,9 @@
 module Fog
   module Storage
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/storage/initiate_multipart_upload'
+        require 'fog/eucalyptus/parsers/storage/initiate_multipart_upload'
 
         # Initiate a multipart upload to an S3 bucket
         #
@@ -35,7 +35,7 @@ module Fog
             :headers    => options,
             :host       => "#{bucket_name}.#{@host}",
             :method     => 'POST',
-            :parser     => Fog::Parsers::Storage::AWS::InitiateMultipartUpload.new,
+            :parser     => Fog::Parsers::Storage::Eucalyptus::InitiateMultipartUpload.new,
             :path       => CGI.escape(object_name),
             :query      => {'uploads' => nil}
           })
@@ -43,5 +43,5 @@ module Fog
 
       end # Real
     end # Storage
-  end # AWS
+  end # Eucalyptus
 end # Fog

@@ -1,11 +1,11 @@
 module Fog
   module Parsers
-    module AWS
+    module Eucalyptus
       module IAM
 
-        require 'fog/aws/parsers/iam/base_instance_profile'
+        require 'fog/eucalyptus/parsers/iam/base_instance_profile'
 
-        class InstanceProfile < Fog::Parsers::AWS::IAM::BaseInstanceProfile
+        class InstanceProfile < Fog::Parsers::Eucalyptus::IAM::BaseInstanceProfile
 
           def reset
             super

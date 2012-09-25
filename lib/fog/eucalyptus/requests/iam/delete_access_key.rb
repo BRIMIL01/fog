@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/basic'
+        require 'fog/eucalyptus/parsers/iam/basic'
 
         # Delete an access key
         # 
@@ -24,7 +24,7 @@ module Fog
           request({
             'AccessKeyId' => access_key_id,
             'Action'      => 'DeleteAccessKey',
-            :parser       => Fog::Parsers::AWS::IAM::Basic.new
+            :parser       => Fog::Parsers::Eucalyptus::IAM::Basic.new
           }.merge!(options))
         end
 
@@ -37,11 +37,11 @@ module Fog
           if user_name && data[:users].has_key?(user_name) && data[:users][user_name][:access_keys].any? { |akey| akey['AccessKeyId'] == access_key_id }
             data[:users][user_name][:access_keys].delete_if { |akey| akey['AccessKeyId'] == access_key_id }
             Excon::Response.new.tap do |response|
-              response.body = { 'RequestId' => Fog::AWS::Mock.request_id }
+              response.body = { 'RequestId' => Fog::Eucalyptus::Mock.request_id }
               response.status = 200
             end
           else
-            raise Fog::AWS::IAM::NotFound.new("The Access Key with id #{access_key_id} cannot be found.")
+            raise Fog::Eucalyptus::IAM::NotFound.new("The Access Key with id #{access_key_id} cannot be found.")
           end
         end
 

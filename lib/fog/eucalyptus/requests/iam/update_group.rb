@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/update_group'
+        require 'fog/eucalyptus/parsers/iam/update_group'
 
         # Update a Group
         #
@@ -29,7 +29,7 @@ module Fog
           request({
             'Action'      => 'UpdateGroup',
             'GroupName'    => group_name,
-            :parser       => Fog::Parsers::AWS::IAM::UpdateGroup.new
+            :parser       => Fog::Parsers::Eucalyptus::IAM::UpdateGroup.new
           }.merge!(options))
         end
 

@@ -1,6 +1,6 @@
 module Fog
   module Storage
-    class AWS
+    class Eucalyptus
       class Real
 
         # Abort a multipart upload
@@ -26,5 +26,5 @@ module Fog
 
       end # Real
     end # Storage
-  end # AWS
+  end # Eucalyptus
 end # Fog

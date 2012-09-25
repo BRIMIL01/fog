@@ -1,9 +1,9 @@
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/compute/describe_regions'
+        require 'fog/eucalyptus/parsers/compute/describe_regions'
 
         # Describe all or specified regions
         #
@@ -18,17 +18,17 @@ module Fog
         #       * 'regionName'<~String> - Name of region
         #       * 'regionEndpoint'<~String> - Service endpoint for region
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeRegions.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-DescribeRegions.html]
         def describe_regions(filters = {})
           unless filters.is_a?(Hash)
             Fog::Logger.deprecation("describe_regions with #{filters.class} param is deprecated, use describe_regions('region-name' => []) instead [light_black](#{caller.first})[/]")
             filters = {'region-name' => [*filters]}
           end
-          params = Fog::AWS.indexed_filters(filters)
+          params = Fog::Eucalyptus.indexed_filters(filters)
           request({
             'Action'    => 'DescribeRegions',
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::AWS::DescribeRegions.new
+            :parser     => Fog::Parsers::Compute::Eucalyptus::DescribeRegions.new
           }.merge!(params))
         end
 
@@ -56,7 +56,7 @@ module Fog
 
           response.status = 200
           response.body = {
-            'requestId'   => Fog::AWS::Mock.request_id,
+            'requestId'   => Fog::Eucalyptus::Mock.request_id,
             'regionInfo'  => region_info
           }
           response

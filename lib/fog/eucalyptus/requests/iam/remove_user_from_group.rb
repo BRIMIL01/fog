@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/basic'
+        require 'fog/eucalyptus/parsers/iam/basic'
 
         # Remove a user from a group
         # 
@@ -24,7 +24,7 @@ module Fog
             'Action'    => 'RemoveUserFromGroup',
             'GroupName' => group_name,
             'UserName'  => user_name,
-            :parser     => Fog::Parsers::AWS::IAM::Basic.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::Basic.new
           )
         end
 
@@ -38,13 +38,13 @@ module Fog
               data[:groups][group_name][:members].delete_if { |item| item == user_name }
               Excon::Response.new.tap do |response|
                 response.status = 200
-                response.body = { 'RequestId' => Fog::AWS::Mock.request_id }
+                response.body = { 'RequestId' => Fog::Eucalyptus::Mock.request_id }
               end
             else
-              raise Fog::AWS::IAM::NotFound.new("The user with name #{user_name} cannot be found.")
+              raise Fog::Eucalyptus::IAM::NotFound.new("The user with name #{user_name} cannot be found.")
             end
           else
-            raise Fog::AWS::IAM::NotFound.new("The group with name #{group_name} cannot be found.")
+            raise Fog::Eucalyptus::IAM::NotFound.new("The group with name #{group_name} cannot be found.")
           end
         end
       end

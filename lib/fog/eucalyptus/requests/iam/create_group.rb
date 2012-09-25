@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/create_group'
+        require 'fog/eucalyptus/parsers/iam/create_group'
 
         # Create a new group
         # 
@@ -29,7 +29,7 @@ module Fog
             'Action'    => 'CreateGroup',
             'GroupName' => group_name,
             'Path'      => path,
-            :parser     => Fog::Parsers::AWS::IAM::CreateGroup.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::CreateGroup.new
           )
         end
 
@@ -39,7 +39,7 @@ module Fog
 
         def create_group(group_name, path = '/')
           if data[:groups].has_key? group_name
-            raise Fog::AWS::IAM::EntityAlreadyExists.new("Group with name #{group_name} already exists.")
+            raise Fog::Eucalyptus::IAM::EntityAlreadyExists.new("Group with name #{group_name} already exists.")
           else
             data[:groups][group_name][:path] = path
             Excon::Response.new.tap do |response|
@@ -48,7 +48,7 @@ module Fog
                                              'GroupName' => group_name,
                                              'Path'      => path,
                                              'Arn'       => (data[:groups][group_name][:arn]).strip },
-                                'RequestId' => Fog::AWS::Mock.request_id }
+                                'RequestId' => Fog::Eucalyptus::Mock.request_id }
               response.status = 200
             end
           end

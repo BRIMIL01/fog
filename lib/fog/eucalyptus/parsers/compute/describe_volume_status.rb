@@ -1,7 +1,7 @@
 module Fog
   module Parsers
     module Compute
-      module AWS
+      module Eucalyptus
         class DescribeVolumeStatus < Fog::Parsers::Base
           def reset
             @action_set = {}

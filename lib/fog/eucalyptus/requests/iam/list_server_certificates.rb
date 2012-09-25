@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/list_server_certificates'
+        require 'fog/eucalyptus/parsers/iam/list_server_certificates'
 
         # List server certificates
         #
@@ -32,7 +32,7 @@ module Fog
         def list_server_certificates(options = {})
           request({
             'Action'  => 'ListServerCertificates',
-            :parser   => Fog::Parsers::AWS::IAM::ListServerCertificates.new
+            :parser   => Fog::Parsers::Eucalyptus::IAM::ListServerCertificates.new
           }.merge!(options))
         end
 

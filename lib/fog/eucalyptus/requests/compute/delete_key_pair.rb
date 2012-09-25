@@ -1,9 +1,9 @@
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/compute/basic'
+        require 'fog/eucalyptus/parsers/compute/basic'
 
         # Delete a key pair that you own
         #
@@ -16,13 +16,13 @@ module Fog
         #     * 'requestId'<~String> id of request
         #     * 'return'<~Boolean> - success?
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DeleteKeyPair.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-DeleteKeyPair.html]
         def delete_key_pair(key_name)
           request(
             'Action'    => 'DeleteKeyPair',
             'KeyName'   => key_name,
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::AWS::Basic.new
+            :parser     => Fog::Parsers::Compute::Eucalyptus::Basic.new
           )
         end
 
@@ -35,7 +35,7 @@ module Fog
           self.data[:key_pairs].delete(key_name)
           response.status = 200
           response.body = {
-            'requestId' => Fog::AWS::Mock.request_id,
+            'requestId' => Fog::Eucalyptus::Mock.request_id,
             'return'    => true
           }
           response

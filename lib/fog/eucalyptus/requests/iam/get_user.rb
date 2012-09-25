@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/get_user'
+        require 'fog/eucalyptus/parsers/iam/get_user'
 
         # Get User
         # 
@@ -28,7 +28,7 @@ module Fog
           request({
             'Action'    => 'GetUser',
             'UserName'  => username,
-            :parser     => Fog::Parsers::AWS::IAM::GetUser.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::GetUser.new
           }.merge!(options))
         end
 
@@ -36,7 +36,7 @@ module Fog
       
       class Mock
         def get_user(user, options = {})
-          raise Fog::AWS::IAM::NotFound.new(
+          raise Fog::Eucalyptus::IAM::NotFound.new(
             "The user with name #{user} cannot be found."
           ) unless self.data[:users].key?(user)
           Excon::Response.new.tap do |response|
@@ -46,7 +46,7 @@ module Fog
                                           'UserName' => user,
                                           'Arn'      => (data[:users][user][:arn]).strip 
                                         },
-                             'RequestId'   => Fog::AWS::Mock.request_id }
+                             'RequestId'   => Fog::Eucalyptus::Mock.request_id }
             response.status = 200
           end
         end

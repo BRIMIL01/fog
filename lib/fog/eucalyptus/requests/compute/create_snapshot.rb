@@ -1,9 +1,9 @@
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/compute/create_snapshot'
+        require 'fog/eucalyptus/parsers/compute/create_snapshot'
 
         # Create a snapshot of an EBS volume and store it in S3
         #
@@ -20,13 +20,13 @@ module Fog
         #     * 'status'<~String> - state of snapshot
         #     * 'volumeId'<~String> - id of volume snapshot targets
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-CreateSnapshot.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-CreateSnapshot.html]
         def create_snapshot(volume_id, description = nil)
           request(
             'Action'      => 'CreateSnapshot',
             'Description' => description,
             'VolumeId'    => volume_id,
-            :parser       => Fog::Parsers::Compute::AWS::CreateSnapshot.new
+            :parser       => Fog::Parsers::Compute::Eucalyptus::CreateSnapshot.new
           )
         end
 
@@ -37,14 +37,14 @@ module Fog
         #
         # Usage
         #
-        # AWS[:compute].create_snapshot("vol-f7c23423", "latest snapshot")
+        # Eucalyptus[:compute].create_snapshot("vol-f7c23423", "latest snapshot")
         #
 
         def create_snapshot(volume_id, description = nil)
           response = Excon::Response.new
           if volume = self.data[:volumes][volume_id]
             response.status = 200
-            snapshot_id = Fog::AWS::Mock.snapshot_id
+            snapshot_id = Fog::Eucalyptus::Mock.snapshot_id
             data = {
               'description' => description,
               'ownerId'     => self.data[:owner_id],
@@ -57,7 +57,7 @@ module Fog
             }
             self.data[:snapshots][snapshot_id] = data
             response.body = {
-              'requestId' => Fog::AWS::Mock.request_id
+              'requestId' => Fog::Eucalyptus::Mock.request_id
             }.merge!(data)
           else
             response.status = 400

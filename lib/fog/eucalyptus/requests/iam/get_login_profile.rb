@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/login_profile'
+        require 'fog/eucalyptus/parsers/iam/login_profile'
 
         # Retrieves the login profile for a user
         # 
@@ -25,7 +25,7 @@ module Fog
           request({
             'Action'    => 'GetLoginProfile',
             'UserName'  => user_name,
-            :parser     => Fog::Parsers::AWS::IAM::LoginProfile.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::LoginProfile.new
           })
         end
 

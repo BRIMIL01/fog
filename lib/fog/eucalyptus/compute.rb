@@ -1,4 +1,4 @@
-require 'fog/aws'
+require 'fog/eucalyptus'
 require 'fog/compute'
 
 module Fog
@@ -14,18 +14,12 @@ module Fog
       model_path 'fog/eucalyptus/models/compute'
       model       :address
       collection  :addresses
-      model       :dhcp_options
-      collection  :dhcp_options
       model       :flavor
       collection  :flavors
       model       :image
       collection  :images
-      model       :internet_gateway
-      collection  :internet_gateways
       model       :key_pair
       collection  :key_pairs
-      model       :network_interface
-      collection  :network_interfaces
       model       :security_group
       collection  :security_groups
       model       :server
@@ -44,7 +38,6 @@ module Fog
       request :create_key_pair
       request :create_security_group
       request :create_snapshot
-      request :create_subnet
       request :create_volume
       request :delete_key_pair
       request :delete_security_group
@@ -199,7 +192,7 @@ module Fog
       end
 
       class Real
-        include Fog::AWS::CredentialFetcher::ConnectionMethods
+        include Fog::Eucalyptus::CredentialFetcher::ConnectionMethods
         # Initialize connection to EC2
         #
         # ==== Notes
@@ -269,7 +262,7 @@ module Fog
           idempotent  = params.delete(:idempotent)
           parser      = params.delete(:parser)
 
-          body = Fog::AWS.signed_params(
+          body = Fog::Eucalyptus.signed_params(
             params,
             {
               :aws_access_key_id  => @aws_access_key_id,

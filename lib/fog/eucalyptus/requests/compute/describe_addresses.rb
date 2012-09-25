@@ -1,9 +1,9 @@
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/compute/describe_addresses'
+        require 'fog/eucalyptus/parsers/compute/describe_addresses'
 
         # Describe all or specified IP addresses.
         #
@@ -18,17 +18,17 @@ module Fog
         #       * 'instanceId'<~String> - instance for ip address
         #       * 'publicIp'<~String> - ip address for instance
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeAddresses.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-DescribeAddresses.html]
         def describe_addresses(filters = {})
           unless filters.is_a?(Hash)
             Fog::Logger.deprecation("describe_addresses with #{filters.class} param is deprecated, use describe_addresses('public-ip' => []) instead [light_black](#{caller.first})[/]")
             filters = {'public-ip' => [*filters]}
           end
-          params = Fog::AWS.indexed_filters(filters)
+          params = Fog::Eucalyptus.indexed_filters(filters)
           request({
             'Action'    => 'DescribeAddresses',
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::AWS::DescribeAddresses.new
+            :parser     => Fog::Parsers::Compute::Eucalyptus::DescribeAddresses.new
           }.merge!(params))
         end
 
@@ -54,7 +54,7 @@ module Fog
 
           response.status = 200
           response.body = {
-            'requestId'     => Fog::AWS::Mock.request_id,
+            'requestId'     => Fog::Eucalyptus::Mock.request_id,
             'addressesSet'  => addresses_set
           }
           response

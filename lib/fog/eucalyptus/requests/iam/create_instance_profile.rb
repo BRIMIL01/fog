@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/instance_profile'
+        require 'fog/eucalyptus/parsers/iam/instance_profile'
 
         # Create a new instance_profile
         # 
@@ -37,7 +37,7 @@ module Fog
             'Action'    => 'CreateInstanceProfile',
             'InstanceProfileName' => instance_profile_name,
             'Path'      => path,
-            :parser     => Fog::Parsers::AWS::IAM::InstanceProfile.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::InstanceProfile.new
           }.merge!(options))
         end
       end

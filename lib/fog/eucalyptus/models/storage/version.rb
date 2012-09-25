@@ -2,7 +2,7 @@ require 'fog/core/model'
 
 module Fog
   module Storage
-    class AWS
+    class Eucalyptus
 
       class Version < Fog::Model
 

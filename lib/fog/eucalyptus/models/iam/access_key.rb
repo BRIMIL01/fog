@@ -1,7 +1,7 @@
 require 'fog/core/model'
 
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
 
       class AccessKey < Fog::Model

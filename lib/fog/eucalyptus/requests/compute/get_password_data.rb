@@ -1,9 +1,9 @@
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/compute/get_password_data'
+        require 'fog/eucalyptus/parsers/compute/get_password_data'
 
         # Retrieves the encrypted administrator password for an instance running Windows.
         #
@@ -18,15 +18,15 @@ module Fog
         #     * 'requestId'<~String> - Id of request
         #     * 'timestamp'<~Time> - Timestamp of last update to output
         #
-        # See http://docs.amazonwebservices.com/AWSEC2/2010-08-31/APIReference/index.html?ApiReference-query-GetPasswordData.html
+        # See http://docs.amazonwebservices.com/EucalyptusEC2/2010-08-31/APIReference/index.html?ApiReference-query-GetPasswordData.html
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-GetPasswordData.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-GetPasswordData.html]
         def get_password_data(instance_id)
           request(
             'Action'      => 'GetPasswordData',
             'InstanceId'  => instance_id,
             :idempotent   => true,
-            :parser       => Fog::Parsers::Compute::AWS::GetPasswordData.new
+            :parser       => Fog::Parsers::Compute::Eucalyptus::GetPasswordData.new
           )
         end
 
@@ -41,12 +41,12 @@ module Fog
             response.body = {
               'instanceId'   => instance_id,
               'passwordData' => nil,
-              'requestId'    => Fog::AWS::Mock.request_id,
+              'requestId'    => Fog::Eucalyptus::Mock.request_id,
               'timestamp'    => Time.now
             }
             response
           else;
-            raise Fog::Compute::AWS::NotFound.new("The instance ID '#{instance_id}' does not exist")
+            raise Fog::Compute::Eucalyptus::NotFound.new("The instance ID '#{instance_id}' does not exist")
           end
         end
 

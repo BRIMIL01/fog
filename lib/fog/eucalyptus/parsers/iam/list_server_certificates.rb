@@ -1,6 +1,6 @@
 module Fog
   module Parsers
-    module AWS
+    module Eucalyptus
       module IAM
 
         class ListServerCertificates < Fog::Parsers::Base

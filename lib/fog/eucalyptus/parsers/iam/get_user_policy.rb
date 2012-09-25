@@ -1,6 +1,6 @@
 module Fog
   module Parsers
-    module AWS
+    module Eucalyptus
       module IAM
 
         class GetUserPolicy < Fog::Parsers::Base

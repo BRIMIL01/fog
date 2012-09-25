@@ -1,5 +1,5 @@
 require 'fog/core/collection'
-require 'fog/aws/models/compute/server'
+require 'fog/eucalyptus/models/compute/server'
 
 module Fog
   module Compute

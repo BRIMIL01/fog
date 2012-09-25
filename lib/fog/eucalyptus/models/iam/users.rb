@@ -1,8 +1,8 @@
 require 'fog/core/collection'
-require 'fog/aws/models/iam/user'
+require 'fog/eucalyptus/models/iam/user'
 
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
 
       class Users < Fog::Collection
@@ -10,7 +10,7 @@ module Fog
         attribute :is_truncated,    :aliases => 'IsTruncated'
         attribute :marker,          :aliases => 'Marker'
 
-        model Fog::AWS::IAM::User
+        model Fog::Eucalyptus::IAM::User
 
         def all(options = {})
           merge_attributes(options)
@@ -22,7 +22,7 @@ module Fog
         def get(identity)
           data = connection.get_user(identity).body['User']
           new(data) # data is an attribute hash
-        rescue Fog::AWS::IAM::NotFound
+        rescue Fog::Eucalyptus::IAM::NotFound
           nil
         end
 

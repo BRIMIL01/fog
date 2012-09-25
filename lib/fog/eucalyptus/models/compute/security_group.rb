@@ -2,7 +2,7 @@ require 'fog/core/model'
 
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
 
       class SecurityGroup < Fog::Model
 
@@ -16,7 +16,7 @@ module Fog
 
         # Authorize access by another security group
         #
-        #  >> g = AWS.security_groups.all(:description => "something").first
+        #  >> g = Eucalyptus.security_groups.all(:description => "something").first
         #  >> g.authorize_group_and_owner("some_group_name", "1234567890")
         #
         # == Parameters:
@@ -55,7 +55,7 @@ module Fog
 
         # Authorize a new port range for a security group
         #
-        #  >> g = AWS.security_groups.all(:description => "something").first
+        #  >> g = Eucalyptus.security_groups.all(:description => "something").first
         #  >> g.authorize_port_range(20..21)
         #
         # == Parameters:
@@ -130,7 +130,7 @@ module Fog
 
         # Revoke access by another security group
         #
-        #  >> g = AWS.security_groups.all(:description => "something").first
+        #  >> g = Eucalyptus.security_groups.all(:description => "something").first
         #  >> g.revoke_group_and_owner("some_group_name", "1234567890")
         #
         # == Parameters:
@@ -169,7 +169,7 @@ module Fog
 
         # Revoke an existing port range for a security group
         #
-        #  >> g = AWS.security_groups.all(:description => "something").first
+        #  >> g = Eucalyptus.security_groups.all(:description => "something").first
         #  >> g.revoke_port_range(20..21)
         #
         # == Parameters:
@@ -224,7 +224,7 @@ module Fog
 
         # Create a security group
         #
-        #  >> g = AWS.security_groups.new(:name => "some_name", :description => "something")
+        #  >> g = Eucalyptus.security_groups.new(:name => "some_name", :description => "something")
         #  >> g.save
         #
         # == Returns:

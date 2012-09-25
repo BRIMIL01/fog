@@ -1,5 +1,5 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
         # Update a Signing Certificate
@@ -22,7 +22,7 @@ module Fog
             'Action'        => 'UpdateSigningCertificate',
             'CertificateId' => certificate_id,
             'Status'        => status,
-            :parser         => Fog::Parsers::AWS::IAM::Basic.new
+            :parser         => Fog::Parsers::Eucalyptus::IAM::Basic.new
           }.merge!(options))
         end
 

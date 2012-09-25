@@ -1,9 +1,9 @@
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/compute/basic'
+        require 'fog/eucalyptus/parsers/compute/basic'
 
         # Modify instance attributes
         #
@@ -19,17 +19,17 @@ module Fog
         #   'SourceDestCheck.Value'<~Boolean> - New sourcedestcheck value
         #   'GroupId'<~Array> - One or more groups to add instance to (VPC only)
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-ModifyInstanceAttribute.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-ModifyInstanceAttribute.html]
         #        
         def modify_instance_attribute(instance_id, attributes)
           params = {}
-          params.merge!(Fog::AWS.indexed_param('GroupId', attributes.delete('GroupId') || []))
+          params.merge!(Fog::Eucalyptus.indexed_param('GroupId', attributes.delete('GroupId') || []))
           params.merge!(attributes)
           request({
             'Action'        => 'ModifyInstanceAttribute',
             'InstanceId'    => instance_id,
             :idempotent     => true,
-            :parser         => Fog::Parsers::Compute::AWS::Basic.new
+            :parser         => Fog::Parsers::Compute::Eucalyptus::Basic.new
           }.merge!(params))
         end
 

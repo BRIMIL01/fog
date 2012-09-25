@@ -18,6 +18,7 @@ module Fog
       end
 
       response = @excon.request(params, &block)
+      binding.pry
 
       if parser
         body.finish

@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/basic'
+        require 'fog/eucalyptus/parsers/iam/basic'
 
         # removes a role from an instance profile
         # 
@@ -25,7 +25,7 @@ module Fog
             'Action'    => 'RemoveRoleFromInstanceProfile',
             'InstanceProfileName' => instance_profile_name,
             'RoleName'  => role_name,
-            :parser     => Fog::Parsers::AWS::IAM::Basic.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::Basic.new
           )
         end
 

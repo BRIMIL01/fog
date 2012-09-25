@@ -1,9 +1,9 @@
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/compute/start_stop_instances'
+        require 'fog/eucalyptus/parsers/compute/start_stop_instances'
 
         # Start specified instance
         #
@@ -16,13 +16,13 @@ module Fog
         #     * 'requestId'<~String> - Id of request
         #     * TODO: fill in the blanks
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-StartInstances.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-StartInstances.html]
         def start_instances(instance_id)
-          params = Fog::AWS.indexed_param('InstanceId', instance_id)
+          params = Fog::Eucalyptus.indexed_param('InstanceId', instance_id)
           request({
             'Action'    => 'StartInstances',
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::AWS::StartStopInstances.new
+            :parser     => Fog::Parsers::Compute::Eucalyptus::StartStopInstances.new
           }.merge!(params))
         end
 
@@ -37,7 +37,7 @@ module Fog
           instance_set = instance_set.find_all {|x| instance_ids.include?(x["instanceId"]) }
 
           if instance_set.empty?
-            raise Fog::Compute::AWS::NotFound.new("The instance ID '#{instance_ids.first}' does not exist")
+            raise Fog::Compute::Eucalyptus::NotFound.new("The instance ID '#{instance_ids.first}' does not exist")
           else
             response = Excon::Response.new
             response.status = 200

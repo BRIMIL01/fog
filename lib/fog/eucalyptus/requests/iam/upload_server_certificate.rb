@@ -1,11 +1,11 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/upload_server_certificate'
+        require 'fog/eucalyptus/parsers/iam/upload_server_certificate'
 
-        # Uploads a server certificate entity for the AWS Account.
+        # Uploads a server certificate entity for the Eucalyptus Account.
         # Includes a public key certificate, a private key, and an optional certificate chain, which should all be PEM-encoded.
         #
         # ==== Parameters
@@ -36,7 +36,7 @@ module Fog
             'CertificateBody'       => certificate,
             'PrivateKey'            => private_key,
             'ServerCertificateName' => name,
-            :parser                 => Fog::Parsers::AWS::IAM::UploadServerCertificate.new
+            :parser                 => Fog::Parsers::Eucalyptus::IAM::UploadServerCertificate.new
           }.merge!(options))
         end
 
@@ -45,7 +45,7 @@ module Fog
       class Mock
         def upload_server_certificate(certificate, private_key, name, options = {})
           if certificate.nil? || certificate.empty? || private_key.nil? || private_key.empty?
-            raise Fog::AWS::IAM::ValidationError.new
+            raise Fog::Eucalyptus::IAM::ValidationError.new
           end
           response = Excon::Response.new
 
@@ -63,29 +63,29 @@ module Fog
                       else
                         "Invalid Private Key."
                       end
-            raise Fog::AWS::IAM::MalformedCertificate.new(message)
+            raise Fog::Eucalyptus::IAM::MalformedCertificate.new(message)
           end
 
           unless cert.check_private_key(key)
-            raise Fog::AWS::IAM::KeyPairMismatch.new
+            raise Fog::Eucalyptus::IAM::KeyPairMismatch.new
           end
 
           if self.data[:server_certificates][name]
-            raise Fog::AWS::IAM::EntityAlreadyExists.new
+            raise Fog::Eucalyptus::IAM::EntityAlreadyExists.new
           else
             response.status = 200
             path = options['Path'] || "/"
             data = {
-              'Arn' => Fog::AWS::Mock.arn('iam', self.data[:owner_id], "server-certificate/#{name}"),
+              'Arn' => Fog::Eucalyptus::Mock.arn('iam', self.data[:owner_id], "server-certificate/#{name}"),
               'Path' => path,
-              'ServerCertificateId' => Fog::AWS::IAM::Mock.server_certificate_id,
+              'ServerCertificateId' => Fog::Eucalyptus::IAM::Mock.server_certificate_id,
               'ServerCertificateName' => name,
               'UploadDate' => Time.now
             }
             self.data[:server_certificates][name] = data
             response.body = {
               'Certificate' => data,
-              'RequestId' => Fog::AWS::Mock.request_id
+              'RequestId' => Fog::Eucalyptus::Mock.request_id
             }
           end
 

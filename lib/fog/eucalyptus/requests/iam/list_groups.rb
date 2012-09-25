@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/list_groups'
+        require 'fog/eucalyptus/parsers/iam/list_groups'
 
         # List groups
         # 
@@ -32,7 +32,7 @@ module Fog
         def list_groups(options = {})
           request({
             'Action'  => 'ListGroups',
-            :parser   => Fog::Parsers::AWS::IAM::ListGroups.new
+            :parser   => Fog::Parsers::Eucalyptus::IAM::ListGroups.new
           }.merge!(options))
         end
 
@@ -51,7 +51,7 @@ module Fog
                                               'Arn'       => (group[:arn]).strip }
                                           end,
                               'IsTruncated' => false,
-                              'RequestId' => Fog::AWS::Mock.request_id }
+                              'RequestId' => Fog::Eucalyptus::Mock.request_id }
           end
         end
       end

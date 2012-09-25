@@ -214,7 +214,7 @@ module Fog
             commands << %{echo "#{public_key}" >> ~/.ssh/authorized_keys}
           end
 
-          # wait for aws to be ready
+          # wait for eucalyptus to be ready
           wait_for { sshable? }
 
           Fog::SSH.new(public_ip_address, username, credentials).run(commands)

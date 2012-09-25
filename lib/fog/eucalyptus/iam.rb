@@ -1,14 +1,14 @@
-require 'fog/aws'
+require 'fog/eucalyptus'
 
 module Fog
   module Eucalyptus
     class IAM < Fog::Service
 
-      class EntityAlreadyExists < Fog::AWS::IAM::Error; end
-      class KeyPairMismatch < Fog::AWS::IAM::Error; end
-      class LimitExceeded < Fog::AWS::IAM::Error; end
-      class MalformedCertificate < Fog::AWS::IAM::Error; end
-      class ValidationError < Fog::AWS::IAM::Error; end
+      class EntityAlreadyExists < Fog::Eucalyptus::IAM::Error; end
+      class KeyPairMismatch < Fog::Eucalyptus::IAM::Error; end
+      class LimitExceeded < Fog::Eucalyptus::IAM::Error; end
+      class MalformedCertificate < Fog::Eucalyptus::IAM::Error; end
+      class ValidationError < Fog::Eucalyptus::IAM::Error; end
 
       requires :aws_access_key_id, :aws_secret_access_key
       recognizes :host, :path, :port, :scheme, :persistent, :instrumentor, :instrumentor_name
@@ -144,7 +144,7 @@ module Fog
         # * options<~Hash> - config arguments for connection.  Defaults to {}.
         #
         # ==== Returns
-        # * IAM object with connection to AWS.
+        # * IAM object with connection to Eucalyptus.
         def initialize(options={})
           require 'fog/core/parser'
 
@@ -172,7 +172,7 @@ module Fog
           idempotent  = params.delete(:idempotent)
           parser      = params.delete(:parser)
 
-          body = Fog::AWS.signed_params(
+          body = Fog::Eucalyptus.signed_params(
             params,
             {
               :aws_access_key_id  => @aws_access_key_id,

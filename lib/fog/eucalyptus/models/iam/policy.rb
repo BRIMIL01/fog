@@ -1,7 +1,7 @@
 require 'fog/core/model'
 
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
 
       class Policy < Fog::Model

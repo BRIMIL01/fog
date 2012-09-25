@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/list_policies'
+        require 'fog/eucalyptus/parsers/iam/list_policies'
 
         # List policies for a group
         # 
@@ -29,7 +29,7 @@ module Fog
           request({
             'Action'    => 'ListGroupPolicies',
             'GroupName' => group_name,
-            :parser     => Fog::Parsers::AWS::IAM::ListPolicies.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::ListPolicies.new
           }.merge!(options))
         end
 

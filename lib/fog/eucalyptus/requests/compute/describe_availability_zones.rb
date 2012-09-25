@@ -1,9 +1,9 @@
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/compute/describe_availability_zones'
+        require 'fog/eucalyptus/parsers/compute/describe_availability_zones'
 
         # Describe all or specified availability zones
         #
@@ -19,17 +19,17 @@ module Fog
         #       * 'zoneName'<~String> - Name of zone
         #       * 'zoneState'<~String> - State of zone
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeAvailabilityZones.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-DescribeAvailabilityZones.html]
         def describe_availability_zones(filters = {})
           unless filters.is_a?(Hash)
             Fog::Logger.deprecation("describe_availability_zones with #{filters.class} param is deprecated, use describe_availability_zones('zone-name' => []) instead [light_black](#{caller.first})[/]")
             filters = {'public-ip' => [*filters]}
           end
-          params = Fog::AWS.indexed_filters(filters)
+          params = Fog::Eucalyptus.indexed_filters(filters)
           request({
             'Action'    => 'DescribeAvailabilityZones',
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::AWS::DescribeAvailabilityZones.new
+            :parser     => Fog::Parsers::Compute::Eucalyptus::DescribeAvailabilityZones.new
           }.merge!(params))
         end
 
@@ -84,7 +84,7 @@ module Fog
           response.status = 200
           response.body = {
             'availabilityZoneInfo'  => availability_zone_info,
-            'requestId'             => Fog::AWS::Mock.request_id
+            'requestId'             => Fog::Eucalyptus::Mock.request_id
           }
           response
         end

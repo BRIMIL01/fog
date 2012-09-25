@@ -1,9 +1,9 @@
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/compute/create_volume'
+        require 'fog/eucalyptus/parsers/compute/create_volume'
 
         # Create an EBS volume
         #
@@ -27,7 +27,7 @@ module Fog
         #     * 'volumeType'<~String> - Type of volume
         #     * 'iops'<~Integer> - Number of IOPS the volume supports
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-CreateVolume.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-CreateVolume.html]
         def create_volume(availability_zone, size, options = {})
           unless options.is_a?(Hash)
             Fog::Logger.deprecation("create_volume with a bare snapshot_id is deprecated, use create_volume(availability_zone, size, 'SnapshotId' => snapshot_id) instead [light_black](#{caller.first})[/]")
@@ -38,7 +38,7 @@ module Fog
             'Action'            => 'CreateVolume',
             'AvailabilityZone'  => availability_zone,
             'Size'              => size,
-            :parser             => Fog::Parsers::Compute::AWS::CreateVolume.new
+            :parser             => Fog::Parsers::Compute::Eucalyptus::CreateVolume.new
           }.merge(options))
         end
 
@@ -56,11 +56,11 @@ module Fog
           if availability_zone && (size || options['SnapshotId'])
             snapshot = self.data[:snapshots][options['SnapshotId']]
             if options['SnapshotId'] && !snapshot
-              raise Fog::Compute::AWS::NotFound.new("The snapshot '#{options['SnapshotId']}' does not exist.")
+              raise Fog::Compute::Eucalyptus::NotFound.new("The snapshot '#{options['SnapshotId']}' does not exist.")
             end
 
             if snapshot && size && size < snapshot['volumeSize']
-              raise Fog::Compute::AWS::NotFound.new("The snapshot '#{options['SnapshotId']}' has size #{snapshot['volumeSize']} which is greater than #{size}.")
+              raise Fog::Compute::Eucalyptus::NotFound.new("The snapshot '#{options['SnapshotId']}' has size #{snapshot['volumeSize']} which is greater than #{size}.")
             elsif snapshot && !size
               size = snapshot['volumeSize']
             end
@@ -68,28 +68,28 @@ module Fog
             if options['VolumeType'] == 'io1'
               iops = options['Iops']
               if !iops
-                raise Fog::Compute::AWS::Error.new("InvalidParameterCombination => The parameter iops must be specified for io1 volumes.")
+                raise Fog::Compute::Eucalyptus::Error.new("InvalidParameterCombination => The parameter iops must be specified for io1 volumes.")
               end
 
               if size < 10
-                raise Fog::Compute::AWS::Error.new("InvalidParameterValue => Volume of #{size}GiB is too small; minimum is 10GiB.")
+                raise Fog::Compute::Eucalyptus::Error.new("InvalidParameterValue => Volume of #{size}GiB is too small; minimum is 10GiB.")
               end
 
               if (iops_to_size_ratio = iops.to_f / size.to_f) > 10.0
-                raise Fog::Compute::AWS::Error.new("InvalidParameterValue => Iops to volume size ratio of #{"%.1f" % iops_to_size_ratio} is too high; maximum is 10.0")
+                raise Fog::Compute::Eucalyptus::Error.new("InvalidParameterValue => Iops to volume size ratio of #{"%.1f" % iops_to_size_ratio} is too high; maximum is 10.0")
               end
 
               if iops < 100
-                raise Fog::Compute::AWS::Error.new("VolumeIOPSLimit => Volume iops of #{iops} is too low; minimum is 100.")
+                raise Fog::Compute::Eucalyptus::Error.new("VolumeIOPSLimit => Volume iops of #{iops} is too low; minimum is 100.")
               end
 
               if iops > 1000
-                raise Fog::Compute::AWS::Error.new("VolumeIOPSLimit => Volume iops of #{iops} is too high; maximum is 1000.")
+                raise Fog::Compute::Eucalyptus::Error.new("VolumeIOPSLimit => Volume iops of #{iops} is too high; maximum is 1000.")
               end
             end
 
             response.status = 200
-            volume_id = Fog::AWS::Mock.volume_id
+            volume_id = Fog::Eucalyptus::Mock.volume_id
             data = {
               'availabilityZone'  => availability_zone,
               'attachmentSet'     => [],
@@ -103,7 +103,7 @@ module Fog
             }
             self.data[:volumes][volume_id] = data
             response.body = {
-              'requestId' => Fog::AWS::Mock.request_id
+              'requestId' => Fog::Eucalyptus::Mock.request_id
             }.merge!(data.reject {|key,value| !['availabilityZone','createTime','size','snapshotId','status','volumeId','volumeType'].include?(key) })
           else
             response.status = 400

@@ -1,13 +1,13 @@
 require 'fog/core/collection'
-require 'fog/aws/models/iam/policy'
+require 'fog/eucalyptus/models/iam/policy'
 
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
 
       class Policies < Fog::Collection
                 
-        model Fog::AWS::IAM::Policy
+        model Fog::Eucalyptus::IAM::Policy
         
         def initialize(attributes = {})
           @username = attributes[:username]
@@ -17,7 +17,7 @@ module Fog
         
 
         def all
-          # AWS method get_user_policy only returns an array of policy names, this is kind of useless, 
+          # Eucalyptus method get_user_policy only returns an array of policy names, this is kind of useless, 
           # that's why it has to loop through the list to get the details of each element. I don't like it because it makes this method slow
           policy_names = connection.list_user_policies(@username).body['PolicyNames'] # it returns an array
           policies = []
@@ -30,7 +30,7 @@ module Fog
         def get(identity)
           data = connection.get_user_policy(identity,@username).body['Policy']
           new(data) # data is an attribute hash
-        rescue Fog::AWS::IAM::NotFound
+        rescue Fog::Eucalyptus::IAM::NotFound
           nil
         end
         

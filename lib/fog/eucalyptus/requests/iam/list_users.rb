@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/list_users'
+        require 'fog/eucalyptus/parsers/iam/list_users'
 
         # List users
         # 
@@ -32,7 +32,7 @@ module Fog
         def list_users(options = {})
           request({
             'Action'  => 'ListUsers',
-            :parser   => Fog::Parsers::AWS::IAM::ListUsers.new
+            :parser   => Fog::Parsers::Eucalyptus::IAM::ListUsers.new
           }.merge!(options))
         end
 
@@ -49,7 +49,7 @@ module Fog
                                             'Arn'      => (data[:arn]).strip }
                                         end,
                              'IsTruncated' => false,
-                             'RequestId'   => Fog::AWS::Mock.request_id }
+                             'RequestId'   => Fog::Eucalyptus::Mock.request_id }
             response.status = 200
           end
         end

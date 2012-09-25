@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/basic'
+        require 'fog/eucalyptus/parsers/iam/basic'
 
         # Add or update a policy for a user
         # 
@@ -26,7 +26,7 @@ module Fog
             'PolicyName'      => policy_name,
             'PolicyDocument'  => Fog::JSON.encode(policy_document),
             'UserName'        => user_name,
-            :parser           => Fog::Parsers::AWS::IAM::Basic.new
+            :parser           => Fog::Parsers::Eucalyptus::IAM::Basic.new
           )
         end
 
@@ -41,11 +41,11 @@ module Fog
             data[:users][user_name][:policies][policy_name] = policy_document
 
             Excon::Response.new.tap do |response|
-              response.body = { 'RequestId' => Fog::AWS::Mock.request_id }
+              response.body = { 'RequestId' => Fog::Eucalyptus::Mock.request_id }
               response.status = 200
             end
           else
-            raise Fog::AWS::IAM::NotFound.new("The user with name #{user_name} cannot be found.")
+            raise Fog::Eucalyptus::IAM::NotFound.new("The user with name #{user_name} cannot be found.")
           end
         end
       end

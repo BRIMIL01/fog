@@ -1,13 +1,13 @@
 require 'fog/core/collection'
-require 'fog/aws/models/iam/access_key'
+require 'fog/eucalyptus/models/iam/access_key'
 
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
 
       class AccessKeys < Fog::Collection
     
-        model Fog::AWS::IAM::AccessKey
+        model Fog::Eucalyptus::IAM::AccessKey
         
         def initialize(attributes = {})
           @username = attributes[:username]
@@ -17,7 +17,7 @@ module Fog
         
         def all 
           data = connection.list_access_keys('UserName'=> @username).body['AccessKeys']
-          # AWS response doesn't contain the UserName, this injects it
+          # Eucalyptus response doesn't contain the UserName, this injects it
           data.each {|access_key| access_key['UserName'] = @username }
           load(data)
         end

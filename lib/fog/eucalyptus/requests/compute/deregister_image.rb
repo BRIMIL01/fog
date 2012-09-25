@@ -1,9 +1,9 @@
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/compute/deregister_image'
+        require 'fog/eucalyptus/parsers/compute/deregister_image'
 
         # deregister an image
         #
@@ -16,12 +16,12 @@ module Fog
         #     * 'return'<~Boolean> - Returns true if deregistration succeeded
         #     * 'requestId'<~String> - Id of request
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DeregisterImage.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-DeregisterImage.html]
         def deregister_image(image_id)
           request(
             'Action'      => 'DeregisterImage',
             'ImageId'     => image_id,
-            :parser       => Fog::Parsers::Compute::AWS::DeregisterImage.new
+            :parser       => Fog::Parsers::Compute::Eucalyptus::DeregisterImage.new
           )
         end
 
@@ -34,7 +34,7 @@ module Fog
           if image_id 
             response.status = 200
             response.body = {
-              'requestId' => Fog::AWS::Mock.request_id,
+              'requestId' => Fog::Eucalyptus::Mock.request_id,
               'return' => "true"
             }
             response
@@ -43,7 +43,7 @@ module Fog
             if !instance_id
               message << 'The request must contain the parameter image_id'
             end
-            raise Fog::Compute::AWS::Error.new(message)
+            raise Fog::Compute::Eucalyptus::Error.new(message)
           end
         end
 

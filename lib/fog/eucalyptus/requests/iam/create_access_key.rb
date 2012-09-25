@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/create_access_key'
+        require 'fog/eucalyptus/parsers/iam/create_access_key'
 
         # Create a access keys for user (by default detects user from access credentials)
         # 
@@ -27,20 +27,20 @@ module Fog
         def create_access_key(options = {})
           request({
             'Action'    => 'CreateAccessKey',
-            :parser     => Fog::Parsers::AWS::IAM::CreateAccessKey.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::CreateAccessKey.new
           }.merge!(options))
         end
 
       end
       class Mock
         def create_access_key(options)
-          #FIXME: Not 100% correct as AWS will use the signing credentials when there is no 'UserName' in the options hash
+          #FIXME: Not 100% correct as Eucalyptus will use the signing credentials when there is no 'UserName' in the options hash
           #       Also doesn't raise an error when there are too many keys
           user_name = options['UserName']
           if data[:users].has_key? user_name
             key = { 'SecretAccessKey' => Fog::Mock.random_base64(40),
                     'Status' => 'Active',
-                    'AccessKeyId' => Fog::AWS::Mock.key_id(20),
+                    'AccessKeyId' => Fog::Eucalyptus::Mock.key_id(20),
                     'UserName' => user_name
                   }
 
@@ -49,10 +49,10 @@ module Fog
             Excon::Response.new.tap do |response|
               response.status = 200
               response.body = { 'AccessKey' => key,
-                                'RequestId' => Fog::AWS::Mock.request_id } 
+                                'RequestId' => Fog::Eucalyptus::Mock.request_id } 
             end
           else
-            raise Fog::AWS::IAM::NotFound.new('The user with name booboboboob cannot be found.')
+            raise Fog::Eucalyptus::IAM::NotFound.new('The user with name booboboboob cannot be found.')
           end
         end
       end

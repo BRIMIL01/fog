@@ -1,9 +1,9 @@
 module Fog
   module Storage
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/storage/get_bucket'
+        require 'fog/eucalyptus/parsers/storage/get_bucket'
 
         # List information about objects in an S3 bucket
         #
@@ -50,7 +50,7 @@ module Fog
             :host     => "#{bucket_name}.#{@host}",
             :idempotent => true,
             :method   => 'GET',
-            :parser   => Fog::Parsers::Storage::AWS::GetBucket.new,
+            :parser   => Fog::Parsers::Storage::Eucalyptus::GetBucket.new,
             :query    => options
           })
         end

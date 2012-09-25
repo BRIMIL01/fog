@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/get_role_policy'
+        require 'fog/eucalyptus/parsers/iam/get_role_policy'
 
         # Get Role Policy
         # 
@@ -26,7 +26,7 @@ module Fog
             'Action'      => 'GetRolePolicy',
             'PolicyName'  => policy_name,
             'RoleName'    => role_name,
-            :parser       => Fog::Parsers::AWS::IAM::GetRolePolicy.new
+            :parser       => Fog::Parsers::Eucalyptus::IAM::GetRolePolicy.new
           })
         end
 

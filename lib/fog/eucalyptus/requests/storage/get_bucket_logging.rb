@@ -1,9 +1,9 @@
 module Fog
   module Storage
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/storage/get_bucket_logging'
+        require 'fog/eucalyptus/parsers/storage/get_bucket_logging'
 
         # Get logging status for an S3 bucket
         #
@@ -39,7 +39,7 @@ module Fog
             :host       => "#{bucket_name}.#{@host}",
             :idempotent => true,
             :method     => 'GET',
-            :parser     => Fog::Parsers::Storage::AWS::GetBucketLogging.new,
+            :parser     => Fog::Parsers::Storage::Eucalyptus::GetBucketLogging.new,
             :query      => {'logging' => nil}
           })
         end

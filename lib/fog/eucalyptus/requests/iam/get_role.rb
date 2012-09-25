@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/single_role'
+        require 'fog/eucalyptus/parsers/iam/single_role'
 
         # Get the specified role
         # 
@@ -28,7 +28,7 @@ module Fog
           request(
             'Action'    => 'GetRole',
             'RoleName'  => role_name,
-            :parser     => Fog::Parsers::AWS::IAM::SingleRole.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::SingleRole.new
           )
         end
 

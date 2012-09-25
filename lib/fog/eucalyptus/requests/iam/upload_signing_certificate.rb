@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/upload_signing_certificate'
+        require 'fog/eucalyptus/parsers/iam/upload_signing_certificate'
 
         # Upload signing certificate for user (by default detects user from access credentials)
         #
@@ -28,7 +28,7 @@ module Fog
           request({
             'Action'          => 'UploadSigningCertificate',
             'CertificateBody' => certificate,
-            :parser           => Fog::Parsers::AWS::IAM::UploadSigningCertificate.new
+            :parser           => Fog::Parsers::Eucalyptus::IAM::UploadSigningCertificate.new
           }.merge!(options))
         end
 

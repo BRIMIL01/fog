@@ -1,5 +1,5 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
         # Updates the name and/or the path of the specified server certificate.
@@ -27,7 +27,7 @@ module Fog
           request({
             'Action'                => 'UpdateServerCertificate',
             'ServerCertificateName' => server_certificate_name,
-            :parser                 => Fog::Parsers::AWS::IAM::Basic.new
+            :parser                 => Fog::Parsers::Eucalyptus::IAM::Basic.new
           }.merge!(options))
         end
 

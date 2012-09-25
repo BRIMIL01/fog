@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/basic'
+        require 'fog/eucalyptus/parsers/iam/basic'
 
         # Add or update a policy for a group
         # 
@@ -26,7 +26,7 @@ module Fog
             'GroupName'       => group_name,
             'PolicyName'      => policy_name,
             'PolicyDocument'  => Fog::JSON.encode(policy_document),
-            :parser           => Fog::Parsers::AWS::IAM::Basic.new
+            :parser           => Fog::Parsers::Eucalyptus::IAM::Basic.new
           )
         end
 

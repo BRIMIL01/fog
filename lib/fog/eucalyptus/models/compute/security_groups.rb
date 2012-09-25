@@ -1,26 +1,26 @@
 require 'fog/core/collection'
-require 'fog/aws/models/compute/security_group'
+require 'fog/eucalyptus/models/compute/security_group'
 
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
 
       class SecurityGroups < Fog::Collection
 
         attribute :filters
 
-        model Fog::Compute::AWS::SecurityGroup
+        model Fog::Compute::Eucalyptus::SecurityGroup
 
         # Creates a new security group
         #
-        # AWS.security_groups.new
+        # Eucalyptus.security_groups.new
         #
         # ==== Returns
         #
         # Returns the details of the new image
         #
-        #>> AWS.security_groups.new
-        #  <Fog::AWS::Compute::SecurityGroup
+        #>> Eucalyptus.security_groups.new
+        #  <Fog::Eucalyptus::Compute::SecurityGroup
         #    name=nil,
         #    description=nil,
         #    ip_permissions=nil,
@@ -36,17 +36,17 @@ module Fog
 
         # Returns an array of all security groups that have been created
         #
-        # AWS.security_groups.all
+        # Eucalyptus.security_groups.all
         #
         # ==== Returns
         #
         # Returns an array of all security groups
         #
-        #>> AWS.security_groups.all
-        #  <Fog::AWS::Compute::SecurityGroups
+        #>> Eucalyptus.security_groups.all
+        #  <Fog::Eucalyptus::Compute::SecurityGroups
         #    filters={}
         #    [
-        #      <Fog::AWS::Compute::SecurityGroup
+        #      <Fog::Eucalyptus::Compute::SecurityGroup
         #        name="default",
         #        description="default group",
         #        ip_permissions=[{"groups"=>[{"groupName"=>"default", "userId"=>"312571045469"}], "fromPort"=>-1, "toPort"=>-1, "ipRanges"=>[], "ipProtocol"=>"icmp"}, {"groups"=>[{"groupName"=>"default", "userId"=>"312571045469"}], "fromPort"=>0, "toPort"=>65535, "ipRanges"=>[], "ipProtocol"=>"tcp"}, {"groups"=>[{"groupName"=>"default", "userId"=>"312571045469"}], "fromPort"=>0, "toPort"=>65535, "ipRanges"=>[], "ipProtocol"=>"udp"}],
@@ -71,12 +71,12 @@ module Fog
         # group name is required to get the associated flavor information.
         #
         # You can run the following command to get the details:
-        # AWS.security_groups.get("default")
+        # Eucalyptus.security_groups.get("default")
         #
         # ==== Returns
         #
-        #>> AWS.security_groups.get("default")
-        #  <Fog::AWS::Compute::SecurityGroup
+        #>> Eucalyptus.security_groups.get("default")
+        #  <Fog::Eucalyptus::Compute::SecurityGroup
         #    name="default",
         #    description="default group",
         #    ip_permissions=[{"groups"=>[{"groupName"=>"default", "userId"=>"312571045469"}], "fromPort"=>-1, "toPort"=>-1, "ipRanges"=>[], "ipProtocol"=>"icmp"}, {"groups"=>[{"groupName"=>"default", "userId"=>"312571045469"}], "fromPort"=>0, "toPort"=>65535, "ipRanges"=>[], "ipProtocol"=>"tcp"}, {"groups"=>[{"groupName"=>"default", "userId"=>"312571045469"}], "fromPort"=>0, "toPort"=>65535, "ipRanges"=>[], "ipProtocol"=>"udp"}],
@@ -95,12 +95,12 @@ module Fog
         # group id is required to get the associated flavor information.
         #
         # You can run the following command to get the details:
-        # AWS.security_groups.get_by_id("default")
+        # Eucalyptus.security_groups.get_by_id("default")
         #
         # ==== Returns
         #
-        #>> AWS.security_groups.get_by_id("sg-123456")
-        #  <Fog::AWS::Compute::SecurityGroup
+        #>> Eucalyptus.security_groups.get_by_id("sg-123456")
+        #  <Fog::Eucalyptus::Compute::SecurityGroup
         #    name="default",
         #    description="default group",
         #    ip_permissions=[{"groups"=>[{"groupName"=>"default", "userId"=>"312571045469"}], "fromPort"=>-1, "toPort"=>-1, "ipRanges"=>[], "ipProtocol"=>"icmp"}, {"groups"=>[{"groupName"=>"default", "userId"=>"312571045469"}], "fromPort"=>0, "toPort"=>65535, "ipRanges"=>[], "ipProtocol"=>"tcp"}, {"groups"=>[{"groupName"=>"default", "userId"=>"312571045469"}], "fromPort"=>0, "toPort"=>65535, "ipRanges"=>[], "ipProtocol"=>"udp"}],

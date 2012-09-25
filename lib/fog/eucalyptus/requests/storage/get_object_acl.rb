@@ -1,9 +1,9 @@
 module Fog
   module Storage
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/storage/access_control_list'
+        require 'fog/eucalyptus/parsers/storage/access_control_list'
 
         # Get access control list for an S3 object
         #
@@ -49,7 +49,7 @@ module Fog
             :host       => "#{bucket_name}.#{@host}",
             :idempotent => true,
             :method     => 'GET',
-            :parser     => Fog::Parsers::Storage::AWS::AccessControlList.new,
+            :parser     => Fog::Parsers::Storage::Eucalyptus::AccessControlList.new,
             :path       => CGI.escape(object_name),
             :query      => query
           })
@@ -66,7 +66,7 @@ module Fog
           if acl = self.data[:acls][:object][bucket_name] && self.data[:acls][:object][bucket_name][object_name]
             response.status = 200
             if acl.is_a?(String)
-              response.body = Fog::Storage::AWS.acl_to_hash(acl)
+              response.body = Fog::Storage::Eucalyptus.acl_to_hash(acl)
             else
               response.body = acl
             end

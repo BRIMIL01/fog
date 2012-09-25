@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/get_group'
+        require 'fog/eucalyptus/parsers/iam/get_group'
 
         # Get Group
         # 
@@ -34,14 +34,14 @@ module Fog
           request({
             'Action'    => 'GetGroup',
             'GroupName' => group_name,
-            :parser     => Fog::Parsers::AWS::IAM::GetGroup.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::GetGroup.new
           }.merge!(options))
         end
 
       end
       class Mock
         def get_group(group_name, options = {})
-          raise Fog::AWS::IAM::NotFound.new(
+          raise Fog::Eucalyptus::IAM::NotFound.new(
             "The user with name #{group_name} cannot be found."
           ) unless self.data[:groups].key?(group_name)
           Excon::Response.new.tap do |response|
@@ -52,7 +52,7 @@ module Fog
                                              'Arn'      => (data[:groups][group_name][:arn]).strip 
                                           },
                               'Users' => data[:groups][group_name][:members].map { |user| get_user(user).body['User'] },
-                              'RequestId'   => Fog::AWS::Mock.request_id }
+                              'RequestId'   => Fog::Eucalyptus::Mock.request_id }
             response.status = 200
           end
         end

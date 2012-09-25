@@ -1,5 +1,5 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
@@ -9,7 +9,7 @@ module Fog
           request(
             'Action'    => 'CreateAccountAlias',
             'AccountAlias'  => account_alias,
-            :parser     => Fog::Parsers::AWS::IAM::Basic.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::Basic.new
           )
         end
 

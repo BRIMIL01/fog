@@ -1,9 +1,9 @@
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/compute/attach_volume'
+        require 'fog/eucalyptus/parsers/compute/attach_volume'
 
         # Attach an Amazon EBS volume with a running instance, exposing as specified device
         #
@@ -22,7 +22,7 @@ module Fog
         #     * 'status'<~String> - Status of volume
         #     * 'volumeId'<~String> - Reference to volume
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-AttachVolume.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-AttachVolume.html]
         def attach_volume(instance_id, volume_id, device)
           request(
             'Action'      => 'AttachVolume',
@@ -30,7 +30,7 @@ module Fog
             'InstanceId'  => instance_id,
             'Device'      => device,
             :idempotent   => true,
-            :parser       => Fog::Parsers::Compute::AWS::AttachVolume.new
+            :parser       => Fog::Parsers::Compute::Eucalyptus::AttachVolume.new
           )
         end
 
@@ -46,7 +46,7 @@ module Fog
             volume = self.data[:volumes][volume_id]
             if instance && volume
               unless volume['status'] == 'available'
-                raise Fog::Compute::AWS::Error.new("Client.VolumeInUse => Volume #{volume_id} is unavailable")
+                raise Fog::Compute::Eucalyptus::Error.new("Client.VolumeInUse => Volume #{volume_id} is unavailable")
               end
 
               data = {
@@ -60,13 +60,13 @@ module Fog
               volume['status'] = 'attaching'
               response.status = 200
               response.body = {
-                'requestId' => Fog::AWS::Mock.request_id
+                'requestId' => Fog::Eucalyptus::Mock.request_id
               }.merge!(data)
               response
             elsif !instance
-              raise Fog::Compute::AWS::NotFound.new("The instance ID '#{instance_id}' does not exist.")
+              raise Fog::Compute::Eucalyptus::NotFound.new("The instance ID '#{instance_id}' does not exist.")
             elsif !volume
-              raise Fog::Compute::AWS::NotFound.new("The volume '#{volume_id}' does not exist.")
+              raise Fog::Compute::Eucalyptus::NotFound.new("The volume '#{volume_id}' does not exist.")
             end
           else
             message = 'MissingParameter => '
@@ -77,7 +77,7 @@ module Fog
             else
               message << 'The request must contain the parameter device'
             end
-            raise Fog::Compute::AWS::Error.new(message)
+            raise Fog::Compute::Eucalyptus::Error.new(message)
           end
         end
 

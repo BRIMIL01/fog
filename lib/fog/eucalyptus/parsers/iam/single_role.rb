@@ -1,10 +1,10 @@
 module Fog
   module Parsers
-    module AWS
+    module Eucalyptus
       module IAM
 
-        require 'fog/aws/parsers/iam/role_parser'
-        class SingleRole < Fog::Parsers::AWS::IAM::RoleParser
+        require 'fog/eucalyptus/parsers/iam/role_parser'
+        class SingleRole < Fog::Parsers::Eucalyptus::IAM::RoleParser
 
           def reset
             super

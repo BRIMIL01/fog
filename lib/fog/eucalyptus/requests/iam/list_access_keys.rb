@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/list_access_keys'
+        require 'fog/eucalyptus/parsers/iam/list_access_keys'
 
         # List access_keys
         # 
@@ -30,7 +30,7 @@ module Fog
         def list_access_keys(options = {})
           request({
             'Action'  => 'ListAccessKeys',
-            :parser   => Fog::Parsers::AWS::IAM::ListAccessKeys.new
+            :parser   => Fog::Parsers::Eucalyptus::IAM::ListAccessKeys.new
           }.merge!(options))
         end
 
@@ -48,11 +48,11 @@ module Fog
                                                   {'Status' => akey['Status'], 'AccessKeyId' => akey['AccessKeyId']}
                                                 end,
                                  'IsTruncated' => false,
-                                 'RequestId' => Fog::AWS::Mock.request_id }
+                                 'RequestId' => Fog::Eucalyptus::Mock.request_id }
               response.status = 200
             end
           else
-            raise Fog::AWS::IAM::NotFound.new("The user with name #{user} cannot be found.")
+            raise Fog::Eucalyptus::IAM::NotFound.new("The user with name #{user} cannot be found.")
           end
         end
       end

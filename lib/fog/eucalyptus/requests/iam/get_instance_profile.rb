@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/instance_profile'
+        require 'fog/eucalyptus/parsers/iam/instance_profile'
 
         # Retrieves information about an instance profile
         # 
@@ -32,7 +32,7 @@ module Fog
           request({
             'Action'    => 'GetInstanceProfile',
             'InstanceProfileName'  => instance_profile_name,
-            :parser     => Fog::Parsers::AWS::IAM::InstanceProfile.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::InstanceProfile.new
           })
         end
 

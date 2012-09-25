@@ -1,9 +1,9 @@
 module Fog
   module Storage
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/storage/get_bucket_website'
+        require 'fog/eucalyptus/parsers/storage/get_bucket_website'
 
         # Get website configuration for an S3 bucket
         #
@@ -31,7 +31,7 @@ module Fog
             :host       => "#{bucket_name}.#{@host}",
             :idempotent => true,
             :method     => 'GET',
-            :parser     => Fog::Parsers::Storage::AWS::GetBucketWebsite.new,
+            :parser     => Fog::Parsers::Storage::Eucalyptus::GetBucketWebsite.new,
             :query      => {'website' => nil}
           })
         end

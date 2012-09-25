@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/list_policies'
+        require 'fog/eucalyptus/parsers/iam/list_policies'
 
         # List policies for a user
         # 
@@ -29,7 +29,7 @@ module Fog
           request({
             'Action'    => 'ListUserPolicies',
             'UserName'  => user_name,
-            :parser     => Fog::Parsers::AWS::IAM::ListPolicies.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::ListPolicies.new
           }.merge!(options))
         end
 
@@ -43,11 +43,11 @@ module Fog
             Excon::Response.new.tap do |response|
               response.body = { 'PolicyNames' => data[:users][user_name][:policies].keys,
                                 'IsTruncated' => false,
-                                'RequestId'   => Fog::AWS::Mock.request_id }
+                                'RequestId'   => Fog::Eucalyptus::Mock.request_id }
               response.status = 200
             end
           else
-            raise Fog::AWS::IAM::NotFound.new("The user with name #{user_name} cannot be found.")
+            raise Fog::Eucalyptus::IAM::NotFound.new("The user with name #{user_name} cannot be found.")
           end
         end
 

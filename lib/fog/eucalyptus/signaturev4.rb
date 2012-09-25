@@ -1,7 +1,7 @@
 # See http://docs.amazonwebservices.com/general/latest/gr/signature-version-4.html
 #
 module Fog
-  module AWS
+  module Eucalyptus
     class SignatureV4
       def initialize(aws_access_key_id, secret_key, region,service)
         @region = region
@@ -40,7 +40,7 @@ DATA
       def canonical_query_string(query)
         canonical_query_string = []
         for key in (query || {}).keys.sort_by {|k| k.to_s}
-          component = "#{Fog::AWS.escape(key.to_s)}=#{Fog::AWS.escape(query[key].to_s)}"
+          component = "#{Fog::Eucalyptus.escape(key.to_s)}=#{Fog::Eucalyptus.escape(query[key].to_s)}"
           canonical_query_string << component
         end
         canonical_query_string.join("&")

@@ -1,9 +1,9 @@
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
       class Real
 
-        require 'fog/aws/parsers/compute/describe_placement_groups'
+        require 'fog/eucalyptus/parsers/compute/describe_placement_groups'
 
         # Describe all or specified placement groups
         #
@@ -19,13 +19,13 @@ module Fog
         #       * 'strategy'<~String> - Strategy of placement group
         #       * 'state'<~String> - State of placement group
         #
-        # {Amazon API Reference}[http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DescribePlacementGroups.html]
+        # {Amazon API Reference}[http://docs.amazonwebservices.com/EucalyptusEC2/latest/APIReference/ApiReference-query-DescribePlacementGroups.html]
         def describe_placement_groups(filters = {})
-          params = Fog::AWS.indexed_filters(filters)
+          params = Fog::Eucalyptus.indexed_filters(filters)
           request({
             'Action'    => 'DescribePlacementGroups',
             :idempotent => true,
-            :parser     => Fog::Parsers::Compute::AWS::DescribePlacementGroups.new
+            :parser     => Fog::Parsers::Compute::Eucalyptus::DescribePlacementGroups.new
           }.merge!(params))
         end
 

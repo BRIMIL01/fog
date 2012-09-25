@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/basic'
+        require 'fog/eucalyptus/parsers/iam/basic'
 
         # Delete a group
         # 
@@ -22,7 +22,7 @@ module Fog
           request(
             'Action'    => 'DeleteGroup',
             'GroupName' => group_name,
-            :parser     => Fog::Parsers::AWS::IAM::Basic.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::Basic.new
           )
         end
 
@@ -36,13 +36,13 @@ module Fog
               data[:groups].delete group_name
               Excon::Response.new.tap do |response|
                 response.status = 200
-                response.body = { 'RequestId' => Fog::AWS::Mock.request_id }
+                response.body = { 'RequestId' => Fog::Eucalyptus::Mock.request_id }
               end
             else
-              raise Fog::AWS::IAM::Error.new("DeleteConflict => Cannot delete entity, must delete users in group first.")
+              raise Fog::Eucalyptus::IAM::Error.new("DeleteConflict => Cannot delete entity, must delete users in group first.")
             end
           else
-            raise Fog::AWS::IAM::NotFound.new("The group with name #{group_name} cannot be found.")
+            raise Fog::Eucalyptus::IAM::NotFound.new("The group with name #{group_name} cannot be found.")
           end
         end
       end

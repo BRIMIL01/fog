@@ -1,9 +1,9 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
       class Real
 
-        require 'fog/aws/parsers/iam/basic'
+        require 'fog/eucalyptus/parsers/iam/basic'
 
         # Remove a policy from a user
         # 
@@ -24,7 +24,7 @@ module Fog
             'Action'          => 'DeleteUserPolicy',
             'PolicyName'      => policy_name,
             'UserName'        => user_name,
-            :parser           => Fog::Parsers::AWS::IAM::Basic.new
+            :parser           => Fog::Parsers::Eucalyptus::IAM::Basic.new
           )
         end
 
@@ -36,11 +36,11 @@ module Fog
           if data[:users].has_key?(user_name) && data[:users][user_name][:policies].has_key?(policy_name)
             data[:users][user_name][:policies].delete policy_name
             Excon::Response.new.tap do |response|
-              response.body = { 'RequestId' => Fog::AWS::Mock.request_id }
+              response.body = { 'RequestId' => Fog::Eucalyptus::Mock.request_id }
               response.status = 200
             end
           else
-            raise Fog::AWS::IAM::NotFound.new("The user policy with name #{policy_name} cannot be found.")
+            raise Fog::Eucalyptus::IAM::NotFound.new("The user policy with name #{policy_name} cannot be found.")
           end
         end
 

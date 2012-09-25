@@ -2,7 +2,7 @@ require 'fog/core/model'
 
 module Fog
   module Compute
-    class AWS
+    class Eucalyptus
 
       class Image < Fog::Model
 

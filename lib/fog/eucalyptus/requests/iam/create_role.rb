@@ -1,5 +1,5 @@
 module Fog
-  module AWS
+  module Eucalyptus
     class IAM
         # At the moment this is the only policy you can use
         EC2_ASSUME_ROLE_POLICY = <<-JSON
@@ -20,7 +20,7 @@ module Fog
       class Real
         require 'fog/aws/parsers/iam/single_role'
 
-        # Creates a new role for your AWS account
+        # Creates a new role for your Eucalyptus account
         # 
         # ==== Parameters
         # * RoleName<~String>: name of the role to create 
@@ -46,7 +46,7 @@ module Fog
             'RoleName'  => role_name,
             'AssumeRolePolicyDocument'      => assume_role_policy_document,
             'Path'      => path,
-            :parser     => Fog::Parsers::AWS::IAM::SingleRole.new
+            :parser     => Fog::Parsers::Eucalyptus::IAM::SingleRole.new
           )
         end
 
